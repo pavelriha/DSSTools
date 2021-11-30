@@ -1,6 +1,6 @@
 {
-  "name": "web-view",
-  "version": "0.0.0",
+  "name": "DSS online",
+  "version": "2.0alfa",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
