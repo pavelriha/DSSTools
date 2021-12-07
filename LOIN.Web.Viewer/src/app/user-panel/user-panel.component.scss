@@ -1,0 +1,13 @@
+@import "./assets/scss/variables";
+
+.panel {
+    display: flex;
+    justify-content: space-evenly;
+    background-color: #fff;
+    padding: 1em 0em;
+    A {
+        display: inline-block;
+        color: inherit;
+        margin: 0 0.5em;
+    }
+}
