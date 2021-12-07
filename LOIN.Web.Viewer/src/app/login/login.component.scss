@@ -1,0 +1,75 @@
+@import "./assets/scss/variables";
+
+.login-wrapper {
+    width: 100%;
+    height: 100vh;
+    background-color: $color-primary-grey;
+    display: flex;
+    .box {
+        position: relative;
+        font-size: larger;
+        background-color: $color-white;
+        color: $color-primary-black;
+        max-width: 400px;
+        min-width: 20vw;
+        margin: auto;
+        //border: solid 1px #000;
+        //box-shadow: 0 0 0 .2rem #000;
+        border-radius: 0.25rem;
+        box-shadow: 5px 5px 10px 1px #000;
+        padding: 1em;
+        .form-group {
+            //margin: 1em;
+            margin-bottom: 1em;
+            LABEL {
+                margin-bottom: 0.5em;
+                display: inline-block;
+            }
+            .form-control {
+                display: block;
+                box-sizing: border-box;
+                width: 100%;
+                padding: 0.5em;
+                border-radius: 0.25rem;
+                border: 1px solid #ced4da;
+                &:focus {
+                    background-color: rgb(255, 234, 164);
+                    border-color: #80bdff;
+                    outline: 0;
+                    box-shadow: 0 0 0 .2rem #007bff40;
+                }
+            }
+            INPUT {
+                font-size: inherit;
+            }
+        }
+        .btn {
+            padding: 1em;
+            background-color: $color-topbar-grey;
+            color: $color-white;
+            font-weight: bold;
+            &:hover {
+                background-color: $color-topbar-grey-hover;
+                color: #222;
+            }
+        }
+        .alert {
+            padding: 1em 0.25em;
+            background-color: $color-secondary-grey;
+            color: red;
+            margin-bottom: 0.5em;
+        }
+        .userinfo {
+            margin-bottom: 1em;
+        }
+        .close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0.5em;
+            color: inherit;
+        }
+    }
+
+
+}

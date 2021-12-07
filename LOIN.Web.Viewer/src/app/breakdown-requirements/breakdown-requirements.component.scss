@@ -102,6 +102,9 @@ H2 {
             border: none !important;
             background-color: inherit !important;
         }
+        TD.cmd {
+            padding: 0;
+        }
         &.r1 TD {
             background: $color-table-bgstripe;
             //border-bottom: solid 1px rgb(200,200,200);

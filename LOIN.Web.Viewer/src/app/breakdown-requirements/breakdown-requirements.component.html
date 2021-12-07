@@ -109,7 +109,7 @@
         <ng-container *ngIf="data && data.requirements; else empty">
 
             <tr class="req" [class]="'r'+r%2" *ngFor="let req of data.requirements; let r=index">
-                <td></td>
+                <td class="cmd"><notes-reg-btn [uuid]="req.uuid"></notes-reg-btn></td>
                 <td>{{ req.setNameCS }}</td>
                 <td>{{ req.nameCS }}</td>
                 <td>{{ req.units }}</td>
@@ -161,7 +161,7 @@
                 <ng-container *ngIf="set && set.requirements; else empty">
                     
                     <tr *ngFor="let req of set.requirements; let r=index" class="req" [class]="'r'+r%2">
-                        <td></td>
+                        <td class="cmd"><notes-reg-btn [uuid]="req.uuid"></notes-reg-btn></td>
                         <td>{{ req.nameCS }}</td>
                         <td>{{ req.units }}</td>
                         <td>{{ req.dataTypeCS }}</td>

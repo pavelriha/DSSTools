@@ -1,4 +1,12 @@
 {
+  "/slimapi": {
+    "target": "http://localhost:6081/",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/slimapi/": "/"
+    }
+  },
   "/api": {
     "target": "http://localhost:5000/",
     "secure": false,

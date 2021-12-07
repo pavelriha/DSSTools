@@ -1,0 +1,20 @@
+@import "./assets/scss/variables";
+
+:host {
+    //border: 2px solid rgb(43, 255, 0);
+    display: block;
+    //font-size: 20px;
+    text-align: right;
+    padding-right: 3px;
+    A {
+        color: $color-secondary-cyan1;
+        &:hover {
+            color: $color-secondary-cyan2;
+            text-shadow: 0 0 5px #000;;
+        }
+    }
+}
+
+:host-context(TR.req:hover) :host A {
+    font-size: 200%;
+}

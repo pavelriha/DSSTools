@@ -9,6 +9,7 @@ import { GroupingType, Requirement, RequirementSet, GrouppedRequirements, Groupp
 import { TreeModel, TreeNode, TreeComponent, ITreeOptions } from '@circlon/angular-tree-component';
 import { FilterBoxComponent } from "./filter-box/filter-box.component";
 import { ExportExcelService } from "./export-excel.service";
+import { AuthService } from './shared/services/auth.service';
 
 export class Repolist {
   key: string;
@@ -16,7 +17,7 @@ export class Repolist {
 }
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-component',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -30,8 +31,8 @@ export class AppComponent implements OnInit {
   //@ViewChild('repo') fbRepo: FilterBoxComponent;
   //@ViewChild('repo') repo: nativeElement;
   public errors:string[] = [];
-  public repo: string = "latest";
-  public repoValue: string = "aktuální";
+  public repo: string;
+  public repoValue: string;
   //public help_url: string = 'https://www.koncepcebim.cz/dokumenty?dok=1063-napoveda-dss-online';
   public help_url: string = 'https://www.koncepcebim.cz/uploads/inq/files/DSS_online_pruvodce_Agentura%20CAS%20%281%29.pdf';
   public sel: string[];
@@ -55,6 +56,10 @@ export class AppComponent implements OnInit {
   public dataTemplates: any[] = [];
   public reqtab: string = 'sets_cz';
 
+  // logged user info
+  private usersub: any;
+  public userdata: any = false;
+
   constructor(
     private actorsService: ActorsService,
     private breakdownService: BreakdownService,
@@ -64,19 +69,52 @@ export class AppComponent implements OnInit {
     private requirementsService: RequirementsService,
     private requirementsSetsService: RequirementSetsService,
     private exportexcel: ExportExcelService,
+    private authService: AuthService,
   ) { }
 
   ngOnInit(): void {
+    this.repolist = [ { key:'latest', value: 'aktuální' } ]; //toto musi byt prvni!
+    this.setDefaultRepo();
     this.repositoriesService.apiRepositoriesGet().subscribe(
       d => {  
-        this.repolist = [ { key:'latest', value: 'aktuální' } ];
         //this.repolist.push(...d.sort().reverse());
         d.sort().reverse().forEach( r => { this.repolist.push({ key: r, value: r }); });
       },
       e => { this.apiError(e); }
     );
+
+    this.usersub = this.authService.userLogged.subscribe(ud => { 
+      this.userdata = ud;
+      console.log("user change", ud);
+      if (ud) {
+        this.setDefaultRepo(); //prihlasenej smi pracovat jen s latest, tak ho nastavime
+      }
+    });
+
     this.fetchFilters();
     this.initdone = true;
+
+    setTimeout(() => { //zpozdime, aby se filtr komponenta stihla iniciovat
+      this.fbBreaks.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateBreaks')));
+      this.fbActors.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateActors')));
+      this.fbReasons.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateReasons')));
+      this.fbMilestones.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateMilestones')));
+      setTimeout(() => { 
+        this.fbBreaks.prepareSelected(); 
+        this.fbActors.prepareSelected();
+        this.fbReasons.prepareSelected();
+        this.fbMilestones.prepareSelected();
+      });
+    });
+  }
+
+  ngOnDestroy() {
+    this.usersub.unsubscribe();
+  }
+
+  private setDefaultRepo() {
+    this.repo      = this.repolist[0].key;
+    this.repoValue = this.repolist[0].value;
   }
 
   repoChange() {
@@ -108,6 +146,15 @@ export class AppComponent implements OnInit {
   }
 
   runfilter() {
+    if (this.fbBreaks.selected.length==0) {
+      alert("Prosím vyberte alespoň jednu datovou šablonu");
+      return;
+    }
+    // ulozime stav filtru do sessionstorage
+    sessionStorage.setItem('treeStateBreaks', JSON.stringify(this.fbBreaks.tree.treeModel.getState()) );
+    sessionStorage.setItem('treeStateActors', JSON.stringify(this.fbActors.tree.treeModel.getState()) );
+    sessionStorage.setItem('treeStateReasons', JSON.stringify(this.fbReasons.tree.treeModel.getState()) );
+    sessionStorage.setItem('treeStateMilestones', JSON.stringify(this.fbMilestones.tree.treeModel.getState()) );
 
     this.dataLoading = true;
     this.errors = [];
@@ -124,15 +171,13 @@ export class AppComponent implements OnInit {
         null, //orderby
         null, //skip
         null, //top
-        null, // apply
+        null, //apply
         this.fbActors.getSelectedIds().join(','), //actors
         this.fbReasons.getSelectedIds().join(','), //reasons
         this.fbBreaks.getSelectedIds().join(','), //breakdowns
         this.fbMilestones.getSelectedIds().join(','), //milestones
       ).subscribe({
         next: (r) => {
-          //console.log(r); 
-          //this.dataTemplates = r;
           this.dataTemplates = [];
           r.forEach( (req) => {
             this.dataTemplates[req.id] = req;
@@ -158,8 +203,9 @@ export class AppComponent implements OnInit {
             // pokud se jedna o skupinu co ma v nazvu obecná, tak ji chceme ve vychozim stavu sbalenou
             req.requirementSets.forEach( set => { if ( set.name.includes('obecn') ) (set as any).collapsed = true; });
             this.dataTemplates[req.id] = req;
-            this.dataLoading = false;
           });
+          this.dataLoading = false;
+          //console.log('dataTemplates',this.dataTemplates);
         },
         error: (e) => { this.apiError(e) },
       }
@@ -191,6 +237,10 @@ export class AppComponent implements OnInit {
     this.selectedTree = null;
     this.selectedFlatTree = null;
     this.errors = [];
+    sessionStorage.removeItem('treeStateBreaks');
+    sessionStorage.removeItem('treeStateActors');
+    sessionStorage.removeItem('treeStateReasons');
+    sessionStorage.removeItem('treeStateMilestones');
   }
 
 

@@ -1,0 +1,12 @@
+@import "./assets/scss/variables";
+
+.footer {
+    margin-top: 2em;
+    color: $color-primary-grey;
+    .footer-in {
+        padding: 1em;
+        A {
+            color: inherit;
+        }
+    }
+}

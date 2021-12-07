@@ -2,7 +2,7 @@
 <div class="topbar">
 
     <div class="head">
-        <div ngDropdown [renderInPlace]="true" #repoDropdown="ngDropdown" >
+        <div *ngIf="!userdata" ngDropdown [renderInPlace]="true" #repoDropdown="ngDropdown" >
             <div ngDropdownControl >
                 <span class="text">Verze: {{ repoValue }}</span>
                 <span class="arrow"><i class="fas fa-chevron-down"></i></span>
@@ -13,9 +13,9 @@
                 </ul>
             </div>
         </div>
+        <user-panel *ngIf="userdata"></user-panel>
+
                 
-
-
         <br>
         <img class="logo" src="assets/images/bim-logo.svg">
     </div>
@@ -96,3 +96,5 @@
     </ng-container>
     
 </div>
+
+<app-footer></app-footer>

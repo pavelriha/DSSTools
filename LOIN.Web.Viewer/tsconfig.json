@@ -21,5 +21,12 @@
         "node_modules/exceljs/dist/exceljs.min"
       ]
     },
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   }
+
 }
