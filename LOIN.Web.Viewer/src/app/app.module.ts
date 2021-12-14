@@ -21,8 +21,9 @@ import { AppRootComponent } from './app-root.component';
 import { routing } from './app.routing';
 import { FooterComponent } from './footer/footer.component';
 import { UserPanelComponent } from './user-panel/user-panel.component';
-import { RegNotesComponent } from './notes/reg-notes/reg-notes.component';
-import { RegBtnComponent } from './notes/reg-btn/reg-btn.component';
+import { ReqNotesComponent } from './notes/req-notes/req-notes.component';
+import { ReqBtnComponent } from './notes/req-btn/req-btn.component';
+import { ReqPopupComponent } from './notes/req-popup/req-popup.component';
 
 
 function getConfig() {
@@ -45,8 +46,9 @@ function getConfig() {
     AppRootComponent,
     FooterComponent,
     UserPanelComponent,
-    RegNotesComponent,
-    RegBtnComponent,
+    ReqNotesComponent,
+    ReqBtnComponent,
+    ReqPopupComponent,
   ],
   imports: [
     BrowserModule,

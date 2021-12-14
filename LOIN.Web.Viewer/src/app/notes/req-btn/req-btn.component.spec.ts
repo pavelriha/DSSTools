@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RegNotesComponent } from './reg-notes.component';
+import { ReqBtnComponent } from './req-btn.component';
 
-describe('RegNotesComponent', () => {
-  let component: RegNotesComponent;
-  let fixture: ComponentFixture<RegNotesComponent>;
+describe('ReqBtnComponent', () => {
+  let component: ReqBtnComponent;
+  let fixture: ComponentFixture<ReqBtnComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RegNotesComponent ]
+      declarations: [ ReqBtnComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RegNotesComponent);
+    fixture = TestBed.createComponent(ReqBtnComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

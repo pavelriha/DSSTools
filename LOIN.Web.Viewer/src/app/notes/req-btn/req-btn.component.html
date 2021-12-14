@@ -1,0 +1,20 @@
+<a href="javascript:void(0);" ngDropdown [renderInPlace]="false" #infoDropdown="ngDropdown" *ngIf="notes">
+    <i class="aico fas fa-info-circle" ngDropdownControl></i>
+    <div ngDropdownContent dropdownClass="slide-fade" >
+        <notes-req-popup [notes]="notes"></notes-req-popup>
+    </div>
+</a>
+
+
+<a href="javascript:void(0);" ngDropdown [renderInPlace]="false" #infoDropdown="ngDropdown" >
+    <i class="aico fas fa-edit" ngDropdownControl></i>
+    <div ngDropdownContent dropdownClass="slide-fade" >
+        <req-notes [dt_uuid]="dt_uuid" [req_uuid]="req_uuid" [success]="notesReqSubmit"></req-notes>
+    </div>
+</a>
+
+
+<!-- 
+<a [routerLink]="['notes/req',dt_uuid,req_uuid]" [state]="{ requirements: requirements }">
+    <i class="aico fas fa-edit"></i>
+</a> -->

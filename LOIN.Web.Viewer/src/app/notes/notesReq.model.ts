@@ -1,0 +1,15 @@
+export interface NotesReq {
+    id_notes_req?: number,
+    dt_uuid?: string,
+    req_uuid?: string,
+    id_user_creator?: number,
+    id_user_worker?: number,
+    state?: 'new'|'confirmed'|'rejected',
+    suggestion?: string,
+    reply?: string,
+    final_note?: string,
+    created?: string,
+    updated?: string,
+    creator_email?: string,
+    worker_email?: string,
+}

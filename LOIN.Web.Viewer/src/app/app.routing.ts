@@ -2,7 +2,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AppComponent } from './app.component';
-import { RegNotesComponent } from './notes/reg-notes/reg-notes.component';
+import { ReqNotesComponent } from './notes/req-notes/req-notes.component';
+import { UserGuard } from './shared/user.guard';
 
 
 
@@ -11,10 +12,8 @@ const ROUTES: Routes = [
     {path: '', component: AppComponent},
     {path: 'login', component: LoginComponent},
 
-    {path: 'notes', children: [
-      {path: 'req', children: [
-        { path: ':uuid', component: RegNotesComponent },
-      ]},
+    {path: 'notes', canActivate:[UserGuard], children: [
+
     ]},
     /*
     {path: '', canActivate:[JbzAuthGuard], children: [
@@ -64,5 +63,6 @@ const ROUTES: Routes = [
 
 export const routing = RouterModule.forRoot(ROUTES, {
     relativeLinkResolution: 'legacy',
+    scrollPositionRestoration: 'enabled',
     //paramsInheritanceStrategy: 'always', // aby byly k dispozici i parent parametry - dle doc i data; zkusime zatim bez toho
 });

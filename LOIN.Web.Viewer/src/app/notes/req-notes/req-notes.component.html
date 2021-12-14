@@ -1,0 +1,10 @@
+
+<form name="regedit" #editform="ngForm"  (ngSubmit)="onSubmit()" class="form-note-req">
+    <div class="form-group">
+        <label for="username">Návrh</label>
+        <textarea name="suggestion" [(ngModel)]="formdata.suggestion" class="form-control" required ></textarea>
+    </div>
+    <div class="form-group">
+        <input type="submit" name="submit" value="Odeslat">
+    </div>
+</form>

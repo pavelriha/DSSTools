@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { AuthService } from '../shared/services/auth.service';
 //import { Requirement } from '../swagger/model/requirement';
 import { Requirement, RequirementSet, GrouppedRequirements, GrouppedRequirementSets, BreakdownItem } from '../swagger/model/models';
 
@@ -15,6 +16,7 @@ export class BreakdownRequirementsComponent implements OnInit {
   @Input() flat: any[];
   @Input() ifc: boolean;
   @Input() style: string;
+  @Input() notesreq: any;
 
   public cols: number = 11;
   public indent: number = 15;
@@ -22,11 +24,16 @@ export class BreakdownRequirementsComponent implements OnInit {
   public hidePath = true;
   public collapsed = {};
   public maxlevel = 0;
+  public userdata = false;
 
-  constructor() { }
+  constructor(
+    public authService: AuthService,
+
+  ) { }
 
   ngOnInit(): void {
     //console.log(this.data);
+    this.userdata = this.authService.getUser();
   }
 
   ngOnChanges() {

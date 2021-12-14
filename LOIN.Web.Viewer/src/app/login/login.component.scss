@@ -18,31 +18,7 @@
         border-radius: 0.25rem;
         box-shadow: 5px 5px 10px 1px #000;
         padding: 1em;
-        .form-group {
-            //margin: 1em;
-            margin-bottom: 1em;
-            LABEL {
-                margin-bottom: 0.5em;
-                display: inline-block;
-            }
-            .form-control {
-                display: block;
-                box-sizing: border-box;
-                width: 100%;
-                padding: 0.5em;
-                border-radius: 0.25rem;
-                border: 1px solid #ced4da;
-                &:focus {
-                    background-color: rgb(255, 234, 164);
-                    border-color: #80bdff;
-                    outline: 0;
-                    box-shadow: 0 0 0 .2rem #007bff40;
-                }
-            }
-            INPUT {
-                font-size: inherit;
-            }
-        }
+
         .btn {
             padding: 1em;
             background-color: $color-topbar-grey;

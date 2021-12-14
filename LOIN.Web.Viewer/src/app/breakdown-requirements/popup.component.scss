@@ -1,7 +1,23 @@
 @import "./assets/scss/variables";
 
-.fa-info-circle {
-    color: $color-topbar-grey;
-}
 
-//dropdown se otvira mimo komponentu, takze stylovani v globalu (dropdown.scss)
+
+:host {
+    display: block;
+    padding: 1em;
+    padding-left: 1.2em;
+    background-color: $color-bg-infodropbox;
+    border: solid 1px #8a893c;
+    font-size: smaller;
+    TABLE {
+        max-width: 700px;
+        TH {
+            vertical-align: top;
+            text-align: left;
+            H3 {
+                text-transform: capitalize;
+                margin-top: 0;
+            }
+        }
+    }
+}

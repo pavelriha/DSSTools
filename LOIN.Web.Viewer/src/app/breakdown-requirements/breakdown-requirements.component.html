@@ -44,8 +44,13 @@
                     >
                         <i class="fas fa-fw folder" [class.fa-angle-right]="collapsed[n.id]" [class.fa-angle-down]="!collapsed[n.id]" ></i>
                         {{ n.name }}
-                        <!-- {{ data[n.id].nameCS }} -->
-                        <bd-popup [node]="data[n.id]"></bd-popup>
+                        <span ngDropdown [renderInPlace]="false" #infoDropdown="ngDropdown" *ngIf="data[n.id]">
+                            <i class="fas fa-info-circle" ngDropdownControl></i>
+                            <div ngDropdownContent dropdownClass="slide-fade" >
+                                <bd-popup [node]="data[n.id]"></bd-popup>
+                            </div>
+                        </span>
+
                         <!-- <bd-popup [node]="n"></bd-popup>
  -->
 
@@ -91,39 +96,47 @@
      </tr>
  </ng-template>
 
+ <ng-template #TableHead>
+    <tr class="req">
+        <th></th>
+        <th *ngIf="style=='req'">skupina vlastností</th>
+        <th>název vlastnosti</th>
+        <th>měrná jednotka</th>
+        <th>datový typ</th>
+        <th>Popis</th>
+        <th>Poznámka</th>
+        <th>kód (GUID)</th>
+        <th *ngIf="ifc">IFC Pset</th>
+        <th *ngIf="ifc">IFC property</th>
+        <th *ngIf="ifc">IFC data type</th>
+        <th *ngIf="ifc">IFC type</th>
+    </tr>
+ </ng-template>
+
+ <ng-template #TableBody let-requirements="requirements" let-dt_uuid="uuid">
+    <tr *ngFor="let req of requirements; let r=index" class="req" [class]="'r'+r%2">
+        <td class="cmd"><notes-req-btn *ngIf="userdata" [dt_uuid]="dt_uuid" [req_uuid]="req.uuid" [requirements]="req" [notes]="notesreq[dt_uuid]?notesreq[dt_uuid][req.uuid]:null"></notes-req-btn></td>
+        <td *ngIf="style=='req'">{{ req.setNameCS }}</td>
+        <td>{{ req.nameCS }}</td>
+        <td>{{ req.units }}</td>
+        <td>{{ req.dataTypeCS }}</td>
+        <td>{{ req.description }}</td>
+        <td>{{ req.examples }}</td>
+        <td>{{ req.uuid }}</td>
+        <td *ngIf="ifc">{{ req.setName }}</td>
+        <td *ngIf="ifc">{{ req.name }}</td>
+        <td *ngIf="ifc">{{ req.dataType }}</td>
+        <td *ngIf="ifc">{{ req.valueType }}</td>
+    </tr>
+ </ng-template>
+
+
+
  <ng-template #ReqTableTemplateRef let-data="data">
-        <tr class="req">
-            <th></th>
-            <th>skupina vlastností</th>
-            <th>název vlastnosti</th>
-            <th>měrná jednotka</th>
-            <th>datový typ</th>
-            <th>Popis</th>
-            <th>Poznámka</th>
-            <th>kód (GUID)</th>
-            <th *ngIf="ifc">IFC Pset</th>
-            <th *ngIf="ifc">IFC property</th>
-            <th *ngIf="ifc">IFC data type</th>
-            <th *ngIf="ifc">IFC type</th>
-        </tr>
-        <ng-container *ngIf="data && data.requirements; else empty">
-
-            <tr class="req" [class]="'r'+r%2" *ngFor="let req of data.requirements; let r=index">
-                <td class="cmd"><notes-reg-btn [uuid]="req.uuid"></notes-reg-btn></td>
-                <td>{{ req.setNameCS }}</td>
-                <td>{{ req.nameCS }}</td>
-                <td>{{ req.units }}</td>
-                <td>{{ req.dataTypeCS }}</td>
-                <td>{{ req.description }}</td>
-                <td>{{ req.examples }}</td>
-                <td>{{ req.uuid }}</td>
-                <td *ngIf="ifc">{{ req.setName }}</td>
-                <td *ngIf="ifc">{{ req.name }}</td>
-                <td *ngIf="ifc">{{ req.dataType }}</td>
-                <td *ngIf="ifc">{{ req.valueType }}</td>
-            </tr>
-        </ng-container>
-
+     <ng-container *ngIf="data && data.requirements; else empty">
+        <ng-container *ngTemplateOutlet="TableHead"></ng-container>
+        <ng-container *ngTemplateOutlet="TableBody;context:data"></ng-container>
+    </ng-container>
  </ng-template>
 
 
@@ -131,19 +144,7 @@
 
     <ng-container *ngIf="data && data.requirementSets; else empty">
         
-        <tr class="req sethead">
-            <th></th>
-            <th>název vlastnosti</th>
-            <th>měrná jednotka</th>
-            <th>datový typ</th>
-            <th>Popis</th>
-            <th>Poznámka</th>
-            <th>kód (GUID)</th>
-            <th *ngIf="ifc">IFC Pset</th>
-            <th *ngIf="ifc">IFC property</th>
-            <th *ngIf="ifc">IFC data type</th>
-            <th *ngIf="ifc">IFC type</th>
-        </tr>
+        <ng-container *ngTemplateOutlet="TableHead"></ng-container>
 
         <ng-container  *ngFor="let set of data.requirementSets">
 
@@ -159,20 +160,7 @@
 
             <ng-container *ngIf="!set.collapsed">
                 <ng-container *ngIf="set && set.requirements; else empty">
-                    
-                    <tr *ngFor="let req of set.requirements; let r=index" class="req" [class]="'r'+r%2">
-                        <td class="cmd"><notes-reg-btn [uuid]="req.uuid"></notes-reg-btn></td>
-                        <td>{{ req.nameCS }}</td>
-                        <td>{{ req.units }}</td>
-                        <td>{{ req.dataTypeCS }}</td>
-                        <td>{{ req.description }}</td>
-                        <td>{{ req.examples }}</td>
-                        <td>{{ req.uuid }}</td>
-                        <td *ngIf="ifc">{{ req.setName }}</td>
-                        <td *ngIf="ifc">{{ req.name }}</td>
-                        <td *ngIf="ifc">{{ req.dataType }}</td>
-                        <td *ngIf="ifc">{{ req.valueType }}</td>
-                    </tr>
+                    <ng-container *ngTemplateOutlet="TableBody;context:{ requirements: set.requirements, uuid: data.uuid}"></ng-container>
                 </ng-container>
             </ng-container>
             

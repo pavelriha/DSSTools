@@ -7,6 +7,7 @@
     text-align: right;
     padding-right: 3px;
     A {
+        margin-left: 3px;
         color: $color-secondary-cyan1;
         &:hover {
             color: $color-secondary-cyan2;
@@ -15,6 +16,6 @@
     }
 }
 
-:host-context(TR.req:hover) :host A {
+:host-context(TR.req:hover) :host .aico {
     font-size: 200%;
 }

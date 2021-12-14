@@ -68,6 +68,9 @@ H2 {
         .fa-fw.folder {
             width: 1em;
         }
+        .fa-info-circle {
+            color: $color-topbar-grey;
+        }
     }
     TR.spacer {
         //background-color: #000;
@@ -86,7 +89,6 @@ H2 {
         TH {
             background-color: $color-primary-red; //$color-table-bgstripe;//$color-table-bg;
             color: $color-white; //$color-topbar-grey;
-            //color: $color-table-sethead;
             font-weight: bold;
             white-space: nowrap;
             text-align: left;
@@ -112,10 +114,6 @@ H2 {
         }
 
 
-/*         &.sethead TH {
-            //padding-bottom: 0;
-            //background-color: $color-table-bgset;
-        } */
         &.setname TH {
             color: $color-primary-red;
             //background-color: $color-table-bgset;

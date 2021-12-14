@@ -143,7 +143,7 @@ export class FilterBoxComponent implements OnInit {
         if (ch.length>0) {
           node.getVisibleChildren().forEach( (child: TreeNode) =>  { treeFilter(level+1, path.concat( { id: node.data.id, name: node.data.nameCS } ), child) }, this );
         } else {
-          result.push({ id: node.data.id, name: node.data.nameCS, level: level, path: path } );
+          result.push({ id: node.data.id, uuid: node.data.uuid ,name: node.data.nameCS, level: level, path: path } );
         }
       }
     }

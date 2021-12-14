@@ -3,9 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 @Component({
   selector: 'bd-popup',
   template: `
-    <span ngDropdown [renderInPlace]="false" #infoDropdown="ngDropdown" *ngIf="node">
-      <i class="fas fa-info-circle" ngDropdownControl></i>
-      <div ngDropdownContent dropdownClass="slide-fade infodropbox" >
+    
           <table>
               <tr><th colspan=2><h3>{{ node.nameCS }}</h3></th></tr>
               <tr>
@@ -34,9 +32,6 @@ import { Component, OnInit, Input } from '@angular/core';
               </tr>
           </table>
               <!-- <div *ngFor="let item of node | keyvalue" >{{item.key}} : {{item.value}}</div> -->
-        </div>
-    </span>
-
 
   `,
   styleUrls: ['./popup.component.scss']

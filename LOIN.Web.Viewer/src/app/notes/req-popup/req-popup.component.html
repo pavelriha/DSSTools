@@ -1,0 +1,18 @@
+    <div *ngFor="let note of notes" class="note" [class]="note.state" >
+        <div class="state">{{note.state}}</div>
+        <div>
+            <b class="date">{{ note.created }}</b>
+            <i class="creator">{{ note.creator_email }}</i>
+        </div>
+        <div>
+            {{ note.suggestion }}
+        </div>
+        <div *ngIf="note.worker_email">
+            <b class="date">{{ note.updated }}</b>
+            <i class="creator">{{ note.worker_email }}</i>
+        </div>
+        <div>
+            {{ note.reply }}
+        </div>
+    </div>
+    <!-- <div *ngFor="let item of note | keyvalue" >{{item.key}} : {{item.value}}</div> -->

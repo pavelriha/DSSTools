@@ -10,6 +10,8 @@ import { TreeModel, TreeNode, TreeComponent, ITreeOptions } from '@circlon/angul
 import { FilterBoxComponent } from "./filter-box/filter-box.component";
 import { ExportExcelService } from "./export-excel.service";
 import { AuthService } from './shared/services/auth.service';
+import { SlimapiService } from './shared/services/slimapi.service';
+import { ControlService } from './shared/services/control.service';
 
 export class Repolist {
   key: string;
@@ -55,10 +57,13 @@ export class AppComponent implements OnInit {
   public dataLoading: boolean = false;
   public dataTemplates: any[] = [];
   public reqtab: string = 'sets_cz';
+  public notesReqData: any[] = [];
 
   // logged user info
   private usersub: any;
   public userdata: any = false;
+  // control service
+  private control: any;
 
   constructor(
     private actorsService: ActorsService,
@@ -70,6 +75,8 @@ export class AppComponent implements OnInit {
     private requirementsSetsService: RequirementSetsService,
     private exportexcel: ExportExcelService,
     private authService: AuthService,
+    private slimapi: SlimapiService,
+    private controlService: ControlService
   ) { }
 
   ngOnInit(): void {
@@ -88,7 +95,15 @@ export class AppComponent implements OnInit {
       console.log("user change", ud);
       if (ud) {
         this.setDefaultRepo(); //prihlasenej smi pracovat jen s latest, tak ho nastavime
+      } else {
+        this.selectedTree = null;
       }
+    });
+
+    this.control = this.controlService.control.subscribe(cmd => { 
+      console.log("[app.component]", cmd);
+      if (cmd=='reload-view') this.runfilter();
+      
     });
 
     this.fetchFilters();
@@ -99,12 +114,14 @@ export class AppComponent implements OnInit {
       this.fbActors.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateActors')));
       this.fbReasons.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateReasons')));
       this.fbMilestones.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateMilestones')));
+      console.info('state restored');
       setTimeout(() => { 
+        console.info('prepare timeout fired');
         this.fbBreaks.prepareSelected(); 
         this.fbActors.prepareSelected();
         this.fbReasons.prepareSelected();
         this.fbMilestones.prepareSelected();
-      });
+      },1000);//zpozdeni vterinu, jinak to ne vzdy nabehne
     });
   }
 
@@ -162,6 +179,19 @@ export class AppComponent implements OnInit {
     this.selectedFlatTree = this.fbBreaks.getSelectedIdsWithInfo();
     //console.log(this.selectedTree, this.selectedFlatTree);
 
+    this.notesReqData = [];
+    if (this.userdata) { // je-li prihlasen user, dotahneme komentare z druheho api
+      let dt_uuids: string[] = [];
+      this.selectedFlatTree.forEach( n => {
+        dt_uuids.push(n.uuid);
+      });
+      this.slimapi.notesReqViewer(dt_uuids).subscribe({
+        next: (r) => {
+          //console.log('notes4viewer',r);
+          this.notesReqData = r;
+        }
+      });
+    }
 
     if (this.reqtab == 'req') {
       this.breakdownService.apiRepositoryIdBreakdownRequirementsGet(
