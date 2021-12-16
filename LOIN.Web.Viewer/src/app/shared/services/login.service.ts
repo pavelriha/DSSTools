@@ -20,7 +20,7 @@ export class LoginService {
   ) { 
 
     this.http.get<any>(this.slimapi.makeUrl("login")).subscribe({
-        next: r => { 
+        next: r => {
             //console.log(r);
             this.authService.setUser(r.data);
         }

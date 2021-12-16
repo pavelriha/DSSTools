@@ -115,7 +115,15 @@
 
  <ng-template #TableBody let-requirements="requirements" let-dt_uuid="uuid">
     <tr *ngFor="let req of requirements; let r=index" class="req" [class]="'r'+r%2">
-        <td class="cmd"><notes-req-btn *ngIf="userdata" [dt_uuid]="dt_uuid" [req_uuid]="req.uuid" [requirements]="req" [notes]="notesreq[dt_uuid]?notesreq[dt_uuid][req.uuid]:null"></notes-req-btn></td>
+        <td class="cmd">
+            <notes-req-btn *ngIf="userdata" 
+                [milestones]="milestones"
+                [dt_uuid]="dt_uuid" 
+                [req_uuid]="req.uuid" 
+                [requirements]="req" 
+                [notes]="notesreq[dt_uuid]?notesreq[dt_uuid][req.uuid]:null"
+                ></notes-req-btn>
+        </td>
         <td *ngIf="style=='req'">{{ req.setNameCS }}</td>
         <td>{{ req.nameCS }}</td>
         <td>{{ req.units }}</td>

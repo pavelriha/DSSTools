@@ -10,6 +10,7 @@ import { NotesReq } from '../notesReq.model';
 })
 export class ReqBtnComponent implements OnInit {
 
+  @Input('milestones') milestones: any[];
   @Input('dt_uuid') dt_uuid: string;
   @Input('req_uuid') req_uuid: string;
   @Input('requirements') requirements: Requirement;

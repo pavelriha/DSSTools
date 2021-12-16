@@ -54,6 +54,7 @@ export class AppComponent implements OnInit {
 
   public selectedTree: any[] = null;
   public selectedFlatTree: any[] = null;
+  public selectedMilestones: any[] = null; // musime mit ulozeno pro pripominkovani
   public dataLoading: boolean = false;
   public dataTemplates: any[] = [];
   public reqtab: string = 'sets_cz';
@@ -167,6 +168,15 @@ export class AppComponent implements OnInit {
       alert("Prosím vyberte alespoň jednu datovou šablonu");
       return;
     }
+
+    // TODO poresit lepe primo v tom combu, ale zatim takto workaround
+    if (this.userdata) { // je-li prihlasen user, 
+      if (this.fbMilestones.selected.length!=1) {
+        alert("Prosím vyberte přesně jeden milestone (stupeň dokumentace)");
+        return;
+      }
+    }
+
     // ulozime stav filtru do sessionstorage
     sessionStorage.setItem('treeStateBreaks', JSON.stringify(this.fbBreaks.tree.treeModel.getState()) );
     sessionStorage.setItem('treeStateActors', JSON.stringify(this.fbActors.tree.treeModel.getState()) );
@@ -181,11 +191,12 @@ export class AppComponent implements OnInit {
 
     this.notesReqData = [];
     if (this.userdata) { // je-li prihlasen user, dotahneme komentare z druheho api
+      this.selectedMilestones = this.fbMilestones.getSelectedIdsWithInfo();
       let dt_uuids: string[] = [];
       this.selectedFlatTree.forEach( n => {
         dt_uuids.push(n.uuid);
       });
-      this.slimapi.notesReqViewer(dt_uuids).subscribe({
+      this.slimapi.notesReqViewer(this.selectedMilestones[0].uuid, dt_uuids).subscribe({
         next: (r) => {
           //console.log('notes4viewer',r);
           this.notesReqData = r;

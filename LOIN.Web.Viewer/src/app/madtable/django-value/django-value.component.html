@@ -1,0 +1,24 @@
+[DJANGO-VALUE]
+
+                    <ng-container [ngSwitch]="desc.properties[item.name]?.type" >
+					  	<span *ngSwitchCase="'integer'" class="float-right">{{ data[item.name] | number:'1.0' }}</span>
+					  	<span *ngSwitchCase="'decimal'" class="float-right">{{ data[item.name] | number:'1.2-2' }}</span>
+					  	<span *ngSwitchCase="'date'">{{ data[item.name] | date:'dd.MM.yyyy' }}</span>
+					  	<span *ngSwitchCase="'datetime'">{{ data[item.name] | date:'dd.MM.yyyy HH:mm' }}</span>
+					  <span *ngSwitchCase="'field'"><ng-container *ngTemplateOutlet="choice; context: {name: item.name, value: data[item.name], chdesc: desc.properties[item.name]}"></ng-container></span>
+					  <span *ngSwitchCase="'one'"  ><ng-container *ngTemplateOutlet="choice; context: {name: item.name, value: data[item.name], chdesc: desc.properties[item.name]}"></ng-container></span>
+					  	<span *ngSwitchCase="'boolean'"><i class="zmdi" [ngClass]="{'zmdi-check': data[item.name], 'zmdi-close': !data[item.name]}"></i></span>
+					  	<span *ngSwitchDefault>{{ getValue(data,item.name) }}</span>
+					  </ng-container>
+
+
+		<ng-template #choice let-name="name" let-value="value" let-chdesc="chdesc">
+		  <ng-container *ngIf="value|isArray ; else elseSingle">
+		    <span *ngFor="let v of value" class="array-value col-{{name}}">
+			  {{ findChoice(chdesc?.choices, v) }}
+		    </span>
+		  </ng-container>
+		  <ng-template #elseSingle>
+			{{ findChoice(chdesc?.choices, value) }}
+		  </ng-template>
+		</ng-template>

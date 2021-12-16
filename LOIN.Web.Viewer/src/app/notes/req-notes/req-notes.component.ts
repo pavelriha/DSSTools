@@ -18,6 +18,7 @@ export class ReqNotesComponent implements OnInit {
   public requirements: any;// Requirement;
 
   public formdata: any = {};
+  @Input() milestones: any[];
   @Input() dt_uuid: string;
   @Input() req_uuid: string;
   @Input() success: () => void;
@@ -46,6 +47,7 @@ export class ReqNotesComponent implements OnInit {
       alert("formular obsahuje chyby");
       return false;
     }
+    this.formdata.milestone_uuid = this.milestones[0].uuid;
     this.formdata.dt_uuid = this.dt_uuid;
     this.formdata.req_uuid = this.req_uuid;
     //console.log(this.formdata);

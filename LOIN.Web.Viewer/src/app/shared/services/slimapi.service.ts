@@ -26,8 +26,8 @@ export class SlimapiService {
     return this.http.post(this.makeUrl('notes/req'), form);
   }
   
-  notesReqViewer(uuids): Observable<any> {
-    return this.http.post(this.makeUrl('notes/req/viewer'), uuids);
+  notesReqViewer(milestone, uuids): Observable<any> {
+    return this.http.post(this.makeUrl('notes/req/viewer/'+milestone), uuids);
   }
 
 }

@@ -1,0 +1,23 @@
+[DJANGO-INPUT]
+<ng-container *ngIf="dataDescription.properties[item.name]?.choices; else nochoice">
+      <div class="form-group form-group--select" [class.m-0]="compact">
+		<div class="select">
+		<select class="form-control" [(ngModel)]="data[item.name]" [name]="item.name" required>
+		  <option *ngFor="let o of dataDescription.properties[item.name].choices" [value]="o.value">{{o.display_name}}</option>
+		</select>
+		</div>
+	  </div>
+</ng-container>
+<ng-template #nochoice >
+ <ng-container [ngSwitch]="dataDescription.properties[item.name]?.type" >
+
+
+
+
+   <div *ngSwitchDefault class="form-group" [class.m-0]="compact">
+     <input [name]="item.name" [(ngModel)]="data[item.name]" class="form-control" [class.p-0]="compact" [readonly]="dataDescription.properties[item.name]?.read_only">
+     <i class="form-group__bar"></i>
+   </div>
+
+ </ng-container>
+</ng-template>

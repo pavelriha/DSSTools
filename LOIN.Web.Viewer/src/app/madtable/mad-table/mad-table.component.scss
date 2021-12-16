@@ -1,0 +1,15 @@
+// Import Bootstrap and App variables and mixins
+//@import "../../../assets/scss/inner-imports";
+
+
+
+TR.sum {
+    background-color: #eee;
+    TD,TH {
+        text-align: right;
+    }
+}
+
+TABLE TH {
+    white-space: nowrap;
+}

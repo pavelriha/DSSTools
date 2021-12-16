@@ -24,6 +24,13 @@ import { UserPanelComponent } from './user-panel/user-panel.component';
 import { ReqNotesComponent } from './notes/req-notes/req-notes.component';
 import { ReqBtnComponent } from './notes/req-btn/req-btn.component';
 import { ReqPopupComponent } from './notes/req-popup/req-popup.component';
+import { MadTableModule } from './madtable/madtable.module';
+import { CellDefaultComponent } from './cells/cell-default.component';
+import { cell_type_map } from './cells/cells.module';
+import { WorkplaceComponent } from './workplace/workplace.component';
+import { NotesWorkplaceComponent } from './workplace/notes-workplace/notes-workplace.component';
+import { NgWormholeModule } from 'ng-wormhole';
+import { TodoComponent } from './todo/todo.component';
 
 
 function getConfig() {
@@ -49,6 +56,9 @@ function getConfig() {
     ReqNotesComponent,
     ReqBtnComponent,
     ReqPopupComponent,
+    WorkplaceComponent,
+    NotesWorkplaceComponent,
+    TodoComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,6 +68,18 @@ function getConfig() {
     ApiModule,//.forRoot({}),
     FormsModule,
     routing,
+    NgWormholeModule,
+    MadTableModule.forRoot({
+      paging: [ 5, 10, 20, 50],
+      //per_page: 10,
+      cell_type_default_component: CellDefaultComponent,
+      cell_type_map: cell_type_map,
+      mdWrapperClass: '',//'table-responsive',
+      mdTableClass: 'table table-sm mb-0',
+      //getDetail: jbz.test,
+      //getData: loadContext,
+      //getDetail: loadContext(),
+  }),
   ],
   providers: [
 

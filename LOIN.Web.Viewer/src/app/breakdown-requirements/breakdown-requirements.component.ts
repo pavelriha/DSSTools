@@ -17,6 +17,7 @@ export class BreakdownRequirementsComponent implements OnInit {
   @Input() ifc: boolean;
   @Input() style: string;
   @Input() notesreq: any;
+  @Input() milestones: any; // pro pripominkovani
 
   public cols: number = 11;
   public indent: number = 15;

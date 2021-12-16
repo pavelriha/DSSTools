@@ -1,0 +1,9 @@
+@import "./assets/scss/variables";
+
+.head {
+    background-color: $color-topbar-grey;
+    padding: 1em;
+    display: flex;
+    justify-content: left;
+    grid-gap: 2em;
+}

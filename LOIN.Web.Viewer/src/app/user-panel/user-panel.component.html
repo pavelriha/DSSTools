@@ -1,8 +1,11 @@
 <div class="panel">
-    <a routerLink="" [title]="userdata.username">
+    <a routerLink="/workplace/user/profile" [title]="userdata.username">
         <i class="fas fa-user"></i>
     </a>
-    <a title="TODO">
+    <a routerLink="/workplace/user" title="Users">
+        <i class="fas fa-users"></i>
+    </a>
+    <a routerLink="/workplace/notes/req" title="Workplace">
         <i class="far fa-folder-open"></i>
     </a>
     <a href="#" (click)="logout()" title="Logout">

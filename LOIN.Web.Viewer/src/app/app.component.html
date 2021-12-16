@@ -89,7 +89,15 @@
                 <li class="style" [class.active]="ifc" (click)="ifc=!ifc" title="zobrazit IFC sloupce"> IFC <b>&nbsp;</b></li>
             </ul>
 
-            <breakdown-requirements [tree]="selectedTree" [flat]="selectedFlatTree" [data]="dataTemplates" [style]="reqtab" [ifc]="ifc" [notesreq]="notesReqData"></breakdown-requirements>
+            <breakdown-requirements 
+                [tree]="selectedTree" 
+                [flat]="selectedFlatTree" 
+                [data]="dataTemplates" 
+                [style]="reqtab" 
+                [ifc]="ifc" 
+                [notesreq]="notesReqData"
+                [milestones]="selectedMilestones"
+                ></breakdown-requirements>
             
         </ng-container>
         

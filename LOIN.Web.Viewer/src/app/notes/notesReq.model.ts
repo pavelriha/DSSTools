@@ -9,6 +9,7 @@ export interface NotesReq {
     reply?: string,
     final_note?: string,
     created?: string,
+    replied?: string,
     updated?: string,
     creator_email?: string,
     worker_email?: string,

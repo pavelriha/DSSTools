@@ -1,0 +1,9 @@
+.topmenu {
+    padding: 1em;
+    background-color: #fff;
+    .panel {
+        display: flex;
+        justify-content: space-between;
+        grid-gap: 1em;
+    }
+}

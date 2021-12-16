@@ -1,0 +1,14 @@
+zkopirovat existujici (kvuli extends, viewProviders atd)
+pridat do cells.module - kvuli zavislostem a registraci v cell_type_map
+
+
+#asi tim ze se tyto komponenty budou pouzivat dynamicky, tak neni potreba je registrovat v zadnem @module
+#
+#ng generate component --flat --change-detection OnPush --skip-selector --skip-tests --inline-style --inline-template --skip-import  zzz
+#
+#(nebo jeste lepe proste zkopirovat jiz existujici)
+#
+## tak NE, funguje to jen u komponent bez zavislosti, jakmile je potreba pouzit treba [routerlink] tak to nefunguje dokud neni komponenta deklarovana v nejakem modulu
+#
+#ng generate component --flat --change-detection OnPush --skip-selector --skip-tests --inline-style --inline-template   zzz
+#
