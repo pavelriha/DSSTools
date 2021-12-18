@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AngularDropdownPositionChanges } from 'angular-dropdown';
 import { map } from 'rxjs/operators';
 import { SlimapiService } from 'src/app/shared/services/slimapi.service';
 import { Requirement } from 'src/app/swagger';
@@ -16,6 +17,7 @@ export class ReqNotesComponent implements OnInit {
   @ViewChild('editform') editform: NgForm;
   private paramSub: any;
   public requirements: any;// Requirement;
+  public error: string;
 
   public formdata: any = {};
   @Input() milestones: any[];
@@ -43,6 +45,7 @@ export class ReqNotesComponent implements OnInit {
   }
 
   public onSubmit() {
+    this.error = '';
     if (this.editform.invalid) {
       alert("formular obsahuje chyby");
       return false;
@@ -50,12 +53,19 @@ export class ReqNotesComponent implements OnInit {
     this.formdata.milestone_uuid = this.milestones[0].uuid;
     this.formdata.dt_uuid = this.dt_uuid;
     this.formdata.req_uuid = this.req_uuid;
+    this.formdata.type = 'note';
     //console.log(this.formdata);
     //console.log(this.editform.value);
-    this.slimapi.notesReqInsert(this.formdata).subscribe( r => {
+    this.slimapi.notesReqInsert(this.formdata).subscribe({
+      next: (r) => {
       console.log(r);
       //this.router.navigate(['/']);
       if (this.success) this.success();
+      },
+      error: (e) => {
+        //console.log(e);
+        this.error = e.error.message;
+      }
     });
   }
 

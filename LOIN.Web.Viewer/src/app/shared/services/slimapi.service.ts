@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { RequirementsService } from 'src/app/swagger';
+import { Requirement } from 'src/app/swagger';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +13,7 @@ export class SlimapiService {
 
   constructor(
     private http: HttpClient,
+    private requirementsService: RequirementsService
   ) { }
 
   makeUrl(path) {
@@ -30,4 +33,7 @@ export class SlimapiService {
     return this.http.post(this.makeUrl('notes/req/viewer/'+milestone), uuids);
   }
 
+  getRequirements(): Observable<Array<Requirement>> {
+    return this.requirementsService.apiRepositoryIdRequirementsGet("latest");
+  }
 }

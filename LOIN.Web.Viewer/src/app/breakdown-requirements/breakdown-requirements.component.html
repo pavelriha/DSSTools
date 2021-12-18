@@ -50,7 +50,14 @@
                                 <bd-popup [node]="data[n.id]"></bd-popup>
                             </div>
                         </span>
+                        <span ngDropdown [renderInPlace]="false" #infoDropdown="ngDropdown" *ngIf="userdata">
+                            <i class="fas fa-folder-plus" ngDropdownControl></i>
+                            <div ngDropdownContent dropdownClass="slide-fade" >
+                                <dt-new-req ></dt-new-req>
+                            </div>
+                        </span>
 
+                        
                         <!-- <bd-popup [node]="n"></bd-popup>
  -->
 

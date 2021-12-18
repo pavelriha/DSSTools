@@ -4,6 +4,10 @@
         <label for="username">Návrh</label>
         <textarea name="suggestion" [(ngModel)]="formdata.suggestion" class="form-control" required ></textarea>
     </div>
+    <div *ngIf="error" class="form-group error" role="alert">
+        Odeslání formuláře selhalo<br>
+        {{ error }}
+    </div>
     <div class="form-group">
         <input type="submit" name="submit" value="Odeslat">
     </div>
