@@ -31,6 +31,8 @@ import { WorkplaceComponent } from './workplace/workplace.component';
 import { NotesWorkplaceComponent } from './workplace/notes-workplace/notes-workplace.component';
 import { NgWormholeModule } from 'ng-wormhole';
 import { TodoComponent } from './todo/todo.component';
+import { DtNewReqComponent } from './notes/dt-new-req/dt-new-req.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 function getConfig() {
@@ -59,6 +61,7 @@ function getConfig() {
     WorkplaceComponent,
     NotesWorkplaceComponent,
     TodoComponent,
+    DtNewReqComponent,
   ],
   imports: [
     BrowserModule,
@@ -67,6 +70,7 @@ function getConfig() {
     AngularDropdownModule,
     ApiModule,//.forRoot({}),
     FormsModule,
+    NgSelectModule,
     routing,
     NgWormholeModule,
     MadTableModule.forRoot({
