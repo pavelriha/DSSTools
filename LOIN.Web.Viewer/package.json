@@ -24,7 +24,6 @@
     "@angular/router": "~11.2.13",
     "@circlon/angular-tree-component": "^11.0.4",
     "@fortawesome/fontawesome-free": "^5.15.3",
-    "@ng-select/ng-select": "^8.1.1",
     "angular-dropdown": "^0.5.5",
     "exceljs": "^4.3.0",
     "file-saver": "^2.0.5",
