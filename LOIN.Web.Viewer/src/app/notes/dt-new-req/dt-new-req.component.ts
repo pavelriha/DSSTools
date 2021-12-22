@@ -22,18 +22,16 @@ export class DtNewReqComponent implements OnInit {
     console.log('dt-new-req init', this.milestones, this.dt_uuid, this.dt_data);
     this.slimapi.getRequirements().subscribe({
       next: (r) => {
-        console.log(r);
-        let dt_req: string[] = [];
-        if (this.dt_data.requirements) this.dt_data.requirements.forEach(element => dt_req.push(element.uuid) );
-        console.info(this.dt_data.requirementSets);
-        if (this.dt_data.requirementSets) this.dt_data.requirementSets.forEach(rs => {
-          console.info(rs);
-          if (rs.requirements) rs.requirements.forEach(element => dt_req.push(element.uuid) );
-        }); 
-        console.log("dt_req",dt_req);
-
+        let dt_req: string[] = []; // priprav pole existujicich vlastnosti, at v tom muzem snaz hledat
+        if (this.dt_data) {
+          if (this.dt_data.requirements) this.dt_data.requirements.forEach(element => dt_req.push(element.uuid) );
+          if (this.dt_data.requirementSets) this.dt_data.requirementSets.forEach(rs => {
+            if (rs.requirements) rs.requirements.forEach(element => dt_req.push(element.uuid) );
+          }); 
+        }
+        // existujici vlastnosti "vypni", at je nenabizime
         r.forEach( onereq => { if (dt_req.includes(onereq.uuid)) onereq['disabled'] = true });
-        //r[0]['disabled'] = true;
+
         this.requirements = r;
       }
     })

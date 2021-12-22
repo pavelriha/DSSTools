@@ -1,7 +1,4 @@
-<h2 style="margin-top: 0;">Výběr nové vlastnosti k datové šabloně "{{ dt_data.nameCS }}"</h2>
-
-
-sel={{selectedRequirement}}
+<h2 style="margin-top: 0;">Výběr nové vlastnosti k datové šabloně "{{ dt_data?.nameCS }}"</h2>
 
 <ng-select placeholder="vyberte novou vlastnost" [items]="requirements" [(ngModel)]="selectedRequirement" bindLabel="nameCS" bindValue="uuid">
     <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">

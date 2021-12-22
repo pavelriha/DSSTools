@@ -219,7 +219,6 @@ export class AppComponent implements OnInit {
 
   }
   
-//forkJoin
   fetchSelectedFilters() {
     if (this.reqtab == 'req') {
       this.breakdownService.apiRepositoryIdBreakdownRequirementsGet(
@@ -235,21 +234,7 @@ export class AppComponent implements OnInit {
         this.fbBreaks.getSelectedIds().join(','), //breakdowns
         this.fbMilestones.getSelectedIds().join(','), //milestones
       ).subscribe({
-        next: (r) => {
-          this.dataTemplates = [];
-          r.forEach( (req) => {
-            if (this.notesReqData[req.uuid]) {
-              this.notesReqData[req.uuid]['_new'].forEach(uuid => {
-                req.requirements.push( this.allRequiremets[uuid]);
-              });
-            }
-            this.dataTemplates[req.id] = req;
-          });
-
-
-          this.dataLoading = false;
-          //console.log(this.dataTemplates);
-        },
+        next:  (r) => { this.prepareFetchedData(r) },
         error: (e) => { this.apiError(e) },
       });
     } else {
@@ -262,22 +247,47 @@ export class AppComponent implements OnInit {
 
 
       this.fetchSets(groupingtype).subscribe({
-        next: (r) => {
-          this.dataTemplates = [];
-          r.forEach( (req) => {
-            // pokud se jedna o skupinu co ma v nazvu obecná, tak ji chceme ve vychozim stavu sbalenou
-            req.requirementSets.forEach( set => { if ( set.name.includes('obecn') ) (set as any).collapsed = true; });
-            this.dataTemplates[req.id] = req;
-          });
-          this.dataLoading = false;
-          //console.log('dataTemplates',this.dataTemplates);
-        },
+        next:  (r) => { this.prepareFetchedData(r) },
         error: (e) => { this.apiError(e) },
       }
       );
     }
 
-  } // end of runfilter
+  }
+
+  prepareFetchedData(reqs) {
+    // spolecne zpracovani pro req i set
+    this.dataTemplates = [];
+    reqs.forEach( (req) => {
+      if (req.requirementSets) {
+        // pokud se jedna o skupinu co ma v nazvu obecná, tak ji chceme ve vychozim stavu sbalenou
+        req.requirementSets.forEach( set => { if ( set.name.includes('obecn') ) (set as any).collapsed = true; });
+      }
+      // pokud existuji pridane poznamky v druhem api, tak pridej nove navrhy vlastnosti do dat z hlavniho api
+      if (this.notesReqData[req.uuid]) {
+        let add: any;
+        if (req.requirementSets) {
+          add = [];
+          req.requirementSets.push({
+            name: "nové návrhy vlastností",
+            requirements: add,
+            _class: "new"
+          });
+        } else {
+          add = req.requirements;
+        }
+        this.notesReqData[req.uuid]['_new'].forEach(uuid => {
+          add.push( this.allRequiremets[uuid]);
+        });
+      }
+      this.dataTemplates[req.id] = req;
+    });
+
+
+    this.dataLoading = false;
+    //console.log('dataTemplates',this.dataTemplates);
+
+  }
 
   public apiError(err) {
     //console.error("CHYBA", err);
