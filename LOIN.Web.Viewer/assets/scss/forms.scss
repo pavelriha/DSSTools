@@ -26,9 +26,9 @@
             }
             input[type=button], input[type=submit] {
                 cursor: pointer;
-                &:hover {
+/*                 &:hover {
                     
-                }
+                } */
             }
             .ng-touched.ng-invalid {
                 border-color: red;
