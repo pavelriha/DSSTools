@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { SlimapiService } from 'src/app/shared/services/slimapi.service';
-import { Requirement } from 'src/app/swagger';
+import { GrouppedRequirements, GrouppedRequirementSets, Requirement } from 'src/app/swagger';
 
 @Component({
   selector: 'dt-new-req',
@@ -8,16 +8,32 @@ import { Requirement } from 'src/app/swagger';
   styleUrls: ['./dt-new-req.component.scss']
 })
 export class DtNewReqComponent implements OnInit {
+  @Input() milestones: any[];
+  @Input() dt_uuid: string;
+  @Input() dt_data: any;//GrouppedRequirements|GrouppedRequirementSets;
   requirements: Requirement[];
+  public selectedRequirement;
 
   constructor(
     private slimapi: SlimapiService,
   ) { }
 
   ngOnInit(): void {
+    console.log('dt-new-req init', this.milestones, this.dt_uuid, this.dt_data);
     this.slimapi.getRequirements().subscribe({
       next: (r) => {
         console.log(r);
+        let dt_req: string[] = [];
+        if (this.dt_data.requirements) this.dt_data.requirements.forEach(element => dt_req.push(element.uuid) );
+        console.info(this.dt_data.requirementSets);
+        if (this.dt_data.requirementSets) this.dt_data.requirementSets.forEach(rs => {
+          console.info(rs);
+          if (rs.requirements) rs.requirements.forEach(element => dt_req.push(element.uuid) );
+        }); 
+        console.log("dt_req",dt_req);
+
+        r.forEach( onereq => { if (dt_req.includes(onereq.uuid)) onereq['disabled'] = true });
+        //r[0]['disabled'] = true;
         this.requirements = r;
       }
     })

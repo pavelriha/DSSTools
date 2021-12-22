@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 
 import { 
   ActorsService, BreakdownService, MilestonesService, ReasonsService, RepositoriesService, RequirementsService, RequirementSetsService,
@@ -59,6 +59,7 @@ export class AppComponent implements OnInit {
   public dataTemplates: any[] = [];
   public reqtab: string = 'sets_cz';
   public notesReqData: any[] = [];
+  public allRequiremets: any = {};
 
   // logged user info
   private usersub: any;
@@ -103,7 +104,7 @@ export class AppComponent implements OnInit {
 
     this.control = this.controlService.control.subscribe(cmd => { 
       console.log("[app.component]", cmd);
-      if (cmd=='reload-view') this.runfilter();
+      if (cmd=='note-submited') this.runfilter();
       
     });
 
@@ -196,14 +197,30 @@ export class AppComponent implements OnInit {
       this.selectedFlatTree.forEach( n => {
         dt_uuids.push(n.uuid);
       });
-      this.slimapi.notesReqViewer(this.selectedMilestones[0].uuid, dt_uuids).subscribe({
-        next: (r) => {
-          //console.log('notes4viewer',r);
-          this.notesReqData = r;
+      forkJoin([
+        this.slimapi.notesReqViewer(this.selectedMilestones[0].uuid, dt_uuids),
+        this.slimapi.getRequirements()
+      ])
+      .subscribe({
+        next: ([nr, allreq]) => {
+          console.log('notes4viewer',nr);
+          this.notesReqData = nr;
+
+          console.log('list of all req', allreq);
+          this.allRequiremets = {};
+          allreq.forEach( r => { r['_class']="new"; this.allRequiremets[r.uuid]=r; });
+          console.log(this.allRequiremets);
+          this.fetchSelectedFilters();
         }
       });
+    } else {
+      this.fetchSelectedFilters();
     }
 
+  }
+  
+//forkJoin
+  fetchSelectedFilters() {
     if (this.reqtab == 'req') {
       this.breakdownService.apiRepositoryIdBreakdownRequirementsGet(
         this.repo, 
@@ -221,8 +238,15 @@ export class AppComponent implements OnInit {
         next: (r) => {
           this.dataTemplates = [];
           r.forEach( (req) => {
+            if (this.notesReqData[req.uuid]) {
+              this.notesReqData[req.uuid]['_new'].forEach(uuid => {
+                req.requirements.push( this.allRequiremets[uuid]);
+              });
+            }
             this.dataTemplates[req.id] = req;
           });
+
+
           this.dataLoading = false;
           //console.log(this.dataTemplates);
         },

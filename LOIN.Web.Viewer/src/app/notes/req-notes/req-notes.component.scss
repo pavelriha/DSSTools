@@ -2,15 +2,7 @@
 
 :host {
     display: block;
-    max-width: 75vw;
-    min-width: 25vw;
-    background-color: #b5eeff;
-    padding: 0.5em;
-    //border: solid 1px #8a893c;
-    border-radius: 6px;
-    font-size: smaller;
-    box-shadow: 0 0 10px #000;
-
+    min-width: 50vw;
 }
 
 
@@ -19,11 +11,12 @@
     margin: 0 auto;
     background-color: #ccc;
     */
-    padding: 1em; 
+    //padding: 1em; 
     
     INPUT[type=submit] {
         background-color: #0f0;
         width: 100%;
         padding: 1em;
+        &:hover { background-color: lighten($color: #0f0, $amount: 20%)}
     }
 }

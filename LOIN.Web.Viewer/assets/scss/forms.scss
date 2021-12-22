@@ -24,6 +24,9 @@
             INPUT {
                 font-size: inherit;
             }
+            input[type=button], input[type=submit] {
+                cursor: pointer;
+            }
             .ng-touched.ng-invalid {
                 border-color: red;
             }

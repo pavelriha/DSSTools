@@ -30,6 +30,7 @@
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "node_modules/@circlon/angular-tree-component/css/angular-tree-component.css",
               "node_modules/angular-dropdown/styles.scss",
+              "node_modules/@ng-select/ng-select/themes/default.theme.css",
               "src/styles.scss"
             ],
             "scripts": [],

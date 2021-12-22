@@ -64,12 +64,16 @@ H2 {
                 margin-bottom: 0.5em;
             }
 
-        }
-        .fa-fw.folder {
-            width: 1em;
-        }
-        .fa-info-circle {
-            color: $color-topbar-grey;
+            .fa-fw.folder {
+                width: 1em;
+            }
+            .fa-info-circle {
+                color: $color-topbar-grey;
+            }
+            &:hover .fa-folder-plus { font-size: 150%; position: absolute; }
+            .fa-folder-plus {
+                color: $color-secondary-cyan1;
+            }
         }
     }
     TR.spacer {
@@ -111,6 +115,12 @@ H2 {
             background: $color-table-bgstripe;
             //border-bottom: solid 1px rgb(200,200,200);
 
+        }
+        &.new TD {
+            background-color: $color-table-bg-new0;
+        }
+        &.new.r1 TD {
+            background-color: $color-table-bg-new1;
         }
 
 

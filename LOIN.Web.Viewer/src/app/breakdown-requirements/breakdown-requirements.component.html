@@ -50,10 +50,15 @@
                                 <bd-popup [node]="data[n.id]"></bd-popup>
                             </div>
                         </span>
+                        &nbsp;
                         <span ngDropdown [renderInPlace]="false" #infoDropdown="ngDropdown" *ngIf="userdata">
                             <i class="fas fa-folder-plus" ngDropdownControl></i>
-                            <div ngDropdownContent dropdownClass="slide-fade" >
-                                <dt-new-req ></dt-new-req>
+                            <div ngDropdownContent dropdownClass="slide-fade notes-popup" >
+                                <dt-new-req 
+                                    [milestones]="milestones"
+                                    [dt_uuid]="n.uuid"
+                                    [dt_data]="data[n.id]"
+                                ></dt-new-req>
                             </div>
                         </span>
 
@@ -121,13 +126,12 @@
  </ng-template>
 
  <ng-template #TableBody let-requirements="requirements" let-dt_uuid="uuid">
-    <tr *ngFor="let req of requirements; let r=index" class="req" [class]="'r'+r%2">
+    <tr *ngFor="let req of requirements; let r=index" class="req" [class]="'r'+r%2 +' '+req['_class']">
         <td class="cmd">
             <notes-req-btn *ngIf="userdata" 
                 [milestones]="milestones"
                 [dt_uuid]="dt_uuid" 
                 [req_uuid]="req.uuid" 
-                [requirements]="req" 
                 [notes]="notesreq[dt_uuid]?notesreq[dt_uuid][req.uuid]:null"
                 ></notes-req-btn>
         </td>

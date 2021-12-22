@@ -109,3 +109,13 @@
 
 }
 
+.notes-popup {
+    max-width: 85vw;
+    min-width: 25vw;
+    background-color: $color-bg-infodropbox-notes-req;
+    padding: 1em;
+    //border: solid 1px #8a893c;
+    border-radius: 6px;
+    font-size: smaller;
+    box-shadow: 0 0 10px #000;
+}

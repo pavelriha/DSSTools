@@ -1,15 +1,6 @@
 @import "./assets/scss/variables";
 
 :host {
-    display: block;
-    max-width: 75vw;
-    background-color: $color-bg-infodropbox-notes-req;
-    padding: 0.5em;
-    //border: solid 1px #8a893c;
-    border-radius: 6px;
-    font-size: smaller;
-    box-shadow: 0 0 10px #000;
-
 }
 
 .note {

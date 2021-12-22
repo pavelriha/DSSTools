@@ -63,7 +63,7 @@ const ROUTES: Routes = [
       {path: 'notes', canActivate:[UserGuard], component: NotesWorkplaceComponent, children: [
         {path: 'req', canActivate:[UserGuard], children: [
           { path: '', component: MadTableFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
-                url: '/slimapi/notes/req/all',
+                url: '/slimapi/notes/req/list/notes',
                 columns: [
                   { name: 'detail', title: 'detail', type: 'link', icon: 'edit', url: '.', urlid: 'id_notes_req' },
                   { name: 'milestone_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
@@ -96,7 +96,31 @@ const ROUTES: Routes = [
           },
       }},
         ]},
-        { path: 'dt-req', component: TodoComponent },
+        { path: 'dt-req', component: MadTableFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+          url: '/slimapi/notes/req/list/newdtreq',
+          columns: [
+            { name: 'detail', title: 'detail', type: 'link', icon: 'edit', url: '.', urlid: 'id_notes_req' },
+            { name: 'milestone_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+            { name: 'dt_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+            { name: 'req_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+            { name: 'state' },
+            { name: 'created' },
+            { name: 'suggestion', filtering: {filterString: '', placeholder: 'Filter'} },
+            { name: 'replied' },
+            { name: 'reply', filtering: {filterString: '', placeholder: 'Filter'} },
+            { name: 'creator_email', filtering: {filterString: '', placeholder: 'Filter'}    },
+            { name: 'worker_email', filtering: {filterString: '', placeholder: 'Filter'}    },
+            //{ name: 'locations_xref', filtering: {filterString: '', placeholder: 'Filter'} },
+          ],
+          trClassDyn: (data) => { return {
+            'table-success' : data.state=='confirmed',
+            'table-danger' :   data.state=='rejected',
+          }},
+/*               buttons_top: [
+              { title: 'zalozit noveho uzivatele', icon: "plus", url: 'new' }
+          ], */
+        },
+    }},
         { path: 'dt', component: TodoComponent },
       ]},
     ]},

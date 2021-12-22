@@ -1,11 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AngularDropdownPositionChanges } from 'angular-dropdown';
-import { map } from 'rxjs/operators';
+import { ControlService } from 'src/app/shared/services/control.service';
 import { SlimapiService } from 'src/app/shared/services/slimapi.service';
-import { Requirement } from 'src/app/swagger';
-import { isFunction } from 'util';
 
 @Component({
   selector: 'req-notes',
@@ -16,36 +13,31 @@ export class ReqNotesComponent implements OnInit {
 
   @ViewChild('editform') editform: NgForm;
   private paramSub: any;
-  public requirements: any;// Requirement;
+  //public requirements: any;// Requirement;
   public error: string;
 
   public formdata: any = {};
   @Input() milestones: any[];
   @Input() dt_uuid: string;
   @Input() req_uuid: string;
-  @Input() success: () => void;
+  @Input() type: 'request-new-req'|'note';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private slimapi: SlimapiService,
+    private controlService: ControlService,
   ) { }
 
   ngOnInit(): void {
-/*     this.paramSub = this.route.params.subscribe(params => {
-      this.formdata.dt_uuid = params['dt_uuid'];
-      this.formdata.req_uuid = params['req_uuid'];
-    }); */
-/*     this.requirements = <Requirement>this.route.paramMap
-    .pipe(map(() => window.history.state.requirements)); */
-
-
-    //this.requirements = window.history.state.requirements;
-
   }
 
   public onSubmit() {
     this.error = '';
+    if (!this.req_uuid) {
+      alert("vyberte vlastnost, kterou chcete přidat");
+      return false;
+    }
     if (this.editform.invalid) {
       alert("formular obsahuje chyby");
       return false;
@@ -53,14 +45,15 @@ export class ReqNotesComponent implements OnInit {
     this.formdata.milestone_uuid = this.milestones[0].uuid;
     this.formdata.dt_uuid = this.dt_uuid;
     this.formdata.req_uuid = this.req_uuid;
-    this.formdata.type = 'note';
+    this.formdata.type = this.type;
     //console.log(this.formdata);
     //console.log(this.editform.value);
     this.slimapi.notesReqInsert(this.formdata).subscribe({
       next: (r) => {
       console.log(r);
       //this.router.navigate(['/']);
-      if (this.success) this.success();
+      //if (typeof this.success == "function") this.success();
+      this.controlService.control.next('note-submited');
       },
       error: (e) => {
         //console.log(e);
