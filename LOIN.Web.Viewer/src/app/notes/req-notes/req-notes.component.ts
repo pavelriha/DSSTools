@@ -40,6 +40,7 @@ export class ReqNotesComponent implements OnInit {
     }
     if (this.editform.invalid) {
       alert("formular obsahuje chyby");
+      //this.editform.form.markAllAsTouched(); //PR bez BS to muzem delat pres styly
       return false;
     }
     this.formdata.milestone_uuid = this.milestones[0].uuid;

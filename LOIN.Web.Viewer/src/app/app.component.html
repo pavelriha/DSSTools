@@ -2,14 +2,15 @@
 <div class="topbar">
 
     <div class="head">
-        <div *ngIf="!userdata" ngDropdown [renderInPlace]="true" #repoDropdown="ngDropdown" >
+        <div *ngIf="!userdata || !USERS_LATEST_REPO_ONLY" ngDropdown [renderInPlace]="true" #repoDropdown="ngDropdown" >
             <div ngDropdownControl >
-                <span class="text">Verze: {{ repoValue }}</span>
+                <span class="text">Verze: {{ repo }}</span>
                 <span class="arrow"><i class="fas fa-chevron-down"></i></span>
             </div>
             <div ngDropdownContent dropdownClass="slide-fade invert">
-                <ul class="select">
-                    <li *ngFor="let v of repolist" (click)="repo=v.key;repoValue=v.value; repoDropdown.close(); repoChange();">{{v.value}}</li>
+                <ul class="select" *ngIf="repolist">
+                    <!-- <li *ngFor="let v of repolist" (click)="repo=v.key;repoValue=v.value; repoDropdown.close(); repoChange();">{{v.value}}</li> -->
+                    <li *ngFor="let v of repolist" (click)="repo=v; repoDropdown.close(); repoChange();">{{v}}</li>
                 </ul>
             </div>
         </div>

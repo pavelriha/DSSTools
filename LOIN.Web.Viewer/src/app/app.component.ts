@@ -13,10 +13,6 @@ import { AuthService } from './shared/services/auth.service';
 import { SlimapiService } from './shared/services/slimapi.service';
 import { ControlService } from './shared/services/control.service';
 
-export class Repolist {
-  key: string;
-  value: string;
-}
 
 @Component({
   selector: 'app-component',
@@ -24,6 +20,10 @@ export class Repolist {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+
+  /* settings */
+  readonly USERS_LATEST_REPO_ONLY: boolean = false;
+  /* settings */
 
   @ViewChild('breaks') fbBreaks: FilterBoxComponent;
   @ViewChild('milestones') fbMilestones: FilterBoxComponent;
@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
   //@ViewChild('repo') repo: nativeElement;
   public errors:string[] = [];
   public repo: string;
-  public repoValue: string;
+  //public repoValue: string;
   //public help_url: string = 'https://www.koncepcebim.cz/dokumenty?dok=1063-napoveda-dss-online';
   public help_url: string = 'https://www.koncepcebim.cz/uploads/inq/files/DSS_online_pruvodce_Agentura%20CAS%20%281%29.pdf';
   public sel: string[];
@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
   public nodesMilestones: any[];
   public nodesReasons: any[];
   //public nodesRepositories: any[];
-  public repolist: Repolist[];
+  public repolist: string[];
 
   public selectedTree: any[] = null;
   public selectedFlatTree: any[] = null;
@@ -82,12 +82,14 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.repolist = [ { key:'latest', value: 'aktuální' } ]; //toto musi byt prvni!
-    this.setDefaultRepo();
+    //this.repolist = [ { key:'latest', value: 'aktuální' } ]; //toto musi byt prvni!
     this.repositoriesService.apiRepositoriesGet().subscribe(
       d => {  
-        //this.repolist.push(...d.sort().reverse());
-        d.sort().reverse().forEach( r => { this.repolist.push({ key: r, value: r }); });
+        ////this.repolist.push(...d.sort().reverse());
+        //d.sort().reverse().forEach( r => { this.repolist.push({ key: r, value: r }); });
+        this.repolist = d;
+        this.setDefaultRepo();
+        this.fetchFilters();
       },
       e => { this.apiError(e); }
     );
@@ -96,7 +98,9 @@ export class AppComponent implements OnInit {
       this.userdata = ud;
       console.log("user change", ud);
       if (ud) {
-        this.setDefaultRepo(); //prihlasenej smi pracovat jen s latest, tak ho nastavime
+        if (this.USERS_LATEST_REPO_ONLY) {
+          this.setDefaultRepo(); //prihlasenej smi pracovat jen s latest, tak ho nastavime
+        }
       } else {
         this.selectedTree = null;
       }
@@ -108,32 +112,18 @@ export class AppComponent implements OnInit {
       
     });
 
-    this.fetchFilters();
-    this.initdone = true;
-
-    setTimeout(() => { //zpozdime, aby se filtr komponenta stihla iniciovat
-      this.fbBreaks.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateBreaks')));
-      this.fbActors.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateActors')));
-      this.fbReasons.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateReasons')));
-      this.fbMilestones.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateMilestones')));
-      console.info('state restored');
-      setTimeout(() => { 
-        console.info('prepare timeout fired');
-        this.fbBreaks.prepareSelected(); 
-        this.fbActors.prepareSelected();
-        this.fbReasons.prepareSelected();
-        this.fbMilestones.prepareSelected();
-      },1000);//zpozdeni vterinu, jinak to ne vzdy nabehne
-    });
   }
 
   ngOnDestroy() {
     this.usersub.unsubscribe();
+    this.control.unsubscribe();
   }
 
   private setDefaultRepo() {
-    this.repo      = this.repolist[0].key;
-    this.repoValue = this.repolist[0].value;
+    this.repo      = this.repolist[0];
+    //this.repo = 'xxxx';
+    /* this.repo      = this.repolist[0].key;
+    this.repoValue = this.repolist[0].value; */
   }
 
   repoChange() {
@@ -143,25 +133,47 @@ export class AppComponent implements OnInit {
   
   fetchFilters() {
     this.nodesActors = [];
-    this.actorsService.apiRepositoryIdActorsGet(this.repo).subscribe({
-      next: (d) => { this.nodesActors = d; },
-      error: (e) => { this.apiError(e) },
-    });
     this.nodesBreakdown = [];
-    this.breakdownService.apiRepositoryIdBreakdownGet(this.repo, false).subscribe({
-      next: (d) => {  this.nodesBreakdown = d; },
-      error: (e) => { this.apiError(e) },
-    });
     this.nodesMilestones = [];
-    this.milestonesService.apiRepositoryIdMilestonesGet(this.repo).subscribe({
-      next: (d) => {  this.nodesMilestones = d; },
-      error: (e) => { this.apiError(e) },
-    });
     this.nodesReasons = [];
-    this.reasonsService.apiRepositoryIdReasonsGet(this.repo).subscribe({
-      next: (d) => { this.nodesReasons = d; },
-      error: (e) => { this.apiError(e) },
+
+    forkJoin([
+      this.actorsService.apiRepositoryIdActorsGet(this.repo),
+      this.breakdownService.apiRepositoryIdBreakdownGet(this.repo, false),
+      this.milestonesService.apiRepositoryIdMilestonesGet(this.repo),
+      this.reasonsService.apiRepositoryIdReasonsGet(this.repo)
+    ]).subscribe({
+      next: ( [ actors, breakdown, milestones, reasons ] ) => { 
+        console.log("filters loaded");
+        this.nodesActors = actors; 
+        this.nodesBreakdown = breakdown;
+        this.nodesMilestones = milestones;
+        this.nodesReasons = reasons;
+
+        this.initdone = true;
+
+        setTimeout(() => { //zpozdime, aby se filtr komponenta stihla iniciovat
+          this.fbBreaks.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateBreaks')));
+          this.fbActors.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateActors')));
+          this.fbReasons.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateReasons')));
+          this.fbMilestones.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateMilestones')));
+          console.info('state restored');
+          setTimeout(() => { 
+            console.info('prepare timeout fired');
+            this.fbBreaks.prepareSelected(); 
+            this.fbActors.prepareSelected();
+            this.fbReasons.prepareSelected();
+            this.fbMilestones.prepareSelected();
+          },1000);//zpozdeni vterinu, jinak to ne vzdy nabehne
+        });
+
+      },
+      error: (e) => { 
+        console.error('filter loading error');
+        this.apiError(e); 
+      },
     });
+
   }
 
   runfilter() {

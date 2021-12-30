@@ -30,10 +30,13 @@
                     
                 } */
             }
-            .ng-touched.ng-invalid {
-                border-color: red;
-            }
             &.error {
                 color: red;
             }
         }
+
+FORM.ng-submitted .ng-invalid,
+.ng-touched.ng-invalid
+{
+    border-color: red;
+}
