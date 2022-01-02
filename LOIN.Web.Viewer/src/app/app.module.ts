@@ -33,6 +33,7 @@ import { NgWormholeModule } from 'ng-wormhole';
 import { TodoComponent } from './todo/todo.component';
 import { DtNewReqComponent } from './notes/dt-new-req/dt-new-req.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { DtNewComponent } from './notes/dt-new/dt-new.component';
 
 
 function getConfig() {
@@ -62,6 +63,7 @@ function getConfig() {
     NotesWorkplaceComponent,
     TodoComponent,
     DtNewReqComponent,
+    DtNewComponent,
   ],
   imports: [
     BrowserModule,

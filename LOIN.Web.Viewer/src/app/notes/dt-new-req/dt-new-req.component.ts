@@ -19,7 +19,7 @@ export class DtNewReqComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('dt-new-req init', this.milestones, this.dt_uuid, this.dt_data);
+    //console.log('dt-new-req init', this.milestones, this.dt_uuid, this.dt_data);
     this.slimapi.getRequirements().subscribe({
       next: (r) => {
         let dt_req: string[] = []; // priprav pole existujicich vlastnosti, at v tom muzem snaz hledat

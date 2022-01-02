@@ -45,6 +45,7 @@
 
         .toolbar {
             display: flex;
+            gap: 0.5em;
             margin-bottom: 1em;
             .search {
                 display: flex;
@@ -70,20 +71,34 @@
                     cursor: pointer;
                 }
             }
-            .collall {
+            .button {
                 cursor: pointer;
-                margin-right: 0.5em;
-                background-color: $color-primary-red;
-                //border: solid 1px $color-primary-red;
-                color: $color-white;
                 padding: 0 0.5em;
                 display: flex;
                 align-items: center;
+                outline: solid transparent;
+                border: none;
+                text-decoration: none;
                 &:active {
-                    //border: solid 1px #000;
-                    background-color: $color-secondary-red;
+                    transform: translateY(1px);
+                    filter: saturate(150%);
+                }
+                &.collall {
+                    background-color: $color-primary-red;
+                    color: $color-white;
+                    &:hover {
+                        background-color: $color-secondary-red;
+                    }
+                }
+                &.newdt {
+                    background-color: $color-secondary-cyan1;
+                    color: $color-white;
+                    &:hover {
+                        background-color: $color-secondary-cyan2;
+                    }
                 }
             }
+
         }
         &.render-in-place {
             width: 100%;

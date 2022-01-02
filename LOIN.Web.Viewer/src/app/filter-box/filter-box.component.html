@@ -21,7 +21,7 @@
 
 
             <!-- <button *ngIf="hasChildren" (click)="tree.treeModel.expandAll()">expand all</button> -->
-            <div class="collall" *ngIf="hasChildren" (click)="tree.treeModel.collapseAll()"><i class="fas fa-compress-alt" title="Sbalit vše"></i></div>
+            <div class="button collall" *ngIf="hasChildren" (click)="tree.treeModel.collapseAll()"><i class="fas fa-compress-alt" title="Sbalit vše"></i></div>
             <!-- <button (click)="tree.sizeChanged()">sizechanged</button> -->
             
             <div class="search">
@@ -30,6 +30,8 @@
                     <i class="fas fa-times" title="Zrušit Filter"></i>
                 </div>
             </div>
+
+            <ng-container *ngTemplateOutlet="toolbarButton"></ng-container>
         </div>
         
         <tree-root #tree [focused]="true" [options]="options" [nodes]="nodes" (select)="selectChange($event)" (deselect)="selectChange($event)"  ></tree-root>

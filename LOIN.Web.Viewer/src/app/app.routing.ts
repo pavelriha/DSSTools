@@ -11,6 +11,7 @@ import { NotesReqDesc, UserDesc } from './workplace/mtconfig';
 import { WorkplaceComponent } from './workplace/workplace.component';
 import { NotesWorkplaceComponent } from './workplace/notes-workplace/notes-workplace.component';
 import { TodoComponent } from './todo/todo.component';
+import { DtNewComponent } from './notes/dt-new/dt-new.component';
 
 
 
@@ -82,49 +83,82 @@ const ROUTES: Routes = [
                   'table-success' : data.state=='confirmed',
                   'table-danger' :   data.state=='rejected',
                 }},
-  /*               buttons_top: [
-                    { title: 'zalozit noveho uzivatele', icon: "plus", url: 'new' }
-                ], */
               },
           }},
           { path: ':id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
-            baseurl: '/slimapi/notes/req/detail/{id}',
-            columns: [ "state", "reply" ],
-            formtype: 'forceedit',//'editable',
-            onSuccessUrl: "..",
-            onCancelUrl: "..",
-          },
-      }},
-        ]},
-        { path: 'dt-req', component: MadTableFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
-          url: '/slimapi/notes/req/list/newdtreq',
-          columns: [
-            { name: 'detail', title: 'detail', type: 'link', icon: 'edit', url: '.', urlid: 'id_notes_req' },
-            { name: 'milestone_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
-            { name: 'dt_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
-            { name: 'req_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
-            { name: 'state' },
-            { name: 'created' },
-            { name: 'suggestion', filtering: {filterString: '', placeholder: 'Filter'} },
-            { name: 'replied' },
-            { name: 'reply', filtering: {filterString: '', placeholder: 'Filter'} },
-            { name: 'creator_email', filtering: {filterString: '', placeholder: 'Filter'}    },
-            { name: 'worker_email', filtering: {filterString: '', placeholder: 'Filter'}    },
-            //{ name: 'locations_xref', filtering: {filterString: '', placeholder: 'Filter'} },
-          ],
-          trClassDyn: (data) => { return {
-            'table-success' : data.state=='confirmed',
-            'table-danger' :   data.state=='rejected',
+              baseurl: '/slimapi/notes/req/detail/{id}',
+              columns: [ "state", "reply" ],
+              formtype: 'forceedit',//'editable',
+              onSuccessUrl: "..",
+              onCancelUrl: "..",
+            },
           }},
-/*               buttons_top: [
-              { title: 'zalozit noveho uzivatele', icon: "plus", url: 'new' }
-          ], */
-        },
-    }},
-        { path: 'dt', component: TodoComponent },
+        ]},
+        { path: 'dt-req', canActivate:[UserGuard], children: [
+          { path: '', component: MadTableFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              url: '/slimapi/notes/req/list/newdtreq',
+              columns: [
+                { name: 'detail', title: 'detail', type: 'link', icon: 'edit', url: '.', urlid: 'id_notes_req' },
+                { name: 'milestone_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'dt_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'req_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'state' },
+                { name: 'created' },
+                { name: 'suggestion', filtering: {filterString: '', placeholder: 'Filter'} },
+                { name: 'replied' },
+                { name: 'reply', filtering: {filterString: '', placeholder: 'Filter'} },
+                { name: 'creator_email', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'worker_email', filtering: {filterString: '', placeholder: 'Filter'}    },
+              ],
+              trClassDyn: (data) => { return {
+                'table-success' : data.state=='confirmed',
+                'table-danger' :   data.state=='rejected',
+              }},
+            },
+          }},
+          { path: ':id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              baseurl: '/slimapi/notes/req/detail/{id}',
+              columns: [ "state", "reply" ],
+              formtype: 'forceedit',//'editable',
+              onSuccessUrl: "..",
+              onCancelUrl: "..",
+            },
+          }},
+        ]},
+        { path: 'dt', canActivate:[UserGuard], children: [
+          { path: '', component: MadTableFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              url: '/slimapi/notes/dt/list',
+              columns: [
+                { name: 'detail', title: 'detail', type: 'link', icon: 'edit', url: '.', urlid: 'id_notes_dt' },
+                { name: 'dt_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'dt_name', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'state' },
+                { name: 'created' },
+                { name: 'suggestion', filtering: {filterString: '', placeholder: 'Filter'} },
+                { name: 'replied' },
+                { name: 'reply', filtering: {filterString: '', placeholder: 'Filter'} },
+                { name: 'creator_email', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'worker_email', filtering: {filterString: '', placeholder: 'Filter'}    },
+              ],
+              trClassDyn: (data) => { return {
+                'table-success' : data.state=='confirmed',
+                'table-danger' :   data.state=='rejected',
+              }},
+            },
+          }},
+          { path: ':id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              baseurl: '/slimapi/notes/dt/detail/{id}',
+              columns: [ "state", "reply" ],
+              formtype: 'forceedit',//'editable',
+              onSuccessUrl: "..",
+              onCancelUrl: "..",
+            },
+          }},
+        ]},
       ]},
     ]},
 
+    {path: 'dtnew', canActivate:[UserGuard], component:DtNewComponent },
     
     {path: '**', component: PageNotFoundComponent}
 ];

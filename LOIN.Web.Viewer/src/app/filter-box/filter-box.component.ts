@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ComponentRef} from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ComponentRef, TemplateRef} from '@angular/core';
 import { ITreeOptions, TreeNode, ITreeState, TreeComponent, IActionMapping, TREE_ACTIONS  } from '@circlon/angular-tree-component';
 import { ITreeNode } from '@circlon/angular-tree-component/lib/defs/api';
 
@@ -27,9 +27,11 @@ const actionMapping: IActionMapping = {
   styleUrls: ['./filter-box.component.scss']
 })
 export class FilterBoxComponent implements OnInit {
+  //@contentchildren
   @Input() name: string;
   @Input() nodes: any[];
   @Input() nodesSplit: boolean;
+  @Input() toolbarButton: TemplateRef<any>;
   @ViewChild('tree') tree: TreeComponent;
   @ViewChild('filter') filterfield;
   public hasChildren: boolean = false;
@@ -157,7 +159,10 @@ export class FilterBoxComponent implements OnInit {
   deselectAll() {
     // to je desne pomale
     //this.tree.treeModel.doForAll((node: TreeNode) => node.setIsSelected(false));
-    this.tree.treeModel.selectedLeafNodes.forEach( (node: TreeNode) => node.setIsSelected(false) );
+    // tohle funguje i docela rychle, ale nemaze bohuzel vse, zustavaji tam treba jiz neexistujici ID a pak je finalne vraci
+    //this.tree.treeModel.selectedLeafNodes.forEach( (node: TreeNode) => node.setIsSelected(false) );
+    // setState s prazdnym obj udela zda se kompletni reset, coz je fajn
+    this.tree.treeModel.setState({});
     this.prepareSelected();
   }
 

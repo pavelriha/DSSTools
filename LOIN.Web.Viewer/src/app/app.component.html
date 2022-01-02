@@ -23,7 +23,15 @@
 
     <ul class="filter">
         <!-- <li><app-filter-box #repo [name]="'Verze'" [nodes]="nodesRepositories" ></app-filter-box></li> -->
-        <li style="flex-grow: 2;"><app-filter-box #breaks [name]="'Datové šablony'" [nodes]="nodesBreakdown" [nodesSplit]="true" ></app-filter-box></li>
+        <li style="flex-grow: 10;">
+            <app-filter-box #breaks [name]="'Datové šablony'" [nodes]="nodesBreakdown" [nodesSplit]="true" [toolbarButton]="buttonnewdt" >
+                <ng-template #buttonnewdt>
+                        <a class="button newdt" routerLink="/dtnew"  *ngIf="userdata">
+                            <i class="fas fa-plus" title="Přidat novou datovou šablonu"></i>
+                        </a>
+                </ng-template>
+            </app-filter-box>
+        </li>
         
         <li><app-filter-box #actors [name]="'Aktéři'" [nodes]="nodesActors" ></app-filter-box></li>
     
