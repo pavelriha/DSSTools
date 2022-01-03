@@ -1,33 +1,41 @@
 <h2 style="margin-top: 0;">Výběr nové vlastnosti k datové šabloně "{{ dt_data?.nameCS }}"</h2>
 
-<ng-select placeholder="vyberte novou vlastnost" [items]="requirements" [(ngModel)]="selectedRequirement" bindLabel="nameCS" bindValue="uuid">
-    <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-        <div class="item" >
-                    <span class="name" >{{item.nameCS}}</span>
-                    &nbsp; 
-                    <span class="info">
-                        {{item.dataTypeCS}}
-                        <ng-container *ngIf="item.units">
-                            &nbsp;/&nbsp;{{item.units}}
-                        </ng-container>
-                    </span>
-                    &nbsp;
-                    <i class="fas fa-info-circle" (click)="item._showdesc=!item._showdesc;$event.stopPropagation(); "></i>
+<div *ngIf="!formNewReq">
+    <ng-select placeholder="vyberte novou vlastnost" [items]="requirements" [(ngModel)]="selectedRequirement" bindLabel="nameCS" bindValue="uuid" [addTag]="newReqOpen">
+        <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+            <div class="item" [class]="item._class" >
+                        <span class="name" >{{item.nameCS}}</span>
+                        &nbsp; 
+                        <span class="info">
+                            {{item.dataTypeCS}}
+                            <ng-container *ngIf="item.units">
+                                &nbsp;/&nbsp;{{item.units}}
+                            </ng-container>
+                        </span>
+                        &nbsp;
+                        <i class="fas fa-info-circle" (click)="item._showdesc=!item._showdesc;$event.stopPropagation(); "></i>
 
-                    <div class="desc" *ngIf="item._showdesc">
-                        <label>Popis</label>:<br>
-                        {{ item.descriptionCS }}
-                        <br>
-                        <label>Poznámka</label>:<br>
-                        {{ item.examples }}
-                    </div>
-        </div>
-    </ng-template>
-</ng-select>
+                        <div class="desc" *ngIf="item._showdesc">
+                            <label>Popis</label>:<br>
+                            {{ item.descriptionCS }}
+                            <br>
+                            <label>Poznámka</label>:<br>
+                            {{ item.examples }}
+                        </div>
+            </div>
+        </ng-template>
+    </ng-select>
 
-<req-notes
-    [type]="'request-new-req'"
-    [milestones]="milestones"
-    [dt_uuid]="dt_uuid"
-    [req_uuid]="selectedRequirement"
-></req-notes>
+    <req-notes 
+        [type]="'request-new-req'"
+        [milestones]="milestones"
+        [dt_uuid]="dt_uuid"
+        [req_uuid]="selectedRequirement"
+    ></req-notes>
+
+</div>
+
+
+<div *ngIf="formNewReq" class="formNewReq">
+    <new-req [name]="formNewReq_name" [close]="newReqClose"></new-req>
+</div>

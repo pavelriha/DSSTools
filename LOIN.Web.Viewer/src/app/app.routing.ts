@@ -2,7 +2,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AppComponent } from './app.component';
-import { ReqNotesComponent } from './notes/req-notes/req-notes.component';
 import { UserGuard } from './shared/user.guard';
 import { AdminGuard } from './shared/admin.guard';
 import { MadDetailFromRouterComponent, MadTableFromRouterComponent } from './madtable/madtable.module';
@@ -15,7 +14,7 @@ import { DtNewComponent } from './notes/dt-new/dt-new.component';
 
 
 
-const ROUTES: Routes = [
+const ROUTES: Routes = [  
     //{path: '', redirectTo: '/login', pathMatch: 'full'},
     {path: '',      component: AppComponent},
     {path: 'login', component: LoginComponent},
@@ -155,10 +154,44 @@ const ROUTES: Routes = [
             },
           }},
         ]},
+        
+        { path: 'requirement', canActivate:[UserGuard], children: [
+          { path: '', component: MadTableFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              url: '/slimapi/requirements',
+              columns: [
+                { name: 'detail', title: 'detail', type: 'link', icon: 'edit', url: '.', urlid: 'id_requirement' },
+                { name: 'req_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'name', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'units', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'description', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'note', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'state' },
+                { name: 'created' },
+                { name: 'replied' },
+                { name: 'reply', filtering: {filterString: '', placeholder: 'Filter'} },
+                { name: 'creator_email', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'worker_email', filtering: {filterString: '', placeholder: 'Filter'}    },
+              ],
+              trClassDyn: (data) => { return {
+                'table-success' : data.state=='confirmed',
+                'table-danger' :   data.state=='rejected',
+              }},
+            },
+          }},
+          { path: ':id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              baseurl: '/slimapi/requirements/detail/{id}',
+              columns: [ "state", "reply" ],
+              formtype: 'forceedit',//'editable',
+              onSuccessUrl: "..",
+              onCancelUrl: "..",
+            },
+          }},
+        ]},
       ]},
     ]},
 
     {path: 'dtnew', canActivate:[UserGuard], component:DtNewComponent },
+    //{path: 'reqnew', canActivate:[UserGuard], component:NewReqComponent },
     
     {path: '**', component: PageNotFoundComponent}
 ];

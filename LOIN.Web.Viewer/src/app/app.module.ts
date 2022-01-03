@@ -34,6 +34,7 @@ import { TodoComponent } from './todo/todo.component';
 import { DtNewReqComponent } from './notes/dt-new-req/dt-new-req.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { DtNewComponent } from './notes/dt-new/dt-new.component';
+import { NewReqComponent } from './notes/new-req/new-req.component';
 
 
 function getConfig() {
@@ -64,6 +65,7 @@ function getConfig() {
     TodoComponent,
     DtNewReqComponent,
     DtNewComponent,
+    NewReqComponent,
   ],
   imports: [
     BrowserModule,

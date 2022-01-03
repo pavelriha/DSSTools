@@ -1,0 +1,45 @@
+
+
+<form name="regedit" #editform="ngForm"  (ngSubmit)="onSubmit()" class="form-note-req">
+    <div class="form-group">
+        <label for="username">Název nové vlastnosti</label>
+        <input type="text" name="name" [(ngModel)]="name" class="form-control" required >
+    </div>
+    <div class="form-group">
+        <label for="username">Měrná jednotka</label>
+        <input type="text" name="units" [(ngModel)]="formdata.units" class="form-control"  >
+    </div>
+
+    <div class="form-group">
+        <label for="username">Datový typ</label>
+        <ng-select placeholder="vyberte datovy typ" name="datatype" [items]="datatypes" [(ngModel)]="formdata.id_datatype" bindLabel="datatype_cs" bindValue="id_datatype">
+            <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                <div class="item" >
+                            <span class="name" >{{item.datatype_cs}}</span>
+                            &nbsp; 
+                            <span class="info">{{item.datatype_ifc}}</span>
+                </div>
+            </ng-template>
+        </ng-select>
+    </div>
+
+
+    <div class="form-group">
+        <label for="username">Popis</label>
+        <textarea name="description" [(ngModel)]="formdata.description" class="form-control" required ></textarea>
+    </div>
+    <div class="form-group">
+        <label for="username">Poznámka</label>
+        <textarea name="note" [(ngModel)]="formdata.note" class="form-control" ></textarea>
+    </div>
+    <div *ngIf="error" class="form-group error" role="alert">
+        Odeslání formuláře selhalo<br>
+        {{ error }}
+    </div>
+    <div class="form-group form-buttons-bar">
+        <input type="submit" name="submit" value="Odeslat">
+        <input type="button" name="cancel" value="Cancel" class="cancel" (click)="close && close()">
+    </div>
+</form>
+
+

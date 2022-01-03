@@ -1,10 +1,15 @@
 @import "./assets/scss/variables";
 
-/* :host {
-    //display: block;
+:host {
+    display: block;
+    min-width: 50vw;
+    min-height: 50vh;
+}
 
-
-} */
+.formNewReq {
+    padding: 1em;
+    background-color: #cfffbe;
+}
 
 .item {
     white-space: normal;
@@ -23,5 +28,7 @@
     .desc {
         padding: 0 4px;
     }
-
+    &.proposal {
+        background-color: $color-table-bg-new0;
+    }
 }

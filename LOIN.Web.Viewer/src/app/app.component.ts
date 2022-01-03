@@ -230,7 +230,8 @@ export class AppComponent implements OnInit {
 
           //console.log('list of all req', allreq);
           this.allRequiremets = {};
-          allreq.forEach( r => { r['_class']="new"; this.allRequiremets[r.uuid]=r; });
+          // pridame class new vsem tady, protoze co budem brat odtud, tak bude nove pridana vlastnost k sablone
+          allreq.forEach( r => { r['_class']=(r['_class'] || '') + " new"; this.allRequiremets[r.uuid]=r; });
           //console.log(this.allRequiremets);
           this.fetchSelectedFilters();
         }

@@ -26,12 +26,26 @@
             }
             input[type=button], input[type=submit] {
                 cursor: pointer;
-/*                 &:hover {
-                    
-                } */
+            }
+            INPUT[type=submit] {
+                background-color: #0f0;
+                //width: 100%;
+                padding: 1em;
+                &:hover { background-color: lighten($color: #0f0, $amount: 20%)}
+            }
+            INPUT.cancel {
+                padding: 1em;
+                background-color: red;
+                &:hover { background-color: lighten($color: red, $amount: 20%)}
             }
             &.error {
                 color: red;
+            }
+        }
+        .form-buttons-bar {
+            display: flex;
+            & > * {
+                flex-grow: 1;
             }
         }
 

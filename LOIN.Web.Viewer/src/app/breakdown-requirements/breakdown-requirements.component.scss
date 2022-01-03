@@ -122,6 +122,9 @@ H2 {
         &.new.r1 TD {
             background-color: $color-table-bg-new1;
         }
+        &.proposal {
+            font-style: italic;
+        }
 
 
         &.setname TH {

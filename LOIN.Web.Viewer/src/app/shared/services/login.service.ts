@@ -1,15 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, share, tap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { SlimapiService } from './slimapi.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
+
+  private init: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -17,15 +19,26 @@ export class LoginService {
     private route: ActivatedRoute,
     private router: Router,
     private slimapi: SlimapiService,
-  ) { 
+  ) {  }
 
-    this.http.get<any>(this.slimapi.makeUrl("login")).subscribe({
-        next: r => {
-            //console.log(r);
-            this.authService.setUser(r.data);
-        }
-    });
+  // z authGuard budem volat toto a ne primo authService.getUser()
+  // asi to jde udelat cele nejak lepe
+  // ale jinak tahle fce resi to, aby sla zavolat vickrat PARALELNE ale ten http request se provedl jen jednou
+  getUserObservable: Observable<any>;
+  getUser(): Observable<any> {
+    if (this.init) return of(this.authService.getUser());
 
+    if (this.getUserObservable) return this.getUserObservable;
+    this.getUserObservable = this.http.get<any>(this.slimapi.makeUrl("login")).pipe(
+      map( user => { 
+        //console.log("loginService, map", user);
+        this.authService.setUser(user.data);
+        this.init = true;
+        return user.data;
+      }),
+      share(), // udelej z observable multicast (aka subject), at se k nemu muze pripojit vic konzumentu soucasne. Jinak to sice "jde" taky ale provadi se to duplicitne
+    );
+    return this.getUserObservable;    
   }
 
   userLogin(formdata): Observable<any> {

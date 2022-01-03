@@ -7,16 +7,5 @@
 
 
 .form-note-req {
-/*     max-width: 400px;
-    margin: 0 auto;
-    background-color: #ccc;
-    */
-    //padding: 1em; 
-    
-    INPUT[type=submit] {
-        background-color: #0f0;
-        width: 100%;
-        padding: 1em;
-        &:hover { background-color: lighten($color: #0f0, $amount: 20%)}
-    }
+
 }

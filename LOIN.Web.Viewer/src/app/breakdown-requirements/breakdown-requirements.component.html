@@ -126,7 +126,7 @@
  </ng-template>
 
  <ng-template #TableBody let-requirements="requirements" let-dt_uuid="uuid">
-    <tr *ngFor="let req of requirements; let r=index" class="req" [class]="'r'+r%2 +' '+req['_class']">
+    <tr *ngFor="let req of requirements; let r=index" class="req" [class]="'r'+r%2 +' '+(req['_class'] ||'')">
         <td class="cmd">
             <notes-req-btn *ngIf="userdata" 
                 [milestones]="milestones"

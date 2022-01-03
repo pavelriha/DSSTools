@@ -13,6 +13,8 @@ export class DtNewReqComponent implements OnInit {
   @Input() dt_data: any;//GrouppedRequirements|GrouppedRequirementSets;
   requirements: Requirement[];
   public selectedRequirement;
+  public formNewReq = false;
+  public formNewReq_name: string;
 
   constructor(
     private slimapi: SlimapiService,
@@ -20,6 +22,10 @@ export class DtNewReqComponent implements OnInit {
 
   ngOnInit(): void {
     //console.log('dt-new-req init', this.milestones, this.dt_uuid, this.dt_data);
+    this.loadReq();
+  }
+
+  loadReq(): void {
     this.slimapi.getRequirements().subscribe({
       next: (r) => {
         let dt_req: string[] = []; // priprav pole existujicich vlastnosti, at v tom muzem snaz hledat
@@ -35,6 +41,21 @@ export class DtNewReqComponent implements OnInit {
         this.requirements = r;
       }
     })
+  }
+
+  newReqOpen = (name:string) => {
+    console.log('newReqOpen', name);
+    this.formNewReq_name = name;
+    this.formNewReq = true;
+  }
+
+  newReqClose = (uuid:string) => {
+    //console.log('newReqClose', uuid);
+    if (uuid) {
+      this.loadReq();
+      this.selectedRequirement = uuid;
+    }
+    this.formNewReq=false;
   }
 
 }

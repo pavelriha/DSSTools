@@ -10,10 +10,11 @@ import { LoginService } from './shared/services/login.service';
 export class AppRootComponent implements OnInit {
 
   constructor(
-    private loginService: LoginService, //!!! toto tu musi byt, kdyz to explicitne nepouzivame, aby se sluzba nahodila a provedla login check v ramci construktoru
+    private loginService: LoginService, 
   ) { }
 
   ngOnInit(): void {
+    this.loginService.getUser().subscribe();//vynutime nacteni user dat (overeni zda je user prihlasenej)
   }
 
 }
