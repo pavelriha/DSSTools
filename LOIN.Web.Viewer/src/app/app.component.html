@@ -4,13 +4,13 @@
     <div class="head">
         <div *ngIf="!userdata || !USERS_LATEST_REPO_ONLY" ngDropdown [renderInPlace]="true" #repoDropdown="ngDropdown" >
             <div ngDropdownControl >
-                <span class="text">Verze: {{ repo }}</span>
+                <span class="text">Verze: {{ this.controlService.selectedRepository }}</span>
                 <span class="arrow"><i class="fas fa-chevron-down"></i></span>
             </div>
             <div ngDropdownContent dropdownClass="slide-fade invert">
                 <ul class="select" *ngIf="repolist">
                     <!-- <li *ngFor="let v of repolist" (click)="repo=v.key;repoValue=v.value; repoDropdown.close(); repoChange();">{{v.value}}</li> -->
-                    <li *ngFor="let v of repolist" (click)="repo=v; repoDropdown.close(); repoChange();">{{v}}</li>
+                    <li *ngFor="let v of repolist" (click)="repoDropdown.close(); repoChange(v);">{{v}}</li>
                 </ul>
             </div>
         </div>
@@ -26,10 +26,13 @@
         <li style="flex-grow: 10;">
             <app-filter-box #breaks [name]="'Datové šablony'" [nodes]="nodesBreakdown" [nodesSplit]="true" [toolbarButton]="buttonnewdt" >
                 <ng-template #buttonnewdt>
-                        <a class="button newdt" routerLink="/dtnew"  *ngIf="userdata">
+                        <a class="button newdt" (click)="modal.open('modal-new-dt')"  *ngIf="userdata">
                             <i class="fas fa-plus" title="Přidat novou datovou šablonu"></i>
                         </a>
                 </ng-template>
+                <modal id="modal-new-dt">
+                    <notes-dt-new [finish]="newDtDone"></notes-dt-new>
+                </modal>
             </app-filter-box>
         </li>
         

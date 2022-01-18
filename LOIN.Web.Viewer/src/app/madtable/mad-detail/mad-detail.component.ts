@@ -35,6 +35,7 @@ export class MadDetailComponent implements OnInit {
   public data: any;
   private data_orig: any;
   loading: boolean = true;
+  public init_error: boolean = false;
   public errorMsg: string = '';
 
 
@@ -67,7 +68,12 @@ export class MadDetailComponent implements OnInit {
         this.loading = true;
         this.madservice.getDataRaw(this.getUrl()).subscribe(
           d => { this.loading = false; this.data_orig = d.data; this.init2(); },
-          r => { this.loading = false; this.madservice.popupHttpError(r) },
+          r => { 
+            this.init_error = true;
+            this.loading = false; 
+            this.errorMsg = r.error.message;
+            //this.madservice.popupHttpError(r);
+           },
         );
     } else {
         //console.log("MD data inline");
@@ -105,7 +111,7 @@ export class MadDetailComponent implements OnInit {
     //console.log(this.columns);
     if (this.formtype) {
       if (!this.restUrl && !this.TableConfig.url) console.error('restUrl missing');
-      if (!this.dataDescription.resource_name) console.error('resource_name missing');
+      //if (!this.dataDescription.resource_name) console.error('resource_name missing');
     }
     if (this.formtype=='forceedit' || this.formtype=='forcenew') {
       this.editStart();
@@ -161,20 +167,23 @@ export class MadDetailComponent implements OnInit {
 	*/
 
     this.madservice.submit(this.formtype=='forcenew', this.restUrl?this.restUrl:this.TableConfig.url, this.editform.value).subscribe(
-	  r => { 
-		//this.data = r[this.dataDescription.resource_name];
-		// PHP version
-		//this.data = r[this.dataDescription.resource_name][0];
-		this.data = r[this.dataDescription.resource_name];
-	    this.edit=false;
+      r => { 
+        //this.data = r[this.dataDescription.resource_name];
+        // PHP version
+        //this.data = r[this.dataDescription.resource_name][0];
+        this.data = r[this.dataDescription.resource_name??'data'];
+        this.edit=false;
         this.onSave.emit(this.data);
-	  },
-	  r => { 
-	    //this.madservice.popupHttpError(r);
-        this.errorMsg = r.error.message;
-		this.edit = true;
-		}
-	);
+      },
+      r => { 
+        //this.madservice.popupHttpError(r);
+        //console.log(r);
+        if (r.error.error) this.errorMsg = r.error.error.description;
+        else if (r.error.exception) this.errorMsg = r.error.exception[0].message;
+        else this.errorMsg = r.error.message;
+        this.edit = true;
+      }
+    );
   }
     
 }

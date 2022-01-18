@@ -7,7 +7,6 @@ import { TreeModule } from '@circlon/angular-tree-component';
 import { AngularDropdownModule } from 'angular-dropdown';
 
 
-
 import { AppComponent } from './app.component';
 import { ApiModule } from './swagger/api.module';
 
@@ -35,6 +34,9 @@ import { DtNewReqComponent } from './notes/dt-new-req/dt-new-req.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { DtNewComponent } from './notes/dt-new/dt-new.component';
 import { NewReqComponent } from './notes/new-req/new-req.component';
+import { ModalModule } from './_modal';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 
 function getConfig() {
@@ -66,6 +68,8 @@ function getConfig() {
     DtNewReqComponent,
     DtNewComponent,
     NewReqComponent,
+    AccessDeniedComponent,
+    UserProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -76,14 +80,18 @@ function getConfig() {
     FormsModule,
     NgSelectModule,
     routing,
+    ModalModule,
     NgWormholeModule,
     MadTableModule.forRoot({
-      paging: [ 5, 10, 20, 50],
-      //per_page: 10,
+      paging: [ 10, 20, 50, 100],
+      per_page: 50,
       cell_type_default_component: CellDefaultComponent,
       cell_type_map: cell_type_map,
-      mdWrapperClass: '',//'table-responsive',
+      mtWrapperClass: '', //'table-responsive',
+      mdWrapperClass: 'd-flex', //'table-responsive',
       mdTableClass: 'table table-sm mb-0',
+      mdLabelSubmit: 'Odeslat',
+      mdLabelCancel: 'Zrušit',
       //getDetail: jbz.test,
       //getData: loadContext,
       //getDetail: loadContext(),

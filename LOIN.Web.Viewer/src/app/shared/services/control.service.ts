@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Reason } from 'src/app/swagger';
 
 @Injectable({
   providedIn: 'root'
@@ -15,4 +16,8 @@ export class ControlService {
   public control = new BehaviorSubject<string>('subject_created');
   //public  controlLogged = this.controlSource.asObservable();
 
+
+  public selectedRepository: string;
+
+  public reasons: Reason[];
 }

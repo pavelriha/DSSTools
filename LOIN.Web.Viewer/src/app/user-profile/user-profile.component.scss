@@ -1,0 +1,52 @@
+
+.line {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2em;
+
+    LABEL {
+        /* text-decoration: underline; */
+        font-size: smaller;
+        display: block;
+        color: #bbacac;
+        font-weight: bold;
+    }
+}
+
+.box {
+    //display: inline-flex;
+    padding: 2em;
+    background-color: #eee;
+    border-radius: 10px;}
+
+.profile {
+    display: inline-flex;
+    flex-direction: row;
+    gap: 2em;
+
+
+    .info {
+
+        .text {
+            margin-bottom: 1em;
+        }
+    }
+}
+.passwd {
+    //margin-left: 2em;
+    .submit {
+        width: 100%;
+        background-color: rgb(3, 141, 3);
+        padding: 1em;
+        color: #fff;
+        cursor: pointer;
+        &:hover {
+            background-color: #1c1;
+        }
+    }
+    .alert-danger {
+        color: red;
+        padding: 1em;
+    }
+}

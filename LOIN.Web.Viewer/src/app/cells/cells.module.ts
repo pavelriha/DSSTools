@@ -22,6 +22,9 @@ import { CellDatetimeComponent } from './cell-datetime.component';
 import { CellSimpleSelectComponent } from './cell-simpleselect.component';
 //import { CellMultiSelectComponent } from './cell-multiselect.component';
 import { CellPasswordComponent } from './cell-password.component';
+import { CellDssReasonsComponent } from './cell-DSSreasons.component';
+import { CellNameUuidComponent } from './cell-nameuuid.component';
+import { CellTextareaComponent } from './cell-textarea.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +42,9 @@ import { CellPasswordComponent } from './cell-password.component';
     CellSimpleSelectComponent,
     //CellMultiSelectComponent,
     CellPasswordComponent,
+    CellDssReasonsComponent,
+    CellNameUuidComponent,
+    CellTextareaComponent,
   ],
   imports: [
     CommonModule,
@@ -70,4 +76,8 @@ export const cell_type_map: any = {
     'email':    CellEmailComponent,
     'callto':   CellCallToComponent,
     'password': CellPasswordComponent,
+    'textarea': CellTextareaComponent,
+
+    'reasons':  CellDssReasonsComponent,
+    'nameuuid': CellNameUuidComponent,
 };

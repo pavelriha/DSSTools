@@ -13,3 +13,40 @@ BODY {
 .button {
     cursor: pointer;
 }
+
+.hidden {
+    display: none !important;
+}
+
+
+mad-table {
+    table {
+        TD { white-space: nowrap; }
+        TR.new       { background-color: $color-notes-new-bg1;       &:hover {background-color: $color-notes-new-bg2;}}
+        TR.confirmed { 
+            background-color: $color-notes-confirmed-bg1; 
+            &:hover {background-color: $color-notes-confirmed-bg2;}
+            TD {
+                border-color: darken($color-notes-confirmed-bg1, 7%);
+            }
+        }
+        TR.rejected  { 
+            background-color: $color-notes-rejected-bg1;  
+            &:hover {background-color: $color-notes-rejected-bg2;}
+            TD {
+                border-color: darken($color-notes-rejected-bg1, 7%);
+            }
+        }
+        .actions__item.zmdi {
+            color: $color-secondary-cyan1;
+            &:hover {
+                color: $color-secondary-cyan2;
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+mad-detail table.edit {
+    background-color: #e0efff;
+}

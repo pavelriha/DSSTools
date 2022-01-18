@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from './services/auth.service';
 
@@ -9,6 +9,7 @@ import { AuthService } from './services/auth.service';
 export class AdminGuard implements CanActivate {
   constructor(
     private authService: AuthService,
+    private router: Router,
   ) {}
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -17,7 +18,7 @@ export class AdminGuard implements CanActivate {
       let user = this.authService.getUser();
       if (user.role == 'admin' || user.role == 'master' ) return true;
       
-      return false;
+      return this.router.parseUrl('/access-denied');
   }
   
 }

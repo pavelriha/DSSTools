@@ -4,6 +4,7 @@ import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RequirementsService } from 'src/app/swagger';
 import { Requirement } from 'src/app/swagger';
+import { ControlService } from './control.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class SlimapiService {
 
   constructor(
     private http: HttpClient,
-    private requirementsService: RequirementsService
+    private requirementsService: RequirementsService,
+    public controlService: ControlService,
   ) { }
 
   makeUrl(path) {
@@ -24,6 +26,10 @@ export class SlimapiService {
     } else {
       return (this.baseUrl+'/'+path);
     }
+  }
+
+  passwd(oldPasswd, newPassword): Observable<any> {
+    return this.http.post(this.makeUrl('passwd'), { old_password: oldPasswd, new_password: newPassword } );
   }
 
   notesReqInsert(form): Observable<any> {
@@ -48,7 +54,7 @@ export class SlimapiService {
 
   getRequirements(): Observable<Array<Requirement>> {
     return forkJoin([
-      this.requirementsService.apiRepositoryIdRequirementsGet("latest"),
+      this.requirementsService.apiRepositoryIdRequirementsGet(this.controlService.selectedRepository),
       <Observable<Requirement[]>>this.http.get(this.makeUrl('requirements/viewer')),
     ]).pipe(
       map( ([r1 , r2 ]) => {

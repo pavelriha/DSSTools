@@ -1,10 +1,32 @@
 <!-- dt_uuid={{dt_uuid}}<br>req_uuid={{req_uuid}} -->
+<!-- {{ dt_name }} / {{ dt_uuid }}
+<br>
+{{ req_name }} / {{ req_uuid }} -->
 
-<form name="regedit" #editform="ngForm"  (ngSubmit)="onSubmit()" class="form-note-req">
+<form name="regedit" #editform="ngForm"  (ngSubmit)="onSubmit()" class="form-note-req" *ngIf="!formSent">
     <div class="form-group">
-        <label for="username">Návrh</label>
-        <textarea name="suggestion" [(ngModel)]="formdata.suggestion" class="form-control" required ></textarea>
+        <ng-container *ngFor="let rt of requestTypeOptions">
+            <input type="radio" name="requestType" [(ngModel)]="requestType" [id]="rt.id" [value]="rt.id"> <label [for]="rt.id">{{ rt.name }}</label>
+        </ng-container>
     </div>
+    <div class="form-line">
+        <div class="form-group txt">
+            <label for="username">Návrh</label>
+            <textarea name="suggestion" [(ngModel)]="suggestion" class="form-control" required ></textarea>
+        </div>
+
+        <div class="form-group" *ngIf="requestType!='info'">
+            <label>Způsoby užití</label>
+            <ul class="reason-group">
+                <li *ngFor="let item of reasonList" (click)="item.isSelected=!item.isSelected">
+                    <i [class]="item.isSelected?'fas fa-check-square':'far fa-square'"></i>
+                    {{item.name}}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
     <div *ngIf="error" class="form-group error" role="alert">
         Odeslání formuláře selhalo<br>
         {{ error }}
@@ -13,3 +35,7 @@
         <input type="submit" name="submit" value="Odeslat">
     </div>
 </form>
+
+<div *ngIf="formSent" style="margin: 1em; color: green;">
+    Formulář odeslán
+</div>

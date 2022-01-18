@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AuthService } from '../shared/services/auth.service';
 //import { Requirement } from '../swagger/model/requirement';
 import { Requirement, RequirementSet, GrouppedRequirements, GrouppedRequirementSets, BreakdownItem } from '../swagger/model/models';
+import { ModalService } from '../_modal';
 
 @Component({
   selector: 'breakdown-requirements',
@@ -27,9 +28,13 @@ export class BreakdownRequirementsComponent implements OnInit {
   public maxlevel = 0;
   public userdata = false;
 
+  //vars for dt-new-req modal
+  public modal_DtNewReq_data;
+  
+
   constructor(
     public authService: AuthService,
-
+    public modal: ModalService,
   ) { }
 
   ngOnInit(): void {
@@ -48,6 +53,15 @@ export class BreakdownRequirementsComponent implements OnInit {
 /*   reqCollapse(value) {
     this.flat.forEach( (node)=> this.collapsed[node.id] = value );
   } */
+
+/*   openModal(id: string) {
+    this.modalService.open(id);
+  }
+
+  closeModal(id: string) {
+      this.modalService.close(id);
+  } */
+
 
 
   findNodeInTreeById(tree, id) {
@@ -105,4 +119,10 @@ export class BreakdownRequirementsComponent implements OnInit {
     this.flat.forEach( ch => { this.collapsed[ ch.id ] = true; });
   }
 
+
+  public modal_DtNewReq(data) {
+    this.modal_DtNewReq_data = data;
+    console.log(data);
+    this.modal.open('modal_DtNewReq');
+  }
 }

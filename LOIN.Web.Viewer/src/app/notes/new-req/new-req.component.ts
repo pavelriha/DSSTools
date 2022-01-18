@@ -12,7 +12,7 @@ import { SlimapiService } from 'src/app/shared/services/slimapi.service';
 export class NewReqComponent implements OnInit {
 
   @ViewChild('editform') editform: NgForm;
-  @Input() close: (string?)=>void;
+  @Input() close: (uuid?, name?)=>void;
   @Input() name: string;
   public error: string;
   public formdata: any = {};
@@ -39,12 +39,13 @@ export class NewReqComponent implements OnInit {
       return false;
     }
     this.formdata.name = this.name;
+    this.formdata.repository = this.controlService.selectedRepository;
     //console.log(this.formdata);
     //console.log(this.editform.value);
     this.slimapi.requirementsInsert(this.formdata).subscribe({
       next: (r) => {
       //console.log(r);
-      this.close && this.close(r.data.req_uuid);
+      this.close && this.close(r.data.req_uuid, r.data.name);
       //this.router.navigate(['/']);
       //if (typeof this.success == "function") this.success();
       //this.controlService.control.next('note-submited');

@@ -12,6 +12,7 @@ import { ExportExcelService } from "./export-excel.service";
 import { AuthService } from './shared/services/auth.service';
 import { SlimapiService } from './shared/services/slimapi.service';
 import { ControlService } from './shared/services/control.service';
+import { ModalService } from './_modal';
 
 const DT_ID_OFFSET = 9000000; // id_offset pro nami dynamicky pridane polozky breakdown, aby nekolidovali a abychom poznali ktre to jsou
 
@@ -34,7 +35,7 @@ export class AppComponent implements OnInit {
   //@ViewChild('repo') fbRepo: FilterBoxComponent;
   //@ViewChild('repo') repo: nativeElement;
   public errors:string[] = [];
-  public repo: string;
+  //public repo: string;
   //public repoValue: string;
   //public help_url: string = 'https://www.koncepcebim.cz/dokumenty?dok=1063-napoveda-dss-online';
   public help_url: string = 'https://www.koncepcebim.cz/uploads/inq/files/DSS_online_pruvodce_Agentura%20CAS%20%281%29.pdf';
@@ -79,7 +80,8 @@ export class AppComponent implements OnInit {
     private exportexcel: ExportExcelService,
     private authService: AuthService,
     private slimapi: SlimapiService,
-    private controlService: ControlService
+    public controlService: ControlService,
+    public modal: ModalService,
   ) { }
 
   ngOnInit(): void {
@@ -102,7 +104,7 @@ export class AppComponent implements OnInit {
         if (this.USERS_LATEST_REPO_ONLY) {
           this.setDefaultRepo(); //prihlasenej smi pracovat jen s latest, tak ho nastavime
         }
-        if (this.repo) this.fetchFilters(); // kvuli novym sablonam
+        if (this.controlService.selectedRepository) this.fetchFilters(); // kvuli novym sablonam
       } else {
         this.selectedTree = null;
       }
@@ -122,13 +124,11 @@ export class AppComponent implements OnInit {
   }
 
   private setDefaultRepo() {
-    this.repo      = this.repolist[0];
-    //this.repo = 'xxxx';
-    /* this.repo      = this.repolist[0].key;
-    this.repoValue = this.repolist[0].value; */
+    this.controlService.selectedRepository      = this.repolist[0];
   }
 
-  repoChange() {
+  repoChange(repo) {
+    this.controlService.selectedRepository = repo;
     this.deselectAll();
     this.fetchFilters();
   }
@@ -140,17 +140,17 @@ export class AppComponent implements OnInit {
     this.nodesReasons = [];
 
     forkJoin([
-      this.actorsService.apiRepositoryIdActorsGet(this.repo),
-      this.breakdownService.apiRepositoryIdBreakdownGet(this.repo, false),
-      this.milestonesService.apiRepositoryIdMilestonesGet(this.repo),
-      this.reasonsService.apiRepositoryIdReasonsGet(this.repo),
+      this.actorsService.apiRepositoryIdActorsGet(this.controlService.selectedRepository),
+      this.breakdownService.apiRepositoryIdBreakdownGet(this.controlService.selectedRepository, false),
+      this.milestonesService.apiRepositoryIdMilestonesGet(this.controlService.selectedRepository),
+      this.reasonsService.apiRepositoryIdReasonsGet(this.controlService.selectedRepository),
       this.userdata?this.slimapi.getNewDataTemplates(DT_ID_OFFSET):of([])
     ]).subscribe({
       next: ( [ actors, breakdown, milestones, reasons, newdt ] ) => { 
         console.log("filters loaded");
         if (newdt.length>0 && breakdown.length>0) {
           breakdown[0].children.push({
-            id: 8888888,
+            id: DT_ID_OFFSET,
             nameCS: '*** nové návrhy šablon ***',
             children: newdt
           });
@@ -159,6 +159,7 @@ export class AppComponent implements OnInit {
         this.nodesBreakdown = breakdown;
         this.nodesMilestones = milestones;
         this.nodesReasons = reasons;
+        this.controlService.reasons = reasons;
 
         this.initdone = true;
 
@@ -244,20 +245,7 @@ export class AppComponent implements OnInit {
   
   fetchSelectedFilters() {
     if (this.reqtab == 'req') {
-      this.breakdownService.apiRepositoryIdBreakdownRequirementsGet(
-        this.repo, 
-        null, //select
-        null, //filter
-        null, //orderby
-        null, //skip
-        null, //top
-        null, //apply
-        this.fbActors.getSelectedIds().join(','), //actors
-        this.fbReasons.getSelectedIds().join(','), //reasons
-        //this.fbBreaks.getSelectedIds().join(','), //breakdowns
-        this.fbBreaks.getSelectedIds().filter((id) => { return (id < DT_ID_OFFSET); }).join(','), //breakdowns
-        this.fbMilestones.getSelectedIds().join(','), //milestones
-      ).subscribe({
+      this.fetchPlain().subscribe({
         next:  (r) => { this.prepareFetchedData(r) },
         error: (e) => { this.apiError(e) },
       });
@@ -268,7 +256,6 @@ export class AppComponent implements OnInit {
         case "sets_en": groupingtype='EN'; break;
         case "sets_ifc": groupingtype='IFC'; break;
       }
-
 
       this.fetchSets(groupingtype).subscribe({
         next:  (r) => { this.prepareFetchedData(r) },
@@ -283,16 +270,17 @@ export class AppComponent implements OnInit {
     // spolecne zpracovani pro req i set
     this.dataTemplates = [];
 
-    let regs_by_uuid = {};
-    reqs.forEach( (req) => { regs_by_uuid[req.uuid] = req; });
+    let reqs_by_uuid = {};
+    reqs.forEach( (req) => { reqs_by_uuid[req.uuid] = req; });
     this.selectedFlatTree.forEach( (dt) => {
-      let req = regs_by_uuid[dt.uuid];
-      //console.log(dt.name,dt.uuid, req, this.notesReqData[dt.uuid]);
+      let req = reqs_by_uuid[dt.uuid];
+      // nejdriv zjistime zda jsme dostali data k sablonam co jsme chteli
+      // - nedostanem nic pokud je to prazdne a nebo pokud se jedna o DT pridane nove u nas .. v obou pripadech musime zaznam apson trosku zalozit rucne, at k nemu muzem pridavat poznamky apod
       if (!req) { 
         req = {
           id: dt.id,
           uuid: dt.uuid,
-          name: dt.name,
+          nameCS: dt.name,
         };
         if (this.reqtab == 'req') {
           req.requirements = [];
@@ -305,6 +293,7 @@ export class AppComponent implements OnInit {
         // pokud se jedna o skupinu co ma v nazvu obecná, tak ji chceme ve vychozim stavu sbalenou
         req.requirementSets.forEach( set => { if ( set.name.includes('obecn') ) (set as any).collapsed = true; });
       }
+      //console.log(req.nameCS, req,  this.notesReqData[req.uuid]);
       // pokud existuji pridane poznamky v druhem api, tak pridej nove navrhy vlastnosti do dat z hlavniho api
       if (this.notesReqData[req.uuid]) {
         let add: any;
@@ -318,8 +307,8 @@ export class AppComponent implements OnInit {
         } else {
           add = req.requirements;
         }
-        this.notesReqData[req.uuid]['_new'].forEach(uuid => {
-          add.push( this.allRequiremets[uuid]);
+        this.notesReqData[req.uuid]['_new']?.forEach(uuid => {
+          add.push( this.allRequiremets[uuid]?this.allRequiremets[uuid]:{uuid: uuid, nameCS: '!!! error - neznama vlastnost !!! Asi z novějšího IFC?' } );
         });
       }
       this.dataTemplates[req.id] = req;
@@ -389,10 +378,12 @@ export class AppComponent implements OnInit {
 
 
   exportIFC() {
-    let url:string = '/api/'+this.repo+'/requirements/export?'+
+    let filteredBreakdowns = this.fbBreaks.getSelectedIds().filter((id) => { return (id < DT_ID_OFFSET); });
+
+    let url:string = '/api/'+this.controlService.selectedRepository+'/requirements/export?'+
       'actors='+this.fbActors?.getSelectedIds().join(',')+
       '&reasons='+this.fbReasons?.getSelectedIds().join(',')+
-      '&breakdown='+this.fbBreaks?.getSelectedIds().join(',')+
+      '&breakdown='+filteredBreakdowns.join(',')+
       '&milestones='+this.fbMilestones?.getSelectedIds().join(',');
 
     let anchor = document.createElement("a");
@@ -411,17 +402,25 @@ export class AppComponent implements OnInit {
 
   public exportXLS() {
     this.dataLoading = true;
+
+    this.selectedFlatTree = this.fbBreaks.getSelectedIdsWithInfo();
   
     let groupingtype:GroupingType = 'CS';
 
     this.fetchSets(groupingtype).subscribe({
       next: (r) => {
-        //console.log(r); 
+/*         //console.log(r); 
         var data = [];
         r.forEach( (req) => {
           data[req.id] = req;
         });
-        this.exportexcel.export(data, this.fbBreaks.getSelectedNodeTree() );
+        this.exportexcel.export(data, this.fbBreaks.getSelectedNodeTree() ); */
+
+        this.prepareFetchedData(r)
+
+        this.exportexcel.export(this.dataTemplates, this.fbBreaks.getSelectedNodeTree() );
+
+
         this.dataLoading = false;
       },
       error: (e) => { this.apiError(e) },
@@ -431,10 +430,32 @@ export class AppComponent implements OnInit {
 
   }
 
+  public fetchPlain() {
+    let filteredBreakdowns = this.fbBreaks.getSelectedIds().filter((id) => { return (id < DT_ID_OFFSET); });
+    if (filteredBreakdowns.length==0) return of([]);
+
+    return this.breakdownService.apiRepositoryIdBreakdownRequirementsGet(
+      this.controlService.selectedRepository, 
+      null, //select
+      null, //filter
+      null, //orderby
+      null, //skip
+      null, //top
+      null, //apply
+      this.fbActors.getSelectedIds().join(','), //actors
+      this.fbReasons.getSelectedIds().join(','), //reasons
+      //this.fbBreaks.getSelectedIds().join(','), //breakdowns
+      filteredBreakdowns.join(','), //breakdowns
+      this.fbMilestones.getSelectedIds().join(','), //milestones
+    );
+  }
 
   public fetchSets(groupingtype:GroupingType): Observable<any>  {
+    let filteredBreakdowns = this.fbBreaks.getSelectedIds().filter((id) => { return (id < DT_ID_OFFSET); });
+    if (filteredBreakdowns.length==0) return of([]);
+
     return this.breakdownService.apiRepositoryIdBreakdownRequirementSetsGet(
-      this.repo, 
+      this.controlService.selectedRepository, 
       groupingtype, //grouping type
       null, //select
       null, //filter
@@ -444,12 +465,15 @@ export class AppComponent implements OnInit {
       null, // apply
       this.fbActors.getSelectedIds().join(','), //actors
       this.fbReasons.getSelectedIds().join(','), //reasons
-      //this.fbBreaks.getSelectedIds().join(','), //breakdowns
-      this.fbBreaks.getSelectedIds().filter((id) => { return (id < DT_ID_OFFSET); }).join(','), //breakdowns
+      filteredBreakdowns.join(','), //breakdowns
       this.fbMilestones.getSelectedIds().join(','), //milestones
     );
   }
 
+  newDtDone = (uuid:string): void => { 
+    if (uuid) this.fetchFilters();
+    this.modal.close('modal-new-dt');
+  }
 }
 
 

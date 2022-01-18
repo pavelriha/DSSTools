@@ -12,7 +12,10 @@
 
     <div class="form-group">
         <label for="username">Datový typ</label>
-        <ng-select placeholder="vyberte datovy typ" name="datatype" [items]="datatypes" [(ngModel)]="formdata.id_datatype" bindLabel="datatype_cs" bindValue="id_datatype">
+        <ng-select placeholder="vyberte datovy typ" name="datatype" [items]="datatypes" [(ngModel)]="formdata.id_datatype" 
+            [items]="datatypes" bindLabel="datatype_cs" bindValue="id_datatype"
+            [required]="true"
+            >
             <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
                 <div class="item" >
                             <span class="name" >{{item.datatype_cs}}</span>

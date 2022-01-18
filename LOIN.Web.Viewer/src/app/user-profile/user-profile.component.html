@@ -1,0 +1,46 @@
+
+<div class="line">
+
+    <div class="box profile">
+        <div class="foto">
+            <i class="fas fa-user" style="font-size: 100px;"></i>
+        </div>
+        <div class="info">
+            <label>Jméno</label>
+            <div class="text">
+                {{ userData.name }}
+            </div>
+            <label>Email</label>
+            <div class="text">
+                {{ userData.username }}
+            </div>
+            <br>
+        </div>
+    </div>
+
+    <div class="box passwd">
+        <form #passwordform="ngForm" (ngSubmit)="onSubmit()" *ngIf="!done" >
+            <div class="form-group">
+                <label for="password_old">Straré heslo</label>
+                <input type="password" name="password_old" [(ngModel)]="oldPasswd" class="form-control" id="password_old" placeholder="Heslo" required>
+            </div>
+            <div class="form-group">
+                <label for="password1">Nové heslo</label>
+                <input type="password" name="password1" [(ngModel)]="newPasswd1" class="form-control" id="password1" placeholder="Heslo" required>
+            </div>
+            <div class="form-group">
+                <label for="password2">Zopakujte heslo</label>
+                <input type="password" name="password2" [(ngModel)]="newPasswd2" class="form-control" id="password2" placeholder="Heslo" required>
+            </div>
+
+            <div *ngIf="error" class="alert alert-danger" role="alert">
+                změna hesla selhala
+            </div>
+            <button type="submit" class="submit">Změnit heslo</button>
+        </form>
+        <div class="" *ngIf="done">
+            Změna hesla proběhla úspěšně
+        </div>
+    </div>
+
+</div>

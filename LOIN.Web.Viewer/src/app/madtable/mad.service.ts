@@ -69,7 +69,7 @@ export class MadService {
 		  // Django
 	      //params = params.set('filter{'+f.colname+'.icontains}', f.filterstring); 
 		  // PHP
-	      params = params.set('filter['+f.colname+'.icontains]', f.filterstring); 
+	      params = params.set('filter['+f.colname+'.'+f.compmode+']', f.filterstring); 
 		}
 	  });
 	}

@@ -6,11 +6,12 @@ import { UserGuard } from './shared/user.guard';
 import { AdminGuard } from './shared/admin.guard';
 import { MadDetailFromRouterComponent, MadTableFromRouterComponent } from './madtable/madtable.module';
 import { MadMasterConfig } from './madtable/mad.types';
-import { NotesReqDesc, UserDesc } from './workplace/mtconfig';
+import { NotesDtEditDesc, NotesReqDesc, RequirementsDesc, RequirementsEditDesc, stateFilterDef, UserDesc } from './workplace/mtconfig';
 import { WorkplaceComponent } from './workplace/workplace.component';
 import { NotesWorkplaceComponent } from './workplace/notes-workplace/notes-workplace.component';
 import { TodoComponent } from './todo/todo.component';
-import { DtNewComponent } from './notes/dt-new/dt-new.component';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 
 
@@ -18,14 +19,21 @@ const ROUTES: Routes = [
     //{path: '', redirectTo: '/login', pathMatch: 'full'},
     {path: '',      component: AppComponent},
     {path: 'login', component: LoginComponent},
-
+    {path: 'access-denied', redirectTo: '/workplace/access-denied'}, 
+    
     
     {path: 'workplace', canActivate:[UserGuard], component: WorkplaceComponent, children: [
-      {path: 'user', canActivate:[AdminGuard], children: [
+      {path: 'access-denied', component: AccessDeniedComponent},
+      {path: 'profile',  component: UserProfileComponent },
+      {path: 'users', canActivate:[AdminGuard], children: [
           { path: '', component: MadTableFromRouterComponent, data: { desc: UserDesc, conf: <MadMasterConfig>{
+                title: 'Správa uživatelů',
                 url: '/slimapi/users',
+                paging: [],
                 columns: [
-                  { name: 'detail', title: 'detail', type: 'link', icon: 'search', url: '.', urlid: 'id_user' },
+                  //{ name: 'detail', title: 'detail', type: 'link', icon: 'search', url: '.', urlid: 'id_user' },
+                  { name: 'edit',  type: 'link', icon: 'edit', url: '.', urlid: 'id_user' },
+                  { name: 'name', filtering: {filterString: '', placeholder: 'Filter'}    },
                   { name: 'email', filtering: {filterString: '', placeholder: 'Filter'}    },
                   { name: 'role', filtering: {filterString: '', placeholder: 'Filter'} },
                   //{ name: 'locations_xref', filtering: {filterString: '', placeholder: 'Filter'} },
@@ -39,10 +47,9 @@ const ROUTES: Routes = [
                 ],
               },
           }},
-          { path: 'profile', component: TodoComponent },
           { path: 'new', component: MadDetailFromRouterComponent, data: { desc: UserDesc, conf: <MadMasterConfig>{
                 url: '/slimapi/users',
-                columns: [ "email", "passwd", "role", "active" ],
+                columns: [ "name", "email", "passwd", "role", "active" ],
                 formtype: "forcenew",
                 onSuccessUrl: "..",
                 onCancelUrl: "..",
@@ -51,7 +58,7 @@ const ROUTES: Routes = [
           }},
           { path: ':id', component: MadDetailFromRouterComponent, data: { desc: UserDesc, conf: <MadMasterConfig>{
                 baseurl: '/slimapi/users/{id}',
-                columns: [ "email", "passwd", "role", "active" ],
+                columns: [ "name", "email", "passwd", "role", "active" ],
                 formtype: 'forceedit',//'editable',
                 onSuccessUrl: "..",
                 onCancelUrl: "..",
@@ -61,136 +68,252 @@ const ROUTES: Routes = [
 
 
       {path: 'notes', canActivate:[UserGuard], component: NotesWorkplaceComponent, children: [
+        {path: '', redirectTo: 'req', pathMatch: 'full' },
         {path: 'req', canActivate:[UserGuard], children: [
           { path: '', component: MadTableFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+                title: 'Poznámky k vlastnostem',
                 url: '/slimapi/notes/req/list/notes',
+/*                 filter: [
+                  { name: 'stav', col_name: 'state', value: '', type: 'fa', options: [
+                    { id: '', text: 'vše' },
+                    { id: 'new', text: 'nové' },
+                    { id: 'confirmed', text: 'schválené' },
+                    { id: 'rejected', text: 'zamítnuté' },
+                  ]},
+                  { name: 'creator', col_name: 'id_user_creator', value: '', type: 'fa', optionsUrl: '/slimapi/options/users' },
+                ], */
                 columns: [
-                  { name: 'detail', title: 'detail', type: 'link', icon: 'edit', url: '.', urlid: 'id_notes_req' },
-                  { name: 'milestone_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
-                  { name: 'dt_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
-                  { name: 'req_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
-                  { name: 'state' },
+                  { name: 'detail', title: 'detail', type: 'link', icon: 'search', url: 'detail', urlid: 'id_notes_req' },
+                  { name: 'edit',  type: 'link', icon: 'edit', url: 'edit', urlid: 'id_notes_req', if: 'canEdit' },
+                  { name: 'check', type: 'link', icon: 'thumb-up', url: 'check', urlid: 'id_notes_req', if: 'canCheck' },
+                  //{ name: 'milestone_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                  { name: 'milestone_name', filtering: { col_name: 'milestone_uuid', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/milestones/note'  }    },
+                  //{ name: 'dt_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                  { name: 'dt_name',  filtering: { col_name: 'dt_uuid', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/dt/note'  }    },
+                  //{ name: 'req_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                  { name: 'req_name', filtering: { col_name: 'req_uuid', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/req/note'  }    },
                   { name: 'created' },
+                  { name: 'request_type' },
                   { name: 'suggestion', filtering: {filterString: '', placeholder: 'Filter'} },
+                  { name: 'reasons' },
                   { name: 'replied' },
                   { name: 'reply', filtering: {filterString: '', placeholder: 'Filter'} },
-                  { name: 'creator_email', filtering: {filterString: '', placeholder: 'Filter'}    },
-                  { name: 'worker_email', filtering: {filterString: '', placeholder: 'Filter'}    },
+                  { name: 'creator_name', filtering: {filterString: '', col_name: 'id_user_creator', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/users' } },
+                  { name: 'worker_name', filtering: {filterString: '', col_name: 'id_user_worker', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/users' }  },
+                  { name: 'repository', filtering: {filterString: '', placeholder: 'Filter'}    },
+                  { name: 'state', filtering: stateFilterDef },
                   //{ name: 'locations_xref', filtering: {filterString: '', placeholder: 'Filter'} },
                 ],
                 trClassDyn: (data) => { return {
-                  'table-success' : data.state=='confirmed',
-                  'table-danger' :   data.state=='rejected',
+                  'confirmed' : data.state=='confirmed',
+                  'rejected' :  data.state=='rejected',
                 }},
               },
           }},
-          { path: ':id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
-              baseurl: '/slimapi/notes/req/detail/{id}',
-              columns: [ "state", "reply" ],
+          { path: 'detail/:id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+            baseurl: '/slimapi/notes/req/detail/{id}',
+            columns: [ "state", "milestone", "dt", "req", 
+              "request_type", "suggestion", "reasons", "created", "creator_email", "replied", "worker_email", "reply", "repository" ],
+            //formtype: 'editable',
+            onSuccessUrl: "../..",
+            onCancelUrl: "../..",
+          },
+          }},
+          { path: 'edit/:id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              baseurl: '/slimapi/notes/req/update/{id}',
+              columns: [  "milestone", "dt", "req", 
+                "request_type", "suggestion",  "reasons"  ],
+              readonlyCollumns: [  "milestone", "dt", "req" ],
               formtype: 'forceedit',//'editable',
-              onSuccessUrl: "..",
-              onCancelUrl: "..",
+              onSuccessUrl: "../..",
+              onCancelUrl: "../..",
+            },
+          }},
+          { path: 'check/:id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              baseurl: '/slimapi/notes/req/check/{id}',
+              columns: [ 
+                "milestone", "dt", "req", "suggestion", "reasons",  
+                 "state", "reply" ],
+              readonlyCollumns: ["milestone", "dt", "req", "suggestion", "reasons"],
+              formtype: 'forceedit',//'editable',
+              onSuccessUrl: "../..",
+              onCancelUrl: "../..",
             },
           }},
         ]},
         { path: 'dt-req', canActivate:[UserGuard], children: [
           { path: '', component: MadTableFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              title: 'Návrhy vlastností do šablon',
               url: '/slimapi/notes/req/list/newdtreq',
               columns: [
-                { name: 'detail', title: 'detail', type: 'link', icon: 'edit', url: '.', urlid: 'id_notes_req' },
-                { name: 'milestone_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
-                { name: 'dt_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
-                { name: 'req_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
-                { name: 'state' },
+                { name: 'detail', title: 'detail', type: 'link', icon: 'search', url: 'detail', urlid: 'id_notes_req' },
+                { name: 'edit',  type: 'link', icon: 'edit', url: 'edit', urlid: 'id_notes_req', if: 'canEdit' },
+                { name: 'check', type: 'link', icon: 'thumb-up', url: 'check', urlid: 'id_notes_req', if: 'canCheck' },
+                //{ name: 'milestone_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'milestone_name', filtering: { col_name: 'milestone_uuid', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/milestones/new'  }    },
+                //{ name: 'dt_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'dt_name',  filtering: { col_name: 'dt_uuid', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/dt/new'  }   },
+                //{ name: 'req_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'req_name', filtering: { col_name: 'req_uuid', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/req/new'  }    },
+                { name: 'state', filtering: stateFilterDef },
                 { name: 'created' },
+                { name: 'request_type' },
                 { name: 'suggestion', filtering: {filterString: '', placeholder: 'Filter'} },
+                { name: 'reasons' },
                 { name: 'replied' },
                 { name: 'reply', filtering: {filterString: '', placeholder: 'Filter'} },
-                { name: 'creator_email', filtering: {filterString: '', placeholder: 'Filter'}    },
-                { name: 'worker_email', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'creator_name', filtering: {filterString: '', col_name: 'id_user_creator', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/users' } },
+                { name: 'worker_name', filtering: {filterString: '', col_name: 'id_user_worker', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/users' }  },
+                { name: 'repository', filtering: {filterString: '', placeholder: 'Filter'}    },
               ],
               trClassDyn: (data) => { return {
-                'table-success' : data.state=='confirmed',
-                'table-danger' :   data.state=='rejected',
+                'confirmed' : data.state=='confirmed',
+                'rejected' :  data.state=='rejected',
               }},
             },
           }},
-          { path: ':id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
-              baseurl: '/slimapi/notes/req/detail/{id}',
-              columns: [ "state", "reply" ],
+          { path: 'detail/:id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+            baseurl: '/slimapi/notes/req/detail/{id}',
+            columns: [ "state", "milestone", "dt", "req",
+              "request_type", "suggestion", "reasons",  "created", "creator_email", "replied", "worker_email", "reply", "repository" ],
+            //formtype: 'editable',
+            onSuccessUrl: "../..",
+            onCancelUrl: "../..",
+          },
+          }},
+          { path: 'edit/:id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              baseurl: '/slimapi/notes/req/update/{id}',
+              columns: [ "milestone", "dt", "req", 
+                "request_type", "suggestion",  "reasons"  ],
+              readonlyCollumns: [ "milestone", "dt", "req"],
               formtype: 'forceedit',//'editable',
-              onSuccessUrl: "..",
-              onCancelUrl: "..",
+              onSuccessUrl: "../..",
+              onCancelUrl: "../..",
+            },
+          }},
+          { path: 'check/:id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              baseurl: '/slimapi/notes/req/check/{id}',
+              columns: [ 
+                "milestone", "dt", "req", "suggestion", "reasons",
+                "state", "reply" ],
+              readonlyCollumns: [ "milestone", "dt", "req", "suggestion", "reasons" ],
+              formtype: 'forceedit',//'editable',
+              onSuccessUrl: "../..",
+              onCancelUrl: "../..",
             },
           }},
         ]},
         { path: 'dt', canActivate:[UserGuard], children: [
           { path: '', component: MadTableFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              title: 'Nové datové šablony',
               url: '/slimapi/notes/dt/list',
               columns: [
-                { name: 'detail', title: 'detail', type: 'link', icon: 'edit', url: '.', urlid: 'id_notes_dt' },
-                { name: 'dt_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'detail', title: 'detail', type: 'link', icon: 'search', url: 'detail', urlid: 'id_notes_dt' },
+                { name: 'edit',  type: 'link', icon: 'edit', url: 'edit', urlid: 'id_notes_dt', if: 'canEdit' },
+                { name: 'check', type: 'link', icon: 'thumb-up', url: 'check', urlid: 'id_notes_dt', if: 'canCheck' },
+                //{ name: 'dt_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
                 { name: 'dt_name', filtering: {filterString: '', placeholder: 'Filter'}    },
-                { name: 'state' },
+                { name: 'state', filtering: stateFilterDef },
                 { name: 'created' },
                 { name: 'suggestion', filtering: {filterString: '', placeholder: 'Filter'} },
                 { name: 'replied' },
                 { name: 'reply', filtering: {filterString: '', placeholder: 'Filter'} },
-                { name: 'creator_email', filtering: {filterString: '', placeholder: 'Filter'}    },
-                { name: 'worker_email', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'creator_name', filtering: {filterString: '', col_name: 'id_user_creator', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/users' } },
+                { name: 'worker_name', filtering: {filterString: '', col_name: 'id_user_worker', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/users' }  },
+                { name: 'repository', filtering: {filterString: '', placeholder: 'Filter'}    },
               ],
               trClassDyn: (data) => { return {
-                'table-success' : data.state=='confirmed',
-                'table-danger' :   data.state=='rejected',
+                'confirmed' : data.state=='confirmed',
+                'rejected' :  data.state=='rejected',
               }},
             },
           }},
-          { path: ':id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
-              baseurl: '/slimapi/notes/dt/detail/{id}',
-              columns: [ "state", "reply" ],
+          { path: 'detail/:id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+            baseurl: '/slimapi/notes/dt/detail/{id}',
+            columns: [ "state", "dt", "suggestion",  "created", "creator_email", "replied", "worker_email", "reply", "repository" ],
+            //formtype: 'editable',
+            onSuccessUrl: "../..",
+            onCancelUrl: "../..",
+          },
+          }},
+          { path: 'edit/:id', component: MadDetailFromRouterComponent, data: { desc: NotesDtEditDesc, conf: <MadMasterConfig>{
+              baseurl: '/slimapi/notes/dt/update/{id}',
+              columns: [ "dt_name", "suggestion" ],
               formtype: 'forceedit',//'editable',
-              onSuccessUrl: "..",
-              onCancelUrl: "..",
+              onSuccessUrl: "../..",
+              onCancelUrl: "../..",
+            },
+          }},
+          { path: 'check/:id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+              baseurl: '/slimapi/notes/dt/check/{id}',
+              columns: [ "dt", "suggestion",
+                "state", "reply" ],
+              readonlyCollumns: [ "dt", "suggestion" ],
+              formtype: 'forceedit',//'editable',
+              onSuccessUrl: "../..",
+              onCancelUrl: "../..",
             },
           }},
         ]},
         
         { path: 'requirement', canActivate:[UserGuard], children: [
-          { path: '', component: MadTableFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+          { path: '', component: MadTableFromRouterComponent, data: { desc: RequirementsDesc, conf: <MadMasterConfig>{
+              title: 'Nové vlastnosti',
               url: '/slimapi/requirements',
               columns: [
-                { name: 'detail', title: 'detail', type: 'link', icon: 'edit', url: '.', urlid: 'id_requirement' },
-                { name: 'req_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'detail', title: 'detail', type: 'link', icon: 'search', url: 'detail', urlid: 'id_requirement' },
+                { name: 'edit', title: 'edit', type: 'link', icon: 'edit', url: 'edit', urlid: 'id_requirement', if: 'canEdit' },
+                { name: 'check', title: 'check', type: 'link', icon: 'thumb-up', url: 'check', urlid: 'id_requirement', if: 'canCheck' },
+                //{ name: 'req_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
                 { name: 'name', filtering: {filterString: '', placeholder: 'Filter'}    },
                 { name: 'units', filtering: {filterString: '', placeholder: 'Filter'}    },
                 { name: 'description', filtering: {filterString: '', placeholder: 'Filter'}    },
                 { name: 'note', filtering: {filterString: '', placeholder: 'Filter'}    },
-                { name: 'state' },
+                { name: 'state', filtering: stateFilterDef },
                 { name: 'created' },
                 { name: 'replied' },
                 { name: 'reply', filtering: {filterString: '', placeholder: 'Filter'} },
-                { name: 'creator_email', filtering: {filterString: '', placeholder: 'Filter'}    },
-                { name: 'worker_email', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'creator_name', filtering: {filterString: '', col_name: 'id_user_creator', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/users' } },
+                { name: 'worker_name', filtering: {filterString: '', col_name: 'id_user_worker', type: 'select', compmode: 'is', optionsUrl: '/slimapi/options/users' }  },
+                { name: 'repository', filtering: {filterString: '', placeholder: 'Filter'}    },
               ],
               trClassDyn: (data) => { return {
-                'table-success' : data.state=='confirmed',
-                'table-danger' :   data.state=='rejected',
+                'confirmed' : data.state=='confirmed',
+                'rejected' :  data.state=='rejected',
               }},
             },
           }},
-          { path: ':id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
+          { path: 'detail/:id', component: MadDetailFromRouterComponent, data: { desc: RequirementsDesc, conf: <MadMasterConfig>{
               baseurl: '/slimapi/requirements/detail/{id}',
-              columns: [ "state", "reply" ],
+              columns: [ "state", "name", "units", "description", "note", "created", "creator_email", "replied", "worker_email", "reply", "repository" ],
+              //formtype: 'editable',
+              onSuccessUrl: "../..",
+              onCancelUrl: "../..",
+            },
+          }},
+          { path: 'edit/:id', component: MadDetailFromRouterComponent, data: { desc: RequirementsEditDesc, conf: <MadMasterConfig>{
+              baseurl: '/slimapi/requirements/update/{id}',
+              columns: [ "name", "description", "note" ],
               formtype: 'forceedit',//'editable',
-              onSuccessUrl: "..",
-              onCancelUrl: "..",
+              onSuccessUrl: "../..",
+              onCancelUrl: "../..",
+            },
+          }},
+          { path: 'check/:id', component: MadDetailFromRouterComponent, data: { desc: RequirementsDesc, conf: <MadMasterConfig>{
+              baseurl: '/slimapi/requirements/check/{id}',
+              columns: [ "name", "units", "description", "note",
+                "state", "reply" ],
+              readonlyCollumns: [ "name", "units", "description", "note" ],
+              formtype: 'forceedit',//'editable',
+              onSuccessUrl: "../..",
+              onCancelUrl: "../..",
             },
           }},
         ]},
       ]},
     ]},
 
-    {path: 'dtnew', canActivate:[UserGuard], component:DtNewComponent },
+    //{path: 'dtnew', canActivate:[UserGuard], component:DtNewComponent },
     //{path: 'reqnew', canActivate:[UserGuard], component:NewReqComponent },
     
     {path: '**', component: PageNotFoundComponent}

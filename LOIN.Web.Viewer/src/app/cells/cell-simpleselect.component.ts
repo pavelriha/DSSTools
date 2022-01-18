@@ -5,7 +5,7 @@ import { MadTableCell } from '../madtable/madtablecell.class';
 @Component({
   template: `
   <ng-container *ngIf="!edit ; else editform">
-  {{ data[item.name] }}
+    {{ getValue() }}
   </ng-container>
   <ng-template #editform >
     <div class="form-group">
@@ -27,6 +27,12 @@ export class CellSimpleSelectComponent extends MadTableCell implements OnInit {
   //constructor() { super(); }
 
   ngOnInit(): void {
+  }
+
+  public getValue() {
+    let value = this.desc.properties[this.item.name].options.find(x => x.id === this.data[this.item.name] ).name;
+    if (!value) return this.data[this.item.name];
+    return value;
   }
 
 }

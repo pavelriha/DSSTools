@@ -10,138 +10,124 @@
 </ng-container>
 
 <div class="data-table" *ngIf="data && config && !detail">
-{{ TableConfig.title }}
-<br>
-      <div class="form-group form-group--select" *ngFor="let f of TableConfig.filter">
-        <label for="">{{ f.name }}</label>
-        <div class="select">
-        <select class="form-control" [(ngModel)]="f.value" name="" (change)="onChangeTable()">
-          <option *ngFor="let o of f.options"  [value]="o.id">{{o.text}}</option>
-        </select>
-        </div>
-      </div>
-<br>
-		<div class="data-table-inner position-relative">
-<!--
-		  <div class="data-loader" [class.loading]="loading">
-		   <i class="zmdi zmdi-refresh animated infinite rotateOut"></i>
-		  </div>
--->
-<!--
-        <div class="data-table__header">
-          <div class="form-group data-table__filter">
-            <input *ngIf="config.filtering"
-                   placeholder="Filter all columns"
-                   [ngTableFiltering]="config.filtering"
-                   class="form-control"
-                   (tableChanged)="onChangeTable(config)"/>
-            <i class="form-group__bar"></i>
-          </div>
-        </div>
--->
+	<h2>{{ TableConfig.title }}</h2>
 
-		<div class="btn-toolbar justify-content-between">
-		  <div class="btn-group">
-		    <button class="btn btn-light" (click)="reload()" title="Reload"><i class="zmdi zmdi-refresh" [class.zmdi-hc-spin]="loading"></i></button>
-		    <button class="btn btn-light" disabled>Results:{{ data.meta.total_results }}</button>
-		    <button class="btn btn-light" disabled>Page:{{ data.meta.page }}/{{ data.meta.total_pages }}</button>
-		    <button class="btn btn-light" *ngIf="TableConfig.insert" (click)="openDetailNew({},{})" [title]="TableConfig.insert.title"><i class="zmdi zmdi-plus"></i></button>
-		    <button class="btn btn-light" *ngFor="let b of TableConfig.buttons_top" 
-                    [title]="b.title"
-                    (click)="b.click && b.click()" 
-                    [routerLink]="b.url" 
-                    [ngClass]="[b.icon ? 'zmdi zmdi-'+b.icon : '']" 
-                    >{{ b.text }}
-            </button>
-		  </div>
-		  <div class="btn-group">
-		    <button class="btn btn-light" *ngIf="filtering" (click)="showFilterRow=!showFilterRow" [class.active]="showFilterRow"><i class="zmdi zmdi-search"></i></button>
-		    <button class="btn btn-light" *ngFor="let p of TableConfig.paging" [class.active]="data.meta.per_page==p" (click)="setPerPage(p)">{{ p }}</button>
-		  </div>
+	<div class="top-filter m-4" *ngIf="TableConfig.filter">
+		<div class="form-row">
+			<div class="form-group form-group--select p-1" *ngFor="let f of TableConfig.filter">
+				<label for="">{{ f.name }}</label>
+				<div class="select">
+					<select class="form-control" [(ngModel)]="f.value" name="" (change)="onChangeTable()">
+						<option *ngFor="let o of f.options"  [value]="o.id">{{o.text}}</option>
+					</select>
+				</div>
+			</div>
 		</div>
+	</div>
 
-		<!--
-        <ng-table [config]="config"
-                  (tableChanged)="onChangeTable()"
-				  (cellClicked)="onClick($event.row.id)"
-                  [rows]="data[json_field]" [columns]="columns">
-        </ng-table>
-		-->
-		<div class="table-responsive">
-			<table class="table table-bordered table-hover">
-				<thead class="thead-light">
-                    <th *ngFor="let column of columns" (click)="sortToggle(column)"> 
-                        <span [class.float-right]="dataDescription.properties[column.name]?.type == 'decimal'">
-                            <i *ngIf="column.type && column.icon ; else elseTitle" class="zmdi zmdi-{{column.icon}}"></i>
-                            <ng-template #elseTitle>{{ column.title }}</ng-template>
-							<span *ngIf="!column.type && column.sort!==false" class="zmdi-hc-stack">
-                                <i *ngIf="column.sort!='asc' " class="zmdi zmdi-hc-lg zmdi-hc-stack-1x zmdi-caret-down" style="left:-25%"></i>
-                                <i *ngIf="column.sort!='desc'"  class="zmdi zmdi-hc-lg zmdi-hc-stack-1x zmdi-caret-up"></i>
-                            </span>
-                        </span>
-                    </th>
-				</thead>
-				<tbody>
-				<tr *ngIf="filtering && showFilterRow">
-				  <td *ngFor="let column of columns">
-				    <div class="input-group">
-				    <input *ngIf="column.filtering" 
-					  placeholder="{{column.filtering.placeholder}}" 
-					  [(ngModel)]="column.filtering.filterString"
-					  (keyup)="filter.next()"
-					  class="form-control"
-				    >
-					<i class="form-group__bar"></i>
-					</div>
-				  </td>
-				</tr>
-				<tr *ngFor="let d of data[json_field]" [ngClass]="TableConfig.trClassDyn && TableConfig.trClassDyn(d)">
-				<td *ngFor="let c of columns"> 
-					<ng-container *ngIf="(!c.if || d[c.if]) && (!c.notif || !d[c.notif])" [ngSwitch]="c.type" >
+	<div class="d-flex justify-content-center">
+		<div class="mw-100">
+			<div class="btn-toolbar justify-content-between">
+				<div class="btn-group">
+					<button class="btn btn-light" (click)="reload()" title="Reload"><i class="zmdi zmdi-refresh" [class.zmdi-hc-spin]="loading"></i></button>
+					<button class="btn btn-light" disabled>Results:{{ data.meta.total_results }}</button>
+					<button class="btn btn-light" disabled>Page:{{ data.meta.page }}/{{ data.meta.total_pages }}</button>
+					<button class="btn btn-light" *ngIf="TableConfig.insert" (click)="openDetailNew({},{})" [title]="TableConfig.insert.title"><i class="zmdi zmdi-plus"></i></button>
+					<button class="btn btn-light" *ngFor="let b of TableConfig.buttons_top" 
+							[title]="b.title"
+							(click)="b.click && b.click()" 
+							[routerLink]="b.url" 
+							[ngClass]="[b.icon ? 'zmdi zmdi-'+b.icon : '']" 
+							>{{ b.text }}
+					</button>
+				</div>
+				<div class="btn-group">
+					<button class="btn btn-light" *ngIf="filtering" (click)="showFilterRow=!showFilterRow" [class.active]="showFilterRow"><i class="zmdi zmdi-search"></i></button>
+					<button class="btn btn-light" *ngFor="let p of TableConfig.paging" [class.active]="data.meta.per_page==p" (click)="setPerPage(p)">{{ p }}</button>
+				</div>
+			</div>
 
-					  <a *ngSwitchCase="'delete'" class="actions__item zmdi zmdi-{{c.icon}}" (click)="restDelete( d.id, c.url );"></a>
-					  <a *ngSwitchCase="'detail'" class="actions__item zmdi zmdi-{{c.icon?c.icon:'search'}}" (click)="openDetail(c,d)"></a>
-					  <a *ngSwitchCase="'edit'" class="actions__item zmdi zmdi-{{c.icon?c.icon:'edit'}}" (click)="openDetailEdit(c,d)"></a>
-<!--
-					  <div *ngSwitchCase="'popinfo'" dropdown [dropup]="true" container="body">
-					    <a dropdownToggle><i class="actions__item zmdi zmdi-{{c.icon}}" ></i></a>
-						<ul *dropdownMenu class="dropdown-menu dropdown-menu-right px-4 py-3 border border-theme">
-						  <mad-detail [data]="d" [desc]="dataDescription" [columns]="c.popcols"></mad-detail>
-						</ul>
-					  </div>
--->
+			<div [class]="TableConfig.mtWrapperClass">
+				<table class="table table-bordered table-hover">
+					<thead class="thead-light">
+						<th *ngFor="let column of columns" (click)="sortToggle(column)"> 
+							<span [class.float-right]="dataDescription.properties[column.name]?.type == 'decimal'">
+								<i *ngIf="column.type && column.icon ; else elseTitle" class="zmdi zmdi-{{column.icon}}"></i>
+								<ng-template #elseTitle>{{ column.title }}</ng-template>
+								<span *ngIf="!column.type && column.sort!==false" class="zmdi-hc-stack">
+									<i *ngIf="column.sort!='asc' " class="zmdi zmdi-hc-lg zmdi-hc-stack-1x zmdi-caret-down" style="left:-25%"></i>
+									<i *ngIf="column.sort!='desc'"  class="zmdi zmdi-hc-lg zmdi-hc-stack-1x zmdi-caret-up"></i>
+								</span>
+							</span>
+						</th>
+					</thead>
+					<tbody>
+					<tr *ngIf="filtering && showFilterRow">
+					<td *ngFor="let column of columns">
+						<div class="input-group" *ngIf="column.filtering" >
+							<select class="form-control" [(ngModel)]="column.filtering.filterString" [name]="column.name" (change)="onChangeTable()" *ngIf="column.filtering?.type=='select' ; else  elseTextFilter">
+								<option *ngFor="let o of column.filtering.options"  [value]="o.id">{{o.text}}</option>
+							</select>
+
+							<ng-template #elseTextFilter>
+								<input
+									placeholder="{{column.filtering.placeholder}}" 
+									[(ngModel)]="column.filtering.filterString"
+									(keyup)="filter.next()"
+									class="form-control"
+								>
+								<i class="form-group__bar"></i>
+							</ng-template>
+						</div>
+					</td>
+					</tr>
+					<tr *ngFor="let d of data[json_field]" [ngClass]="TableConfig.trClassDyn && TableConfig.trClassDyn(d)">
+					<td *ngFor="let c of columns"> 
+						<ng-container *ngIf="(!c.if || d[c.if]) && (!c.notif || !d[c.notif])" [ngSwitch]="c.type" >
+
+						<a *ngSwitchCase="'delete'" class="actions__item zmdi zmdi-{{c.icon}}" (click)="restDelete( d.id, c.url );"></a>
+						<a *ngSwitchCase="'detail'" class="actions__item zmdi zmdi-{{c.icon?c.icon:'search'}}" (click)="openDetail(c,d)"></a>
+						<a *ngSwitchCase="'edit'" class="actions__item zmdi zmdi-{{c.icon?c.icon:'edit'}}" (click)="openDetailEdit(c,d)"></a>
+	<!--
+						<div *ngSwitchCase="'popinfo'" dropdown [dropup]="true" container="body">
+							<a dropdownToggle><i class="actions__item zmdi zmdi-{{c.icon}}" ></i></a>
+							<ul *dropdownMenu class="dropdown-menu dropdown-menu-right px-4 py-3 border border-theme">
+							<mad-detail [data]="d" [desc]="dataDescription" [columns]="c.popcols"></mad-detail>
+							</ul>
+						</div>
+	-->
 
 
-				      <mad-table-cell *ngSwitchDefault [item]="c" [data]="d" [desc]="dataDescription" [conf]="TableConfig" [setLoading]="loadingCallback" [reload]="reloadCallback"></mad-table-cell>
-				      
-					</ng-container>
-				</td>
-				</tr>
-				</tbody>
-                <tfoot *ngIf="TableConfig.count_total">
-                    <tr class="sum">
-                        <th *ngFor="let c of columns"> 
-                            {{ dataSum[c.name] | number:'1.2-2' }}
-                        </th>
-                    </tr>
-                </tfoot>
-			</table>
+						<mad-table-cell *ngSwitchDefault [item]="c" [data]="d" [desc]="dataDescription" [conf]="TableConfig" [setLoading]="loadingCallback" [reload]="reloadCallback"></mad-table-cell>
+						
+						</ng-container>
+					</td>
+					</tr>
+					</tbody>
+					<tfoot *ngIf="TableConfig.count_total">
+						<tr class="sum">
+							<th *ngFor="let c of columns"> 
+								{{ dataSum[c.name] | number:'1.2-2' }}
+							</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+
+			<div class="data-table__footer">
+				<pagination *ngIf="config.paging && data.meta.total_pages>1" class="justify-content-center"
+						[totalItems]="data.meta.total_results"
+						[itemsPerPage]="data.meta.per_page"
+						[(ngModel)]="data.meta.page"
+						[maxSize]="8"
+						[boundaryLinks]="true"
+						[rotate]="false"
+						(pageChanged)="getData($event.itemsPerPage, $event.page)"
+				>
+				</pagination>
+			</div>
 		</div>
-
-        <div class="data-table__footer">
-          <pagination *ngIf="config.paging && data.meta.total_pages>1" class="justify-content-center"
-                      [totalItems]="data.meta.total_results"
-                      [itemsPerPage]="data.meta.per_page"
-                      [(ngModel)]="data.meta.page"
-                      [maxSize]="8"
-					  [boundaryLinks]="true"
-					  [rotate]="false"
-                      (pageChanged)="getData($event.itemsPerPage, $event.page)"
-		  >
-          </pagination>
-        </div>
-
-		</div>
+	</div>
 
 </div>
 

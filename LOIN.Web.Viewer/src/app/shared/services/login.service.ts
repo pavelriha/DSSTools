@@ -56,6 +56,7 @@ export class LoginService {
   }
 
   userLogout() {
+    console.log('LS userLogout');
     this.http.get( this.slimapi.makeUrl('logout') ).subscribe(
           r => {
               this.authService.clearUser();

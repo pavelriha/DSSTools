@@ -22,6 +22,7 @@ export class MadMasterConfig {
   
   // madTable
   title?: string;
+  mtWrapperClass?: string; // napr table-responsive
   insert?: any;
   count_total?: boolean;
   filter?:Array<any>;
@@ -33,4 +34,11 @@ export class MadMasterConfig {
   // madDetail
   mdWrapperClass?:string;
   mdTableClass?:string;
+  mdLabelSubmit?:string;
+  mdLabelCancel?:string;
+  readonlyCollumns?:Array<string>; // silnejsi variante read_only flagu v description, vubec to bunku neprepne na edit
+  //nepodarilo se realizovat mdSubmitButtons?:Array<any>; 
+  // madDetailPage (MadDetailFromRouterComponent)
+  onSuccessUrl?:string;
+  onCancelUrl?:string;
 }

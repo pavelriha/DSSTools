@@ -12,9 +12,9 @@
 /*     border-right-width: 0px;
     border-top-width: 0px;
     border-bottom-width: 0px; */
-    &.new       { border-color: #e69600; background-color: #ffe; }//.state { background-color: #ff0;} }
-    &.confirmed { border-color: #007000; background-color: #efe; }//.state { background-color: #0f0;} }
-    &.rejected  { border-color: #c00; background-color: #fee; }//.state { background-color: #f00;} }
+    &.new       { border-color: $color-notes-new-border; background-color: $color-notes-new-bg1; &:hover { background-color: $color-notes-new-bg2;} }//.state { background-color: #ff0;} }
+    &.confirmed { border-color: $color-notes-confirmed-border; background-color: $color-notes-confirmed-bg1; &:hover { background-color: $color-notes-confirmed-bg2;} }//.state { background-color: #0f0;} }
+    &.rejected  { border-color: $color-notes-rejected-border; background-color: $color-notes-rejected-bg1; &:hover { background-color: $color-notes-rejected-bg2;} }//.state { background-color: #f00;} }
 
     .state {
         position: absolute;

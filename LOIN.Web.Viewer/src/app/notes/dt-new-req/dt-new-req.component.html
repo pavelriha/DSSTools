@@ -1,9 +1,13 @@
 <h2 style="margin-top: 0;">Výběr nové vlastnosti k datové šabloně "{{ dt_data?.nameCS }}"</h2>
 
-<div *ngIf="!formNewReq">
-    <ng-select placeholder="vyberte novou vlastnost" [items]="requirements" [(ngModel)]="selectedRequirement" bindLabel="nameCS" bindValue="uuid" [addTag]="newReqOpen">
+<div>
+    <!-- ng-select vypnem pres NgIf aby se komponenta resla a vnimla zmenu v selectedRequirement !!! -->
+    <ng-select *ngIf="!formNewReq" placeholder="vyberte novou vlastnost" [items]="requirements" [(ngModel)]="selectedRequirement" 
+        bindLabel="nameCS" XbindValue="uuid" [addTag]="newReqOpen" [multiple]="true"
+        [compareWith]="compare"
+        >
         <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-            <div class="item" [class]="item._class" >
+            <div class="item" [class]="item._class" [class.in_dt]="item.in_dt" >
                         <span class="name" >{{item.nameCS}}</span>
                         &nbsp; 
                         <span class="info">
@@ -24,13 +28,19 @@
                         </div>
             </div>
         </ng-template>
+        <ng-template ng-tag-tmp let-searchTerm="searchTerm" >
+            <div class="newtag">
+                Přidat novou vlastnost <span class="searchterm">"{{searchTerm}}"</span>
+            </div>
+        </ng-template>
     </ng-select>
-
-    <req-notes 
-        [type]="'request-new-req'"
+    <!-- tady nesmi byt nic mezi tim, jsou na to vazane styly -->
+    <!-- req-notes skryvame jen pres hidden, aby vyplnena data zustala! -->
+    <req-notes  [class.hidden]="formNewReq"
         [milestones]="milestones"
-        [dt_uuid]="dt_uuid"
-        [req_uuid]="selectedRequirement"
+        [dt_uuid]="dt_data.uuid"
+        [dt_name]="dt_data.nameCS"
+        [reqs]="selectedRequirement"
     ></req-notes>
 
 </div>

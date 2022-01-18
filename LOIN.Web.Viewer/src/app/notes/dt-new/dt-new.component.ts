@@ -5,15 +5,17 @@ import { ControlService } from 'src/app/shared/services/control.service';
 import { SlimapiService } from 'src/app/shared/services/slimapi.service';
 
 @Component({
-  selector: 'app-dt-new',
+  selector: 'notes-dt-new',
   templateUrl: './dt-new.component.html',
   styleUrls: ['./dt-new.component.scss']
 })
 export class DtNewComponent implements OnInit {
 
   @ViewChild('editform') editform: NgForm;
+  @Input() finish: (string?) =>void;
   public error: string;
   public formdata: any = {};
+  private submitInProgress: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,25 +28,36 @@ export class DtNewComponent implements OnInit {
   }
 
   public onSubmit() {
+    // ochrana proti vicenasobnemu kliknuti
+    if (this.submitInProgress) return false;
+    this.submitInProgress = true;
+
     this.error = '';
     if (this.editform.invalid) {
       alert("formular obsahuje chyby");
       //this.editform.form.markAllAsTouched(); //PR bez BS to muzem delat pres styly
+      this.submitInProgress = false;
       return false;
     }
     this.formdata.type = "request-new-dt";
+    this.formdata.repository = this.controlService.selectedRepository;
     //console.log(this.formdata);
     //console.log(this.editform.value);
     this.slimapi.notesDtInsert(this.formdata).subscribe({
       next: (r) => {
-      console.log(r);
-      this.router.navigate(['/']);
-      //if (typeof this.success == "function") this.success();
-      //this.controlService.control.next('note-submited');
+        //console.log(r,r.data.dt_uuid);
+        this.formdata = {};
+        this.editform.resetForm();
+        this.submitInProgress = false;
+
+        //this.router.navigate(['/']);
+        if (typeof this.finish == "function") this.finish(r.data.dt_uuid);
+        //this.controlService.control.next('note-submited');
       },
       error: (e) => {
         //console.log(e);
         this.error = e.error.message;
+        this.submitInProgress = false;
       }
     });
   }

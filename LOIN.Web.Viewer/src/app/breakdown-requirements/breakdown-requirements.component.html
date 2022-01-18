@@ -1,4 +1,4 @@
-    
+
 <h2>
     Výpis požadavků: 
     <ng-container *ngIf="maxlevel">
@@ -51,7 +51,8 @@
                             </div>
                         </span>
                         &nbsp;
-                        <span ngDropdown [renderInPlace]="false" *ngIf="userdata">
+                        <i *ngIf="userdata" class="fas fa-folder-plus" (click)="modal_DtNewReq(data[n.id]);$event.stopPropagation();"></i>
+<!--                         <span ngDropdown [renderInPlace]="false" *ngIf="userdata">
                             <i class="fas fa-folder-plus" ngDropdownControl></i>
                             <div ngDropdownContent dropdownClass="slide-fade notes-popup" >
                                 <dt-new-req 
@@ -60,7 +61,7 @@
                                     [dt_data]="data[n.id]"
                                 ></dt-new-req>
                             </div>
-                        </span>
+                        </span> -->
 
                         
                         <!-- <bd-popup [node]="n"></bd-popup>
@@ -125,13 +126,15 @@
     </tr>
  </ng-template>
 
- <ng-template #TableBody let-requirements="requirements" let-dt_uuid="uuid">
+ <ng-template #TableBody let-requirements="requirements" let-dt_uuid="uuid" let-dt_name="nameCS">
     <tr *ngFor="let req of requirements; let r=index" class="req" [class]="'r'+r%2 +' '+(req['_class'] ||'')">
         <td class="cmd">
             <notes-req-btn *ngIf="userdata" 
                 [milestones]="milestones"
                 [dt_uuid]="dt_uuid" 
+                [dt_name]="dt_name"
                 [req_uuid]="req.uuid" 
+                [req_name]="req.nameCS"
                 [notes]="notesreq[dt_uuid]?notesreq[dt_uuid][req.uuid]:null"
                 ></notes-req-btn>
         </td>
@@ -179,7 +182,7 @@
 
             <ng-container *ngIf="!set.collapsed">
                 <ng-container *ngIf="set && set.requirements; else empty">
-                    <ng-container *ngTemplateOutlet="TableBody;context:{ requirements: set.requirements, uuid: data.uuid}"></ng-container>
+                    <ng-container *ngTemplateOutlet="TableBody;context:{ requirements: set.requirements, uuid: data.uuid, nameCS: data.nameCS }"></ng-container>
                 </ng-container>
             </ng-container>
             
@@ -193,3 +196,9 @@
 
 </ng-template>
 
+<modal id="modal_DtNewReq">
+    <dt-new-req *ngIf="modal_DtNewReq_data"
+        [milestones]="milestones"
+        [dt_data]="modal_DtNewReq_data"
+    ></dt-new-req>
+</modal>

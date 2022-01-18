@@ -6,6 +6,7 @@
             LABEL {
                 margin-bottom: 0.5em;
                 display: inline-block;
+                font-weight: bold;
             }
             .form-control {
                 display: block;
@@ -28,10 +29,10 @@
                 cursor: pointer;
             }
             INPUT[type=submit] {
-                background-color: #0f0;
+                background-color: #15bd15;
                 //width: 100%;
                 padding: 1em;
-                &:hover { background-color: lighten($color: #0f0, $amount: 20%)}
+                &:hover { background-color: lighten($color: #15bd15, $amount: 20%)}
             }
             INPUT.cancel {
                 padding: 1em;
@@ -50,7 +51,8 @@
         }
 
 FORM.ng-submitted .ng-invalid,
-.ng-touched.ng-invalid
+FORM .ng-touched.ng-invalid
 {
     border-color: red;
+    box-shadow: 0 0 4px 1px #ff29298c;
 }

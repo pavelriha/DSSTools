@@ -1,5 +1,6 @@
 <a href="javascript:void(0);" ngDropdown [renderInPlace]="false" #infoDropdown="ngDropdown" *ngIf="notes">
-    <i class="aico fas fa-info-circle" ngDropdownControl></i>
+   <!--  <i class="aico fas fa-info-circle" ngDropdownControl></i> -->
+    <i class="aico fas fa-comment" ngDropdownControl></i>
     <div ngDropdownContent dropdownClass="slide-fade notes-popup" >
         <notes-req-popup [notes]="notes"></notes-req-popup>
     </div>
@@ -9,7 +10,7 @@
 <a href="javascript:void(0);" ngDropdown [renderInPlace]="false" #infoDropdown="ngDropdown" >
     <i class="aico fas fa-edit" ngDropdownControl></i>
     <div ngDropdownContent dropdownClass="slide-fade notes-popup" >
-        <req-notes [type]="'note'" [milestones]="milestones" [dt_uuid]="dt_uuid" [req_uuid]="req_uuid"></req-notes>
+        <req-notes [milestones]="milestones" [dt_uuid]="dt_uuid" [dt_name]="dt_name" [reqs]="[{ uuid: req_uuid, nameCS: req_name, in_dt: true }]"></req-notes>
     </div>
 </a>
 

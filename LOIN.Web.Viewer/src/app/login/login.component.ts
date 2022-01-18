@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
     this.loginService.userLogin(this.loginform.value).subscribe(
         r => {
             console.log('LOGIN successful for '+r.data.username);
-            this.loginform.reset();
+            this.loginform.resetForm();
         },
         e => { 
             this.error = true;

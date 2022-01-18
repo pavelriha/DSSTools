@@ -27,6 +27,7 @@ export class UserPanelComponent implements OnInit {
 
   public logout() {
     if (confirm("Opravdu se chcete odhlásit?")) {
+      console.log('logout call');
       this.loginService.userLogout();
     }
   }

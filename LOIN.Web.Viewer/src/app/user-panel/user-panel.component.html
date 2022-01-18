@@ -1,14 +1,14 @@
 <div class="panel">
-    <a routerLink="/workplace/user/profile" [title]="userdata.username">
+    <a routerLink="/workplace/profile" routerLinkActive="active" [title]="userdata.username">
         <i class="fas fa-user"></i>
     </a>
-    <a routerLink="/workplace/user" title="Users">
+    <a routerLink="/workplace/users" routerLinkActive="active" title="Users">
         <i class="fas fa-users"></i>
     </a>
-    <a routerLink="/workplace/notes/req" title="Workplace">
+    <a routerLink="/workplace/notes" routerLinkActive="active" title="Workplace">
         <i class="far fa-folder-open"></i>
     </a>
-    <a href="#" (click)="logout()" title="Logout">
+    <a href="javascript:" (click)="logout()" title="Logout">
         <i class="fas fa-sign-out-alt"></i>
     </a>
 </div>

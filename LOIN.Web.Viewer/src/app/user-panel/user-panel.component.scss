@@ -8,6 +8,16 @@
     A {
         display: inline-block;
         color: inherit;
-        margin: 0 0.5em;
+        margin: 0 0.2em;
+        padding: 0 0.3em;
+        &.active {
+            border-bottom: solid 2px $color-primary-red;
+            background-color:#eee;
+        }
+        &:hover {
+            border-radius: 5px;
+            background-color: #ddd;
+        }
+
     }
 }

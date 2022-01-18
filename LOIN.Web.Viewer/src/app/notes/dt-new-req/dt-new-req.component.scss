@@ -31,4 +31,23 @@
     &.proposal {
         background-color: $color-table-bg-new0;
     }
+    &.in_dt {
+        color: #ccc;
+    }
 }
+
+.newtag {
+    //background-color: lawngreen;
+    color: green;
+    font-weight: bold;
+    font-size: 120%;
+}
+
+req-notes {
+    margin-top: 2em;
+}
+
+// vyssi vybalovaci okno s vlastnostmi
+:host ::ng-deep .ng-dropdown-panel .ng-dropdown-panel-items { max-height: 75vh !important; }
+// kdyz je otevrene vybalovaci okno s vlastnostmi, tak schovej zbytek formu, at to nemate
+:host ::ng-deep ng-select.ng-select-opened + req-notes { visibility: hidden; }

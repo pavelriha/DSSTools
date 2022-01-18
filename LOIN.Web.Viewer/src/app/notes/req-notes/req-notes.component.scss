@@ -8,4 +8,33 @@
 
 .form-note-req {
 
+    .form-line {
+        display: flex;
+        grid-gap: 1em;
+        .txt {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            TEXTAREA { 
+                flex-grow: 1; // vypln vysku
+                min-height: 20ex;
+            }
+        }
+    }
+    UL.reason-group {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        LI {
+            &:hover {
+                //color: #aaa;
+                text-shadow: 1px 1px 1px #fff;
+            }
+            cursor: default;
+            //font-size: 120%;
+            .fa-check-square { color: #1E6FC5; }
+            I { font-size: 150%; }
+        }
+
+    }
 }

@@ -119,15 +119,27 @@ console.info('[MadTable] OnChange start', Date.now());
 	  if (!col.title) col.title = this.dataDescription.properties[col.name]?.label;
       if (!col.title) col.title = col.name;
       if (col.filtering) {
-	    this.filtering = true;
-	  	//col.filtering.filterString = '';
-		if (col.filtering.filterString) this.showFilterRow = true;
-	  }
+        this.filtering = true;
+        //col.filtering.filterString = '';
+        if (col.filtering.filterString) this.showFilterRow = true;
+        if (col.filtering.optionsUrl) {
+          this.madservice.getDataRaw(col.filtering.optionsUrl).subscribe( d => col.filtering.options=[ {id:'',text:''}, ...d] );
+        }
+      }
 	});
 
     this.config.sorting = {columns: this.columns};
 	
-	this.json_field = this.dataDescription.resource_name_plural;
+	this.json_field = this.dataDescription.resource_name_plural ?? 'data';
+
+
+  if (this.TableConfig.filter) this.TableConfig.filter.forEach( (f) => {
+    if (f.optionsUrl) {
+      this.madservice.getDataRaw(f.optionsUrl).subscribe( d => f.options=[ {id:'',text:''}, ...d] );
+    }
+  });
+
+
 
 /*
 	for (var col in this.dataDescription.properties) {
@@ -175,19 +187,20 @@ console.info('[MadTable] OnChange start', Date.now());
 	// Filters
     let filter:Array<any> = [];
 	// Global filter
-	if (this.TableConfig.filter)
-	this.TableConfig.filter.forEach( (gf:any) => {
-	  if (gf.value) {
-	    filter.push({ colname: gf.name, filterstring: gf.value, type: 'qs' }); 
-	  }
-	});
+    if (this.TableConfig.filter)
+      this.TableConfig.filter.forEach( (gf:any) => {
+        if (gf.value) {
+          filter.push({ colname: gf.col_name?gf.col_name:gf.name, filterstring: gf.value, type: gf.type?gf.type:'qs', compmode: gf.compmode?gf.compmode:'is' }); 
+        }
+      });
 	// column filter
     this.columns.forEach((column:any) => {
       if (column.filtering && column.filtering.filterString) {
-	    filter.push({ 
-		  colname:      column.filtering.col_name?column.filtering.col_name:column.name, 
-		  filterstring: column.filtering.filterString 
-		})
+        filter.push({ 
+          compmode:     column.filtering.compmode?column.filtering.compmode:'icontains',
+          colname:      column.filtering.col_name?column.filtering.col_name:column.name, 
+          filterstring: column.filtering.filterString 
+        })
       }
     });
 
