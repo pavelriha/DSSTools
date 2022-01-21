@@ -6,7 +6,7 @@ import { UserGuard } from './shared/user.guard';
 import { AdminGuard } from './shared/admin.guard';
 import { MadDetailFromRouterComponent, MadTableFromRouterComponent } from './madtable/madtable.module';
 import { MadMasterConfig } from './madtable/mad.types';
-import { NotesDtEditDesc, NotesReqDesc, RequirementsDesc, RequirementsEditDesc, stateFilterDef, UserDesc } from './workplace/mtconfig';
+import { NotesDtEditDesc, NotesReqDesc, RequirementsDesc, stateFilterDef, UserDesc } from './workplace/mtconfig';
 import { WorkplaceComponent } from './workplace/workplace.component';
 import { NotesWorkplaceComponent } from './workplace/notes-workplace/notes-workplace.component';
 import { TodoComponent } from './todo/todo.component';
@@ -30,14 +30,15 @@ const ROUTES: Routes = [
                 title: 'Správa uživatelů',
                 url: '/slimapi/users',
                 paging: [],
+                showFilterRow: false,
                 columns: [
-                  //{ name: 'detail', title: 'detail', type: 'link', icon: 'search', url: '.', urlid: 'id_user' },
+                  //{ name: 'detail', title: 'detail', type: 'link', icon: 'info', url: '.', urlid: 'id_user' },
                   { name: 'edit',  type: 'link', icon: 'edit', url: '.', urlid: 'id_user' },
                   { name: 'name', filtering: {filterString: '', placeholder: 'Filter'}    },
                   { name: 'email', filtering: {filterString: '', placeholder: 'Filter'}    },
                   { name: 'role', filtering: {filterString: '', placeholder: 'Filter'} },
                   //{ name: 'locations_xref', filtering: {filterString: '', placeholder: 'Filter'} },
-                  { name: 'active'  },
+                  { name: 'active', filtering: { type: 'select', compmode: 'is',  options: [ { id: '', text: 'vše' },{ id: '1', text: 'aktivní' },{ id: '0', text: 'deaktivované' }, ] } },
                 ],
                 trClassDyn: (data) => { return {
                   'table-secondary' : !data.active,
@@ -83,7 +84,7 @@ const ROUTES: Routes = [
                   { name: 'creator', col_name: 'id_user_creator', value: '', type: 'fa', optionsUrl: '/slimapi/options/users' },
                 ], */
                 columns: [
-                  { name: 'detail', title: 'detail', type: 'link', icon: 'search', url: 'detail', urlid: 'id_notes_req' },
+                  { name: 'detail', title: 'detail', type: 'link', icon: 'info', url: 'detail', urlid: 'id_notes_req' },
                   { name: 'edit',  type: 'link', icon: 'edit', url: 'edit', urlid: 'id_notes_req', if: 'canEdit' },
                   { name: 'check', type: 'link', icon: 'thumb-up', url: 'check', urlid: 'id_notes_req', if: 'canCheck' },
                   //{ name: 'milestone_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
@@ -113,7 +114,7 @@ const ROUTES: Routes = [
           { path: 'detail/:id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
             baseurl: '/slimapi/notes/req/detail/{id}',
             columns: [ "state", "milestone", "dt", "req", 
-              "request_type", "suggestion", "reasons", "created", "creator_email", "replied", "worker_email", "reply", "repository" ],
+              "request_type", "suggestion", "reasons", "created", "creator", "replied", "worker", "reply", "repository" ],
             //formtype: 'editable',
             onSuccessUrl: "../..",
             onCancelUrl: "../..",
@@ -146,7 +147,7 @@ const ROUTES: Routes = [
               title: 'Návrhy vlastností do šablon',
               url: '/slimapi/notes/req/list/newdtreq',
               columns: [
-                { name: 'detail', title: 'detail', type: 'link', icon: 'search', url: 'detail', urlid: 'id_notes_req' },
+                { name: 'detail', title: 'detail', type: 'link', icon: 'info', url: 'detail', urlid: 'id_notes_req' },
                 { name: 'edit',  type: 'link', icon: 'edit', url: 'edit', urlid: 'id_notes_req', if: 'canEdit' },
                 { name: 'check', type: 'link', icon: 'thumb-up', url: 'check', urlid: 'id_notes_req', if: 'canCheck' },
                 //{ name: 'milestone_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
@@ -175,7 +176,7 @@ const ROUTES: Routes = [
           { path: 'detail/:id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
             baseurl: '/slimapi/notes/req/detail/{id}',
             columns: [ "state", "milestone", "dt", "req",
-              "request_type", "suggestion", "reasons",  "created", "creator_email", "replied", "worker_email", "reply", "repository" ],
+              "request_type", "suggestion", "reasons",  "created", "creator", "replied", "worker", "reply", "repository" ],
             //formtype: 'editable',
             onSuccessUrl: "../..",
             onCancelUrl: "../..",
@@ -208,9 +209,11 @@ const ROUTES: Routes = [
               title: 'Nové datové šablony',
               url: '/slimapi/notes/dt/list',
               columns: [
-                { name: 'detail', title: 'detail', type: 'link', icon: 'search', url: 'detail', urlid: 'id_notes_dt' },
+                { name: 'detail', title: 'detail', type: 'link', icon: 'info', url: 'detail', urlid: 'id_notes_dt' },
                 { name: 'edit',  type: 'link', icon: 'edit', url: 'edit', urlid: 'id_notes_dt', if: 'canEdit' },
                 { name: 'check', type: 'link', icon: 'thumb-up', url: 'check', urlid: 'id_notes_dt', if: 'canCheck' },
+                { name: 'push', type: 'request', icon: 'airplane', url: '/slimapi/notes/dt/push2ifc/{id_notes_dt}', if: 'canCheck' },
+                { name: 'dispatch' },
                 //{ name: 'dt_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
                 { name: 'dt_name', filtering: {filterString: '', placeholder: 'Filter'}    },
                 { name: 'state', filtering: stateFilterDef },
@@ -230,7 +233,7 @@ const ROUTES: Routes = [
           }},
           { path: 'detail/:id', component: MadDetailFromRouterComponent, data: { desc: NotesReqDesc, conf: <MadMasterConfig>{
             baseurl: '/slimapi/notes/dt/detail/{id}',
-            columns: [ "state", "dt", "suggestion",  "created", "creator_email", "replied", "worker_email", "reply", "repository" ],
+            columns: [ "state", "dt", "suggestion",  "created", "creator", "replied", "worker", "reply", "repository" ],
             //formtype: 'editable',
             onSuccessUrl: "../..",
             onCancelUrl: "../..",
@@ -261,11 +264,14 @@ const ROUTES: Routes = [
               title: 'Nové vlastnosti',
               url: '/slimapi/requirements',
               columns: [
-                { name: 'detail', title: 'detail', type: 'link', icon: 'search', url: 'detail', urlid: 'id_requirement' },
+                { name: 'detail', title: 'detail', type: 'link', icon: 'info', url: 'detail', urlid: 'id_requirement' },
                 { name: 'edit', title: 'edit', type: 'link', icon: 'edit', url: 'edit', urlid: 'id_requirement', if: 'canEdit' },
                 { name: 'check', title: 'check', type: 'link', icon: 'thumb-up', url: 'check', urlid: 'id_requirement', if: 'canCheck' },
+                { name: 'push', type: 'request', icon: 'airplane', url: '/slimapi/requirements/push2ifc/{id_requirement}' },
+                { name: 'dispatch' },
                 //{ name: 'req_uuid', filtering: {filterString: '', placeholder: 'Filter'}    },
                 { name: 'name', filtering: {filterString: '', placeholder: 'Filter'}    },
+                { name: 'datatype_cs'},
                 { name: 'units', filtering: {filterString: '', placeholder: 'Filter'}    },
                 { name: 'description', filtering: {filterString: '', placeholder: 'Filter'}    },
                 { name: 'note', filtering: {filterString: '', placeholder: 'Filter'}    },
@@ -285,15 +291,15 @@ const ROUTES: Routes = [
           }},
           { path: 'detail/:id', component: MadDetailFromRouterComponent, data: { desc: RequirementsDesc, conf: <MadMasterConfig>{
               baseurl: '/slimapi/requirements/detail/{id}',
-              columns: [ "state", "name", "units", "description", "note", "created", "creator_email", "replied", "worker_email", "reply", "repository" ],
+              columns: [ "state", "nameuuid", "datatype", "units", "description", "note", "created", "creator", "replied", "worker", "reply", "repository" ],
               //formtype: 'editable',
               onSuccessUrl: "../..",
               onCancelUrl: "../..",
             },
           }},
-          { path: 'edit/:id', component: MadDetailFromRouterComponent, data: { desc: RequirementsEditDesc, conf: <MadMasterConfig>{
+          { path: 'edit/:id', component: MadDetailFromRouterComponent, data: { desc: RequirementsDesc, conf: <MadMasterConfig>{
               baseurl: '/slimapi/requirements/update/{id}',
-              columns: [ "name", "description", "note" ],
+              columns: [ "name", "id_datatype", "units", "description", "note" ],
               formtype: 'forceedit',//'editable',
               onSuccessUrl: "../..",
               onCancelUrl: "../..",

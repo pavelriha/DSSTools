@@ -25,7 +25,8 @@ export class MadMasterConfig {
   mtWrapperClass?: string; // napr table-responsive
   insert?: any;
   count_total?: boolean;
-  filter?:Array<any>;
+  filter?:Array<any>; // global table filter
+  showFilterRow?:boolean; // show table filter row by default
   trClassDyn?;
   buttons_top?:Array<any>;//vlastni tlacitka nad tabulkou. {title, icon, text, url, click}
   paging?:Array<number>;

@@ -114,7 +114,7 @@ console.info('[MadTable] OnChange start', Date.now());
 	  }
 	}
 	this.filtering = false;
-	this.showFilterRow = false;
+	this.showFilterRow = this.TableConfig.showFilterRow;
 	this.columns.forEach((col:any) => {
 	  if (!col.title) col.title = this.dataDescription.properties[col.name]?.label;
       if (!col.title) col.title = col.name;

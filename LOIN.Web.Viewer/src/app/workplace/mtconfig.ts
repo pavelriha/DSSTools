@@ -50,7 +50,10 @@ export const NotesReqDesc = {
     request_type: requestTypeDef,
     repository: { label: 'Pořízeno ve verzi' },
     creator_name: { label: 'Vložil' },
+    creator: { label: 'Vložil', type: 'nameuuid', name: 'creator_name', uuid: 'creator_email' },
     worker_name: { label: 'Zpracoval' },
+    worker: { label: 'Zpracoval', type: 'nameuuid', name: 'worker_name', uuid: 'worker_email' },
+    dispatch: { type: 'bool'},
   } 
 }
 /* export const NotesReqEditDesc = {
@@ -67,22 +70,26 @@ export const NotesDtEditDesc = {
 export const RequirementsDesc = {
   properties: { 
     name: { label: 'Název vlastnosti', read_only: true },
+    nameuuid: { label: 'Název vlastnosti', type: 'nameuuid', name: 'name', uuid: '' },
+    datatype_cs: { label: 'Datový typ' },
+    datatype: { label: 'Datový typ', type: 'nameuuid', name: 'datatype_cs', uuid: 'datatype_ifc' },
+    id_datatype: { label: 'Datový typ', type: 'datatype' },
     units: { label: 'Měrná jednotka'},
     description: { label: 'Popis'},
     note: { label: 'Poznámka'},
     created: { label: 'Vytvořeno', type: 'datetime' },
     replied: { label: 'Vyřízeno', type: 'datetime' },
     repository: { label: 'Pořízeno ve verzi' },
-    reply: { label: 'Odpověď' },
+    reply: { label: 'Odpověď', type: 'textarea', required: true },
     state: stateDef,
     creator_name: { label: 'Vložil' },
+    creator: { label: 'Vložil', type: 'nameuuid', name: 'creator_name', uuid: 'creator_email' },
     worker_name: { label: 'Zpracoval' },
+    worker: { label: 'Zpracoval', type: 'nameuuid', name: 'worker_name', uuid: 'worker_email' },
+    dispatch: { type: 'bool'},
   } 
 }
-export const RequirementsEditDesc = {
-  properties: { 
-  } 
-}
+
 
 
 

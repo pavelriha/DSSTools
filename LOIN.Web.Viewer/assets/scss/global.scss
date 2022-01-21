@@ -18,8 +18,14 @@ BODY {
     display: none !important;
 }
 
+.actions__item {
+    cursor: pointer;
+}
 
 mad-table {
+    .btn-toolbar .zmdi-search {
+        color: $color-secondary-cyan1;
+    }
     table {
         TD { white-space: nowrap; }
         TR.new       { background-color: $color-notes-new-bg1;       &:hover {background-color: $color-notes-new-bg2;}}

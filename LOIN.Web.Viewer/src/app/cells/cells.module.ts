@@ -12,7 +12,7 @@ import { CellDefaultComponent } from './cell-default.component';
 import { CellClickComponent } from './cell-click.component';
 import { CellRouterLinkComponent } from './cell-routerlink.component';
 import { CellHtmlLinkComponent } from './cell-htmllink.component';
-//import { CellRequestComponent } from './cell-request.component';
+import { CellRequestComponent } from './cell-request.component';
 import { CellEmailComponent } from './cell-email.component';
 import { CellCallToComponent } from './cell-callto.component';
 import { CellIntegerComponent } from './cell-integer.component';
@@ -25,6 +25,7 @@ import { CellPasswordComponent } from './cell-password.component';
 import { CellDssReasonsComponent } from './cell-DSSreasons.component';
 import { CellNameUuidComponent } from './cell-nameuuid.component';
 import { CellTextareaComponent } from './cell-textarea.component';
+import { CellDSSdatatypeComponent } from './cell-DSSdatatype.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,7 @@ import { CellTextareaComponent } from './cell-textarea.component';
     CellClickComponent,
     CellRouterLinkComponent,
     CellHtmlLinkComponent,
-    //CellRequestComponent,
+    CellRequestComponent,
     CellEmailComponent,
     CellCallToComponent,
     CellIntegerComponent,
@@ -45,6 +46,7 @@ import { CellTextareaComponent } from './cell-textarea.component';
     CellDssReasonsComponent,
     CellNameUuidComponent,
     CellTextareaComponent,
+    CellDSSdatatypeComponent,
   ],
   imports: [
     CommonModule,
@@ -72,7 +74,7 @@ export const cell_type_map: any = {
     'click':    CellClickComponent,
     'link':     CellRouterLinkComponent,
     'htmllink': CellHtmlLinkComponent,
-    //'request':  CellRequestComponent,
+    'request':  CellRequestComponent,
     'email':    CellEmailComponent,
     'callto':   CellCallToComponent,
     'password': CellPasswordComponent,
@@ -80,4 +82,5 @@ export const cell_type_map: any = {
 
     'reasons':  CellDssReasonsComponent,
     'nameuuid': CellNameUuidComponent,
+    'datatype': CellDSSdatatypeComponent,
 };

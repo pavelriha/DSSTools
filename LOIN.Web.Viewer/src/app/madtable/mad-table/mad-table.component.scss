@@ -10,6 +10,11 @@ TR.sum {
     }
 }
 
-TABLE TH {
-    white-space: nowrap;
+TABLE { 
+    TR.filter, TR.filter:hover {
+        background-color: #eee;
+    }
+    TH {
+        white-space: nowrap;
+    }
 }
