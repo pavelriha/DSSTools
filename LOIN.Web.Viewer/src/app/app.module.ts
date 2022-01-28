@@ -37,6 +37,8 @@ import { NewReqComponent } from './notes/new-req/new-req.component';
 import { ModalModule } from './_modal';
 import { AccessDeniedComponent } from './access-denied/access-denied.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule } from 'ngx-google-analytics';
+import { environment } from 'src/environments/environment';
 
 
 function getConfig() {
@@ -82,12 +84,15 @@ function getConfig() {
     routing,
     ModalModule,
     NgWormholeModule,
+    NgxGoogleAnalyticsModule.forRoot(environment.ga),
+    NgxGoogleAnalyticsRouterModule,
     MadTableModule.forRoot({
       paging: [ 10, 20, 50, 100],
       per_page: 50,
       cell_type_default_component: CellDefaultComponent,
       cell_type_map: cell_type_map,
       mtWrapperClass: '', //'table-responsive',
+      showFilterRow: true,
       mdWrapperClass: 'd-flex', //'table-responsive',
       mdTableClass: 'table table-sm mb-0',
       mdLabelSubmit: 'Odeslat',

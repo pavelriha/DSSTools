@@ -31,13 +31,14 @@
     "font-awesome": "^4.7.0",
     "ng-wormhole": "^3.0.2",
     "ngx-bootstrap": "^7.1.0",
+    "ngx-google-analytics": "^11.2.1",
     "ngx-pipes": "^2.7.6",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^13.1.2",
+    "@angular-devkit/build-angular": "^13.2.0",
     "@angular/cli": "~13.1.2",
     "@angular/compiler-cli": "~13.1.1",
     "@types/jasmine": "~3.6.0",

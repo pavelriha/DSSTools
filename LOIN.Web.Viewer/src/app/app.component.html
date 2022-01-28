@@ -54,10 +54,10 @@
     
     <div class="buttons-wrapper">
         <div class="buttons-bar">
-            <div class="button search" (click)="runfilter()" ><span class="placeholder">Zobrazit</span><span class="text">Zobrazit</span> </div>
+            <div class="button search" (click)="runfilter()" gaEvent="b_zobrazit" gaCategory="ga_buttons"><span class="placeholder">Zobrazit</span><span class="text">Zobrazit</span> </div>
             <div class="line">
-                <div class="button" (click)="exportIFC()" >Export IFC</div>
-                <div class="button" (click)="exportXLS()" >Export XLS</div>
+                <div class="button" (click)="exportIFC()" gaEvent="b_export_ifc" gaCategory="ga_buttons" >Export IFC</div>
+                <div class="button" (click)="exportXLS()" gaEvent="b_export_xls" gaCategory="ga_buttons">Export XLS</div>
             </div>
         </div>
         <div class="help">
