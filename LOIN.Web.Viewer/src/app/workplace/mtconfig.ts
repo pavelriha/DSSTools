@@ -26,6 +26,29 @@ export const stateDef =  { label: 'Stav', type: 'simpleselect', options: [
   { id: 'rejected', name:'zamítnuto'},
 ]};
 
+export const intstateFilterDef = { type: 'select', compmode: 'is',  options: [
+    { id: '', text: 'vše' },
+    { id: 'todo', text: 'ke zpracování' },
+    { id: 'transfer', text: 'převod' },
+    { id: 'manual', text: 'manuálně' },
+    { id: 'fixed', text: 'opraveno' },
+  ]};
+
+export const intstateDef =  { label: 'interní stav', type: 'simpleselect', options: [ 
+  { id: 'todo', name:'ke zpracování'},
+  { id: 'transfer', name:'převod'},
+  { id: 'manual', name:'manuálně'},
+  { id: 'fixed', name:'opraveno'},
+]};
+
+
+export const requestFilterDef = { type: 'select', compmode: 'is',  options: [ 
+  { id: '', text: 'vše'},
+  { id: 'info', text: 'informace'},
+  { id: 'add', text: 'přidat do užití'},
+  { id: 'del', text: 'odebrat z užití'},
+]};
+
 export const requestTypeDef = { label: 'Typ žádosti', type: 'simpleselect', options: [ 
   { id: 'info', name: 'informace'},
   { id: 'add', name: 'přidat do užití'},
@@ -46,6 +69,7 @@ export const NotesReqDesc = {
     suggestion: { label: 'Návrh', type: 'textarea' },
     replied: { label: 'Vyřízeno', type: 'datetime' },
     state: stateDef,
+    int_state: intstateDef,
     reasons: { label: 'Způsoby užití', type: 'reasons' },
     request_type: requestTypeDef,
     repository: { label: 'Pořízeno ve verzi' },
@@ -81,13 +105,15 @@ export const RequirementsDesc = {
     replied: { label: 'Vyřízeno', type: 'datetime' },
     repository: { label: 'Pořízeno ve verzi' },
     reply: { label: 'Odpověď', type: 'textarea', required: true },
+    int_note: { label: 'Interní poznámka', type: 'textarea' },
     state: stateDef,
+    int_state: intstateDef,
     creator_name: { label: 'Vložil' },
     creator: { label: 'Vložil', type: 'nameuuid', name: 'creator_name', uuid: 'creator_email' },
     worker_name: { label: 'Zpracoval' },
     worker: { label: 'Zpracoval', type: 'nameuuid', name: 'worker_name', uuid: 'worker_email' },
     dispatch: { type: 'bool'},
-  } 
+  }
 }
 
 

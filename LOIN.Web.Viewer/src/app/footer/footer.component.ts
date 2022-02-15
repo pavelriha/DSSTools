@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../shared/services/auth.service';
 //import { LoginService } from '../shared/services/login.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-footer',
@@ -11,6 +12,7 @@ export class FooterComponent implements OnInit {
 
   private usersub: any;
   public userdata: any = false;
+  public environment: any  = environment;
 
   constructor(
     private authService: AuthService,

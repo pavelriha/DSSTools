@@ -13,6 +13,9 @@ import { AuthService } from './shared/services/auth.service';
 import { SlimapiService } from './shared/services/slimapi.service';
 import { ControlService } from './shared/services/control.service';
 import { ModalService } from './_modal';
+import { ActivatedRoute, Router } from '@angular/router';
+import {Location} from '@angular/common'; 
+import { filter } from 'rxjs/operators';
 
 const DT_ID_OFFSET = 9000000; // id_offset pro nami dynamicky pridane polozky breakdown, aby nekolidovali a abychom poznali ktre to jsou
 
@@ -22,11 +25,6 @@ const DT_ID_OFFSET = 9000000; // id_offset pro nami dynamicky pridane polozky br
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-
-  /* settings */
-  readonly USERS_LATEST_REPO_ONLY: boolean = false;
-  /* settings */
-
   @ViewChild('breaks') fbBreaks: FilterBoxComponent;
   @ViewChild('milestones') fbMilestones: FilterBoxComponent;
   @ViewChild('reasons') fbReasons: FilterBoxComponent;
@@ -53,6 +51,7 @@ export class AppComponent implements OnInit {
   public nodesReasons: any[];
   //public nodesRepositories: any[];
   public repolist: string[];
+  private saved_filters: any = {};
 
   public selectedTree: any[] = null;
   public selectedFlatTree: any[] = null;
@@ -68,6 +67,8 @@ export class AppComponent implements OnInit {
   public userdata: any = false;
   // control service
   private control: any;
+  // URL param
+  private paramSub: any;
 
   constructor(
     private actorsService: ActorsService,
@@ -82,6 +83,9 @@ export class AppComponent implements OnInit {
     private slimapi: SlimapiService,
     public controlService: ControlService,
     public modal: ModalService,
+    private route: ActivatedRoute,
+    private router: Router,
+    public location: Location,
   ) { }
 
   ngOnInit(): void {
@@ -91,8 +95,11 @@ export class AppComponent implements OnInit {
         ////this.repolist.push(...d.sort().reverse());
         //d.sort().reverse().forEach( r => { this.repolist.push({ key: r, value: r }); });
         this.repolist = d;
-        this.setDefaultRepo();
-        this.fetchFilters();
+        if (!this.controlService.selectedRepository) { // mohl to nastavit route.params.subscribe nize
+          //this.controlService.selectedRepository  = this.saved_filters.repo??this.repolist[0];
+          this.controlService.selectedRepository  = this.repolist[0];
+          this.fetchFilters();
+        }
       },
       e => { this.apiError(e); }
     );
@@ -101,9 +108,6 @@ export class AppComponent implements OnInit {
       this.userdata = ud;
       console.log("user change", ud);
       if (ud) {
-        if (this.USERS_LATEST_REPO_ONLY) {
-          this.setDefaultRepo(); //prihlasenej smi pracovat jen s latest, tak ho nastavime
-        }
         if (this.controlService.selectedRepository) this.fetchFilters(); // kvuli novym sablonam
       } else {
         this.selectedTree = null;
@@ -116,24 +120,41 @@ export class AppComponent implements OnInit {
       
     });
 
+    this.paramSub = this.route.params.subscribe(params => {
+      console.log('[init] params:', params, this.controlService.selectedRepository);
+      if (params['repo']) {
+        if (this.controlService.selectedRepository != params['repo']) {
+          this.repoChange(params['repo'], false);
+        }
+        this.saved_filters.dt = params['dt']?params['dt'].split(',').map( Number ):[];
+        this.saved_filters.actors = params['actors']?params['actors'].split(',').map( Number ):[];
+        this.saved_filters.milestones = params['milestones']?params['milestones'].split(',').map( Number ):[];
+        this.saved_filters.reasons = params['reasons']?params['reasons'].split(',').map( Number ):[];
+        this.saved_filters.repo = params['repo'];
+        console.log('parsed saved filters: ',this.saved_filters);
+        this.restoreFilters();
+      }
+    });
+
+
   }
 
   ngOnDestroy() {
     this.usersub.unsubscribe();
     this.control.unsubscribe();
+    this.paramSub.unsubscribe();
   }
 
-  private setDefaultRepo() {
-    this.controlService.selectedRepository      = this.repolist[0];
-  }
 
-  repoChange(repo) {
+  repoChange(repo, update_url=true) {
     this.controlService.selectedRepository = repo;
-    this.deselectAll();
+    this.deselectAll(update_url);
     this.fetchFilters();
   }
   
   fetchFilters() {
+    this.initdone = false;
+
     this.nodesActors = [];
     this.nodesBreakdown = [];
     this.nodesMilestones = [];
@@ -163,20 +184,8 @@ export class AppComponent implements OnInit {
 
         this.initdone = true;
 
-        setTimeout(() => { //zpozdime, aby se filtr komponenta stihla iniciovat
-          this.fbBreaks.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateBreaks')));
-          this.fbActors.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateActors')));
-          this.fbReasons.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateReasons')));
-          this.fbMilestones.tree.treeModel.setState(JSON.parse(sessionStorage.getItem('treeStateMilestones')));
-          console.info('state restored');
-          setTimeout(() => { 
-            console.info('prepare timeout fired');
-            this.fbBreaks.prepareSelected(); 
-            this.fbActors.prepareSelected();
-            this.fbReasons.prepareSelected();
-            this.fbMilestones.prepareSelected();
-          },1000);//zpozdeni vterinu, jinak to ne vzdy nabehne
-        });
+        //zpozdime, aby se filtr komponenta stihla iniciovat
+        setTimeout( () => { this.restoreFilters() } );
 
       },
       error: (e) => { 
@@ -201,11 +210,14 @@ export class AppComponent implements OnInit {
       }
     }
 
-    // ulozime stav filtru do sessionstorage
-    sessionStorage.setItem('treeStateBreaks', JSON.stringify(this.fbBreaks.tree.treeModel.getState()) );
-    sessionStorage.setItem('treeStateActors', JSON.stringify(this.fbActors.tree.treeModel.getState()) );
-    sessionStorage.setItem('treeStateReasons', JSON.stringify(this.fbReasons.tree.treeModel.getState()) );
-    sessionStorage.setItem('treeStateMilestones', JSON.stringify(this.fbMilestones.tree.treeModel.getState()) );
+    // // ulozime stav filtru do sessionstorage
+    // sessionStorage.setItem('treeStateBreaks', JSON.stringify(this.fbBreaks.tree.treeModel.getState()) );
+    // sessionStorage.setItem('treeStateActors', JSON.stringify(this.fbActors.tree.treeModel.getState()) );
+    // sessionStorage.setItem('treeStateReasons', JSON.stringify(this.fbReasons.tree.treeModel.getState()) );
+    // sessionStorage.setItem('treeStateMilestones', JSON.stringify(this.fbMilestones.tree.treeModel.getState()) );
+
+    // ulozime stav filtru do URL
+    this.saveFilter2Url();
 
     this.dataLoading = true;
     this.errors = [];
@@ -361,19 +373,64 @@ export class AppComponent implements OnInit {
     this.runfilter();
   }
 
-  deselectAll() {
-    this.fbBreaks.deselectAll();
-    this.fbMilestones.deselectAll();
-    this.fbReasons.deselectAll();
-    this.fbActors.deselectAll();
+  deselectAll(update_url = true) {
+    this.fbBreaks?.deselectAll();
+    this.fbMilestones?.deselectAll();
+    this.fbReasons?.deselectAll();
+    this.fbActors?.deselectAll();
     this.dataTemplates = [];
     this.selectedTree = null;
     this.selectedFlatTree = null;
     this.errors = [];
-    sessionStorage.removeItem('treeStateBreaks');
-    sessionStorage.removeItem('treeStateActors');
-    sessionStorage.removeItem('treeStateReasons');
-    sessionStorage.removeItem('treeStateMilestones');
+    this.saved_filters = {};
+    if (update_url) this.saveFilter2Url();
+  }
+  
+  saveFilter2Url() {
+    let filters = {}
+    let dt = this.fbBreaks?.getSelectedIds();
+    if (dt?.length) filters['dt'] = dt;
+    let ac = this.fbActors?.getSelectedIds();
+    if (ac?.length) filters['actors'] = ac;
+    let mil = this.fbMilestones?.getSelectedIds();
+    if (mil?.length) filters['milestones'] = mil;
+    let rea = this.fbReasons?.getSelectedIds();
+    if (rea?.length) filters['reasons'] = rea;
+
+    console.log(filters);
+
+    this.location.replaceState( this.router.createUrlTree([ '/viewer', this.controlService.selectedRepository, filters  ] ).toString()  );
+
+    /* this.location.replaceState( this.router.createUrlTree([ '/viewer', this.controlService.selectedRepository, { 
+      'dt': this.fbBreaks?.getSelectedIds(),
+      'actors': this.fbActors?.getSelectedIds(),
+      'milestones': this.fbMilestones?.getSelectedIds(),
+      'reasons': this.fbReasons?.getSelectedIds(),
+    }  ] ).toString()  ); */
+
+  }
+
+  restoreFilters() {
+    console.info('restoreFilters fired');
+    console.info(this.initdone, this.saved_filters);
+    // obnovuprovadime kdyz mame co obnovovat a soucasne jsou dotazene filtry
+    if (this.initdone && this.saved_filters.repo ) {
+      //console.log(this.saved_filters.dt.reduce((acc, key) => ({...acc, [key]: true}), {}));
+      this.fbBreaks.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.dt.reduce((acc, key) => ({...acc, [key]: true}), {}) });
+      this.fbActors.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.actors.reduce((acc, key) => ({...acc, [key]: true}), {}) } );
+      this.fbReasons.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.reasons.reduce((acc, key) => ({...acc, [key]: true}), {}) } );
+      this.fbMilestones.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.milestones.reduce((acc, key) => ({...acc, [key]: true}), {}) } );
+      console.info('state restored');
+      setTimeout(() => { 
+        console.info('prepare timeout fired');
+        this.fbBreaks.prepareSelected(); 
+        this.fbActors.prepareSelected();
+        this.fbReasons.prepareSelected();
+        this.fbMilestones.prepareSelected();
+      },1000);//zpozdeni vterinu, jinak to ne vzdy nabehne
+    } else {
+      console.warn('not ready for restore');
+    }
   }
 
 
@@ -474,6 +531,8 @@ export class AppComponent implements OnInit {
     if (uuid) this.fetchFilters();
     this.modal.close('modal-new-dt');
   }
+
+
 }
 
 

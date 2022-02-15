@@ -2,7 +2,7 @@
 <div class="topbar">
 
     <div class="head">
-        <div *ngIf="!userdata || !USERS_LATEST_REPO_ONLY" ngDropdown [renderInPlace]="true" #repoDropdown="ngDropdown" >
+        <div ngDropdown [renderInPlace]="true" #repoDropdown="ngDropdown" >
             <div ngDropdownControl >
                 <span class="text">Verze: {{ this.controlService.selectedRepository }}</span>
                 <span class="arrow"><i class="fas fa-chevron-down"></i></span>

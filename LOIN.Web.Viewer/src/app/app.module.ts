@@ -29,7 +29,6 @@ import { cell_type_map } from './cells/cells.module';
 import { WorkplaceComponent } from './workplace/workplace.component';
 import { NotesWorkplaceComponent } from './workplace/notes-workplace/notes-workplace.component';
 import { NgWormholeModule } from 'ng-wormhole';
-import { TodoComponent } from './todo/todo.component';
 import { DtNewReqComponent } from './notes/dt-new-req/dt-new-req.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { DtNewComponent } from './notes/dt-new/dt-new.component';
@@ -66,7 +65,6 @@ function getConfig() {
     ReqPopupComponent,
     WorkplaceComponent,
     NotesWorkplaceComponent,
-    TodoComponent,
     DtNewReqComponent,
     DtNewComponent,
     NewReqComponent,
@@ -84,7 +82,11 @@ function getConfig() {
     routing,
     ModalModule,
     NgWormholeModule,
-    NgxGoogleAnalyticsModule.forRoot(environment.ga),
+    //NgxGoogleAnalyticsModule.forRoot(environment.ga),
+    NgxGoogleAnalyticsModule.forRoot(environment.ga, [
+      {command: 'consent', values: ['default', { 'ad_storage': 'denied','analytics_storage': 'denied' }]},
+      {command: 'config', values: [environment.ga]},
+    ]),
     NgxGoogleAnalyticsRouterModule,
     MadTableModule.forRoot({
       paging: [ 10, 20, 50, 100],

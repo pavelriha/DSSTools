@@ -8,6 +8,8 @@
     "start-local2": "ng serve --proxy-config proxy.conf-local2.json",
     "build": "ng build",
     "build-prod": "ng build --configuration=production",
+    "build-kosmodrom": "ng build --configuration=kosmodrom",
+    "build-notes": "ng build --configuration=notes",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

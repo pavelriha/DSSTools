@@ -4,7 +4,7 @@
         <hr>
         &copy; 2021 Koncepce BIM
         &nbsp;
-        <ng-container *ngIf="!userdata">
+        <ng-container *ngIf="environment.login && !userdata">
             <i class="fas fa-star"></i>
             &nbsp;
             <a routerLink="/login">LOGIN</a>

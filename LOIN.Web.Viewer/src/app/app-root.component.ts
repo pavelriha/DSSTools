@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from './shared/services/login.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ export class AppRootComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loginService.getUser().subscribe();//vynutime nacteni user dat (overeni zda je user prihlasenej)
+    if (environment.login) this.loginService.getUser().subscribe();//vynutime nacteni user dat (overeni zda je user prihlasenej)
   }
 
 }
