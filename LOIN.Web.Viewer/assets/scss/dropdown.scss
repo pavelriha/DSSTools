@@ -128,7 +128,7 @@
     //background-color: $color-topbar-grey;
     background-color: $color-topbar-grey-hover;
     color: #fff;
-    padding: 1em;
+    padding: 1em 2em;
     min-width: 200px;
     max-width: 400px;
     h3 {
@@ -136,6 +136,21 @@
     }
     .add {
         margin-bottom: 1em;
+        form {
+            input, .submit {
+                padding: 0.5em 1em;
+            }
+            input {
+                flex-grow: 2;
+            }
+            .submit {
+                background-color: $color-primary-red;
+                color: $color-white;
+                &:disabled {
+                    background-color: #ccc;
+                }
+            }
+        }
     }
     .bookmark {
         margin-bottom: 0.5em;

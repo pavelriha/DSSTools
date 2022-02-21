@@ -62,8 +62,10 @@
 
                         <div class="add">
                             <h3>Uložte si současné nastavení filtrů</h3>
-                            <input type="text" name="bmname" [(ngModel)]="bmname" placeholder="pojmenujte si záložku">
-                            <button (click)="addBookmark(bmname); bmname='';" [disabled]="!bmname">uložit</button>
+                            <form class="" (submit)="addBookmark(bmname); bmname='';">
+                                <input type="text" name="bmname" [(ngModel)]="bmname" placeholder="pojmenujte si záložku">
+                                <button type="submit" class="submit" [disabled]="!bmname">uložit</button>
+                            </form>
                         </div>
                             
                         <div *ngIf="bookmarkService.bookmarks.length>0">

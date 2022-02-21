@@ -101,11 +101,15 @@
                     color: inherit;
                     background-color: inherit;
                     i {
-                    font-size: 200%;
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
+                        font-size: 200%;
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                    }
+                    &.active {
+                        background-color: $color-topbar-grey-hover;
+                        color: #222;
                     }
                 }
 
