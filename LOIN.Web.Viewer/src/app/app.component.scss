@@ -84,6 +84,7 @@
                 &.search {
                     position: relative;
                     text-align: center;
+                    flex-grow: 1;
                     .placeholder { visibility: hidden; }
                     .text {
                         font-size: 200%;
@@ -91,6 +92,20 @@
                         top: 50%;
                         left: 50%;
                         transform: translate(-50%, -50%);
+                    }
+                }
+                &.bookmarks {
+                    padding: 0;
+                }
+                &.bookmarks .ng-dropdown-control {
+                    color: inherit;
+                    background-color: inherit;
+                    i {
+                    font-size: 200%;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
                     }
                 }
 

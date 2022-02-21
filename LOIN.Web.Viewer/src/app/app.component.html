@@ -54,7 +54,31 @@
     
     <div class="buttons-wrapper">
         <div class="buttons-bar">
-            <div class="button search" (click)="runfilter()" gaEvent="b_zobrazit" gaCategory="ga_buttons"><span class="placeholder">Zobrazit</span><span class="text">Zobrazit</span> </div>
+            <div class="line">
+                <div class="button search" (click)="runfilter()" gaEvent="b_zobrazit" gaCategory="ga_buttons"><span class="placeholder">Zobrazit</span><span class="text">Zobrazit</span> </div>
+                <div class="button bookmarks" ngDropdown [renderInPlace]="false" #bookmarkDropdown="ngDropdown">
+                    <span ngDropdownControl>&nbsp;<i class="fas fa-star"></i>&nbsp;</span>
+                    <div ngDropdownContent dropdownClass="slide-fade dropdown-bookmarks" >
+
+                        <div class="add">
+                            <h3>Uložte si současné nastavení filtrů</h3>
+                            <input type="text" name="bmname" [(ngModel)]="bmname" placeholder="pojmenujte si záložku">
+                            <button (click)="addBookmark(bmname); bmname='';" [disabled]="!bmname">uložit</button>
+                        </div>
+                            
+                        <div *ngIf="bookmarkService.bookmarks.length>0">
+                            <h3>Vyberte uložený filtr</h3>
+                            <div class="bookmark" *ngFor="let b of bookmarkService.bookmarks; let i = index">
+                                <span class="name actions__item" (click)="restoreBookmark(b);bookmarkDropdown.close()">{{b.name}}</span>
+                                &nbsp; <i class="far fa-trash-alt actions__item control" (click)="bookmarkService.delBookmark(i)" title="Odstranit"></i>
+                            </div>
+                        </div>
+                        <div class="empty" *ngIf="bookmarkService.bookmarks.length==0">
+                            Nemáte zatím žádné uložené nastavení
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="line">
                 <div class="button" (click)="exportIFC()" gaEvent="b_export_ifc" gaCategory="ga_buttons" >Export IFC</div>
                 <div class="button" (click)="exportXLS()" gaEvent="b_export_xls" gaCategory="ga_buttons">Export XLS</div>
@@ -63,6 +87,8 @@
         <div class="help">
             <a target="_blank" [href]="help_url">Stručný popis ovládání</a>
         </div>
+
+
     </div>
 
 </div>

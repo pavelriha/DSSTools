@@ -1,0 +1,7 @@
+
+    RewriteEngine on
+    #LogLevel alert rewrite:trace6
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Rewrite everything else to index.html to allow html5 state links
+    RewriteRule ^ /index.html [L]

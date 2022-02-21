@@ -16,6 +16,7 @@ import { ModalService } from './_modal';
 import { ActivatedRoute, Router } from '@angular/router';
 import {Location} from '@angular/common'; 
 import { filter } from 'rxjs/operators';
+import { Bookmark, BookmarkService } from './shared/services/bookmark.service';
 
 const DT_ID_OFFSET = 9000000; // id_offset pro nami dynamicky pridane polozky breakdown, aby nekolidovali a abychom poznali ktre to jsou
 
@@ -86,6 +87,7 @@ export class AppComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public location: Location,
+    public bookmarkService: BookmarkService,
   ) { }
 
   ngOnInit(): void {
@@ -397,7 +399,7 @@ export class AppComponent implements OnInit {
     let rea = this.fbReasons?.getSelectedIds();
     if (rea?.length) filters['reasons'] = rea;
 
-    console.log(filters);
+    //console.log(filters);
 
     this.location.replaceState( this.router.createUrlTree([ '/viewer', this.controlService.selectedRepository, filters  ] ).toString()  );
 
@@ -427,6 +429,7 @@ export class AppComponent implements OnInit {
         this.fbActors.prepareSelected();
         this.fbReasons.prepareSelected();
         this.fbMilestones.prepareSelected();
+        this.saveFilter2Url();
       },1000);//zpozdeni vterinu, jinak to ne vzdy nabehne
     } else {
       console.warn('not ready for restore');
@@ -532,6 +535,29 @@ export class AppComponent implements OnInit {
     this.modal.close('modal-new-dt');
   }
 
+  public bmname: string;
+  addBookmark(name: string) {
+    console.info("adding bookmark", name);
+    if (!name || name=='') return false;
+    this.bookmarkService.addBookmark({ 
+      name: name,
+      repo: this.controlService.selectedRepository,
+      dt: this.fbBreaks.getSelectedIds(),
+      actors: this.fbActors.getSelectedIds(),
+      milestones: this.fbMilestones.getSelectedIds(),
+      reasons: this.fbReasons.getSelectedIds(),
+    });
+  }
+  restoreBookmark(bm: Bookmark) {
+    console.log('[restoreBookmark]  restore TODO', bm);
+    this.repoChange(bm.repo);
+    this.saved_filters.dt = bm.dt;
+    this.saved_filters.actors = bm.actors;
+    this.saved_filters.milestones = bm.milestones;
+    this.saved_filters.reasons = bm.reasons;
+    this.saved_filters.repo = bm.repo;
+    this.controlService.selectedRepository  = bm.repo;
+  }
 
 }
 
