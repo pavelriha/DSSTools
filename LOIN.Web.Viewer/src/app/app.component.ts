@@ -305,7 +305,7 @@ export class AppComponent implements OnInit {
 
       if (req.requirementSets) {
         // pokud se jedna o skupinu co ma v nazvu obecná, tak ji chceme ve vychozim stavu sbalenou
-        req.requirementSets.forEach( set => { if ( set.name.includes('obecn') ) (set as any).collapsed = true; });
+        req.requirementSets.forEach( set => { if ( set.name.includes('obecn') || set.name.includes('klasifikace CCI') || set.name.includes('identifikace') ) (set as any).collapsed = true; });
       }
       //console.log(req.nameCS, req,  this.notesReqData[req.uuid]);
       // pokud existuji pridane poznamky v druhem api, tak pridej nove navrhy vlastnosti do dat z hlavniho api

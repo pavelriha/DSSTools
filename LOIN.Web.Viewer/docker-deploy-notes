@@ -1,0 +1,12 @@
+# vytvor produkcni build
+npm run-script build-notes
+
+
+# vytvor novou image
+docker build -t trilogic/cas-bim-dss-frontend-notes .
+
+# natlac image do repositare
+docker push trilogic/cas-bim-dss-frontend-notes
+
+# stouchni do portaineru, aby tuto services aktualizoval
+curl -X POST https://portainer.swarm.kosmodrom.cz/api/webhooks/cd31ac3c-37dd-4d04-93f9-5ecdebda6327
