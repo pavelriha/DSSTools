@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 
-import { Workbook, Worksheet } from 'exceljs';
+import { Row, Workbook, Worksheet } from 'exceljs';
 import * as fs from 'file-saver';
-
+//import * as QRCode from "@cordobo/qrcode"
+import * as QRCode from "qrcode"
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExportExcelService {
 
-  constructor() { }
+  constructor(
+  ) { }
 
   private columns = [
     { header: 'Cesta', key: 'path', width: 10 },
@@ -19,7 +21,7 @@ export class ExportExcelService {
     { header: 'Datový typ', key: 'dataTypeCS', width: 25 },
     { header: 'Popis', key: 'description', width: 50 },
     { header: 'Poznámka', key: 'examples', width: 20 },
-    { header: 'kód (GUID)', key: 'uuid', width: 25 },
+    { header: 'kód (GUID)', key: 'uuid', width: 45 },
     { header: 'IFC Pset', key: 'setName', width: 25 },
     { header: 'IFC property', key: 'name', width: 20 },
     { header: 'IFC data type', key: 'dataType', width: 20 },
@@ -39,7 +41,7 @@ export class ExportExcelService {
     { header: 'CCI:TS', key: 'cciTS', width: 10 },
     { header: 'CCI:KO', key: 'cciKO', width: 10 },
     { header: 'CCI:SK', key: 'cciSK', width: 10 },
-    { header: 'kód (GUID)', key: 'uuid', width: 27 },
+    { header: 'kód (GUID)', key: 'uuid', width: 45 },
   ];
 
 
@@ -119,7 +121,7 @@ export class ExportExcelService {
   private exportAddSheetRequirements(workbook:Workbook, name:string, dataTemplates:any[], tree:any[] ) {
     const worksheet:Worksheet = workbook.addWorksheet(name);
 
-    worksheet.columns = this.columns;
+    worksheet.columns = this.columns; //toto prirazeni zpusobi zapsani hlavicky do prvniho radku (A1,B1 atd). Pokud to nechceme mit na prvnim radku, ale neco pred to jeste predsadit, tak jedine reseni je potom provest worksheet.insertRow
 
     const rowheader = worksheet.getRow(1);
     rowheader.fill = { type: 'pattern', pattern:'solid', fgColor:{ argb:'AAAAAA' } };
@@ -134,7 +136,7 @@ export class ExportExcelService {
   }
 
   private exportAddSheetTree(workbook:Workbook, name:string, dataTemplates:any[], tree:any[] ) {
-    const wstree:Worksheet = workbook.addWorksheet('Datové šablony');
+    const wstree:Worksheet = workbook.addWorksheet(name);
     wstree.columns = this.columnsTree;
 
     const rowheader = wstree.getRow(1);
@@ -147,9 +149,51 @@ export class ExportExcelService {
     tree.forEach( node => this.ExportPath(wstree, dataTemplates, node) );
   }
 
+  private exportAddSheetDSS(workbook:Workbook, name:string) {
+    const worksheet:Worksheet = workbook.addWorksheet(name);
+    let row: Row;
+    worksheet.columns = [
+      { key: 'key',   width: 50 },
+      { key: 'value', width: 50 },
+    ];
+
+    row = worksheet.addRow(['DSS', 'XLS export']);
+    let dt = new Date();
+    row = worksheet.addRow(['exportováno dne', dt.toLocaleString() ]);
+    //console.log(row);
+
+    const content = window.location.href;
+     
+    row = worksheet.addRow(['URL',content]);
+
+    const bufferImage = QRCode.toString(content, {
+        type: 'png',
+        errorCorrectionLevel: 'M',
+    });
+
+    const imageId2 = workbook.addImage({
+        buffer: bufferImage,
+        extension: 'png'
+    });
+    console.log(row.number);
+    //worksheet.addImage(imageId2, 'B2:D6');
+    worksheet.addImage(imageId2, {
+      tl: { col: 1, row: row.number },
+      ext: { width: 200, height: 200 },
+      hyperlinks: {
+        hyperlink: content,
+        //tooltip: 'TIP: http://www.somewhere.com'
+      }
+    });
+
+
+  }
+
   public export(dataTemplates:any[], tree:any[] ) {
 
     let workbook:Workbook = new Workbook();
+
+    this.exportAddSheetDSS(workbook, 'DSS');
 
     this.exportAddSheetRequirements(workbook, "Požadavky na vlastnosti", dataTemplates, tree);
 

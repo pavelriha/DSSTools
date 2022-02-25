@@ -35,6 +35,7 @@
     "ngx-bootstrap": "^7.1.0",
     "ngx-google-analytics": "^11.2.1",
     "ngx-pipes": "^2.7.6",
+    "qrcode": "^1.5.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"

@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   ga: 'G-FMWF7FQJ7E',//dss.kosmodrom.net
+  //ga: 'GTM-THSKZVJ',//dss.koncepcebim.cz
   login: true,
 };
 
