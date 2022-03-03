@@ -19,7 +19,7 @@ export class ExportExcelService {
     { header: 'Název vlastnosti', key: 'nameCS', width: 50 },
     { header: 'Měrná jednotka', key: 'units', width: 10 },
     { header: 'Datový typ', key: 'dataTypeCS', width: 25 },
-    { header: 'Popis', key: 'description', width: 50 },
+    { header: 'Popis', key: 'descriptionCS', width: 50 },
     { header: 'Poznámka', key: 'examples', width: 20 },
     { header: 'kód (GUID)', key: 'uuid', width: 45 },
     { header: 'IFC Pset', key: 'setName', width: 25 },
@@ -167,13 +167,13 @@ export class ExportExcelService {
     row = worksheet.addRow(['URL',content]);
 
     const bufferImage = QRCode.toString(content, {
-        type: 'png',
+        type: 'gif',
         errorCorrectionLevel: 'M',
     });
 
     const imageId2 = workbook.addImage({
         buffer: bufferImage,
-        extension: 'png'
+        extension: 'gif'
     });
     console.log(row.number);
     //worksheet.addImage(imageId2, 'B2:D6');
