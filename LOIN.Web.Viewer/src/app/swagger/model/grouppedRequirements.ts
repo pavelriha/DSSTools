@@ -20,6 +20,9 @@ export interface GrouppedRequirements {
     description?: string;
     descriptionCS?: string;
     descriptionEN?: string;
+    /**
+     * IFC Identifier
+     */
     identifier?: string;
     noteCS?: string;
     noteEN?: string;

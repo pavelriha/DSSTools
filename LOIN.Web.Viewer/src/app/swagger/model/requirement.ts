@@ -20,6 +20,9 @@ export interface Requirement {
     description?: string;
     descriptionCS?: string;
     descriptionEN?: string;
+    /**
+     * IFC Identifier
+     */
     identifier?: string;
     units?: string;
     valueType?: string;

@@ -11,6 +11,9 @@
  */
 import { Requirement } from './requirement';
 
+/**
+ * Set of LOIN requirements
+ */
 export interface RequirementSet { 
     id?: number;
     uuid?: string;
@@ -20,6 +23,12 @@ export interface RequirementSet {
     description?: string;
     descriptionCS?: string;
     descriptionEN?: string;
+    /**
+     * IFC Identifier
+     */
     identifier?: string;
+    /**
+     * List of requirements
+     */
     requirements?: Array<Requirement>;
 }

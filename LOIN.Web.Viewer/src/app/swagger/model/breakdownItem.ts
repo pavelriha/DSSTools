@@ -19,6 +19,9 @@ export interface BreakdownItem {
     description?: string;
     descriptionCS?: string;
     descriptionEN?: string;
+    /**
+     * IFC Identifier
+     */
     identifier?: string;
     code?: string;
     noteCS?: string;

@@ -19,5 +19,8 @@ export interface Reason {
     description?: string;
     descriptionCS?: string;
     descriptionEN?: string;
+    /**
+     * IFC Identifier
+     */
     identifier?: string;
 }

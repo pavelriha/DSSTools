@@ -57,9 +57,10 @@ export class RequirementsService {
 
 
     /**
-     * 
+     * Returns IFC file containing all the definitions based on the criteria
      * 
      * @param repositoryId 
+     * @param fromUrl Application URL used to call this endpoint. This URL will be used in the header of the IFC file.
      * @param actors Coma separated list of actors (id) for the context filtering
      * @param reasons Coma separated list of reasons (id) for the context filtering
      * @param breakdown Coma separated list of breakdown items (id) for the context filtering
@@ -67,10 +68,10 @@ export class RequirementsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiRepositoryIdRequirementsExportGet(repositoryId: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'body', reportProgress?: boolean): Observable<Blob>;
-    public apiRepositoryIdRequirementsExportGet(repositoryId: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Blob>>;
-    public apiRepositoryIdRequirementsExportGet(repositoryId: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Blob>>;
-    public apiRepositoryIdRequirementsExportGet(repositoryId: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public apiRepositoryIdRequirementsExportGet(repositoryId: string, fromUrl?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'body', reportProgress?: boolean): Observable<Blob>;
+    public apiRepositoryIdRequirementsExportGet(repositoryId: string, fromUrl?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Blob>>;
+    public apiRepositoryIdRequirementsExportGet(repositoryId: string, fromUrl?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Blob>>;
+    public apiRepositoryIdRequirementsExportGet(repositoryId: string, fromUrl?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (repositoryId === null || repositoryId === undefined) {
             throw new Error('Required parameter repositoryId was null or undefined when calling apiRepositoryIdRequirementsExportGet.');
@@ -80,7 +81,11 @@ export class RequirementsService {
 
 
 
+
         let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+        if (fromUrl !== undefined && fromUrl !== null) {
+            queryParameters = queryParameters.set('fromUrl', <any>fromUrl);
+        }
         if (actors !== undefined && actors !== null) {
             queryParameters = queryParameters.set('actors', <any>actors);
         }
@@ -121,7 +126,7 @@ export class RequirementsService {
     }
 
     /**
-     * 
+     * Returns IFC file containing all the definitions based on the criteria
      * 
      * @param repositoryId 
      * @param fromUrl 
