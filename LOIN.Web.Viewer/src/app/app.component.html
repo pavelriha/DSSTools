@@ -23,7 +23,7 @@
 
     <ul class="filter">
         <!-- <li><app-filter-box #repo [name]="'Verze'" [nodes]="nodesRepositories" ></app-filter-box></li> -->
-        <li style="flex-grow: 10;">
+        <li [class.notready]="!filtersready" style="flex-grow: 10;">
             <app-filter-box #breaks [name]="'Datové šablony'" [nodes]="nodesBreakdown" [nodesSplit]="true" [toolbarButton]="buttonnewdt" >
                 <ng-template #buttonnewdt>
                         <a class="button newdt" (click)="modal.open('modal-new-dt')"  *ngIf="userdata">
@@ -36,10 +36,10 @@
             </app-filter-box>
         </li>
         
-        <li><app-filter-box #actors [name]="'Aktéři'" [nodes]="nodesActors" ></app-filter-box></li>
+        <li [class.notready]="!filtersready"><app-filter-box #actors [name]="'Aktéři'" [nodes]="nodesActors" ></app-filter-box></li>
     
-        <li><app-filter-box #milestones [name]="'Stupeň projektové dokumentace'" [nodes]="nodesMilestones" ></app-filter-box></li>
-        <li><app-filter-box #reasons [name]="'Účely užití'" [nodes]="nodesReasons" ></app-filter-box></li>
+        <li [class.notready]="!filtersready"><app-filter-box #milestones [name]="'Stupeň projektové dokumentace'" [nodes]="nodesMilestones" ></app-filter-box></li>
+        <li [class.notready]="!filtersready"><app-filter-box #reasons [name]="'Účely užití'" [nodes]="nodesReasons" ></app-filter-box></li>
 
         <li class="cancel" *ngIf="breaks.selected.length || actors.selected.length || milestones.selected.length || reasons.selected.length">
             <div class="">
@@ -55,7 +55,7 @@
     <div class="buttons-wrapper">
         <div class="buttons-bar">
             <div class="line">
-                <div class="button search" (click)="runfilter()" gaEvent="b_zobrazit" gaCategory="ga_buttons"><span class="placeholder">Zobrazit</span><span class="text">Zobrazit</span> </div>
+                <div class="button search" [class.notready]="!filtersready" (click)="runfilter()" gaEvent="b_zobrazit" gaCategory="ga_buttons"><span class="placeholder">Zobrazit</span><span class="text">Zobrazit</span> </div>
                 <div class="button bookmarks" ngDropdown [renderInPlace]="false" #bookmarkDropdown="ngDropdown">
                     <span ngDropdownControl>&nbsp;<i class="fas fa-star"></i>&nbsp;</span>
                     <div ngDropdownContent dropdownClass="slide-fade dropdown-bookmarks" >
@@ -82,8 +82,8 @@
                 </div>
             </div>
             <div class="line">
-                <div class="button" (click)="exportIFC()" gaEvent="b_export_ifc" gaCategory="ga_buttons" >Export IFC</div>
-                <div class="button" (click)="exportXLS()" gaEvent="b_export_xls" gaCategory="ga_buttons">Export XLS</div>
+                <div class="button" [class.notready]="!filtersready" (click)="exportIFC()" gaEvent="b_export_ifc" gaCategory="ga_buttons" >Export IFC</div>
+                <div class="button" [class.notready]="!filtersready" (click)="exportXLS()" gaEvent="b_export_xls" gaCategory="ga_buttons">Export XLS</div>
             </div>
         </div>
         <div class="help">

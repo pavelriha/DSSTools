@@ -8,7 +8,7 @@ import {
 import { GroupingType, Requirement, RequirementSet, GrouppedRequirements, GrouppedRequirementSets } from './swagger/model/models';
 import { TreeModel, TreeNode, TreeComponent, ITreeOptions, ITreeState } from '@circlon/angular-tree-component';
 import { FilterBoxComponent } from "./filter-box/filter-box.component";
-import { ExportExcelService } from "./export-excel.service";
+import { ExportExcelService } from "./shared/services/export-excel.service";
 import { AuthService } from './shared/services/auth.service';
 import { SlimapiService } from './shared/services/slimapi.service';
 import { ControlService } from './shared/services/control.service';
@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {Location} from '@angular/common'; 
 import { filter } from 'rxjs/operators';
 import { Bookmark, BookmarkService } from './shared/services/bookmark.service';
+import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 const DT_ID_OFFSET = 9000000; // id_offset pro nami dynamicky pridane polozky breakdown, aby nekolidovali a abychom poznali ktre to jsou
 
@@ -44,7 +45,7 @@ export class AppComponent implements OnInit {
   }; */
   public ifc: boolean = false;
 
-  public initdone: boolean = false;
+  public filtersready: boolean = false;
 
   public nodesBreakdown: any[];
   public nodesActors: any[];
@@ -88,6 +89,7 @@ export class AppComponent implements OnInit {
     private router: Router,
     public location: Location,
     public bookmarkService: BookmarkService,
+    protected $gaService: GoogleAnalyticsService,
   ) { }
 
   ngOnInit(): void {
@@ -155,7 +157,8 @@ export class AppComponent implements OnInit {
   }
   
   fetchFilters() {
-    this.initdone = false;
+    this.filtersready = false;
+    this.dataLoading = true;
 
     this.nodesActors = [];
     this.nodesBreakdown = [];
@@ -184,7 +187,8 @@ export class AppComponent implements OnInit {
         this.nodesReasons = reasons;
         this.controlService.reasons = reasons;
 
-        this.initdone = true;
+        this.filtersready = true;
+        this.dataLoading = false;
 
         //zpozdime, aby se filtr komponenta stihla iniciovat
         setTimeout( () => { this.restoreFilters() } );
@@ -414,9 +418,9 @@ export class AppComponent implements OnInit {
 
   restoreFilters() {
     console.info('restoreFilters fired');
-    console.info(this.initdone, this.saved_filters);
+    console.info(this.filtersready, this.saved_filters);
     // obnovuprovadime kdyz mame co obnovovat a soucasne jsou dotazene filtry
-    if (this.initdone && this.saved_filters.repo ) {
+    if (this.filtersready && this.saved_filters.repo ) {
       //console.log(this.saved_filters.dt.reduce((acc, key) => ({...acc, [key]: true}), {}));
       this.fbBreaks.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.dt.reduce((acc, key) => ({...acc, [key]: true}), {}) });
       this.fbActors.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.actors.reduce((acc, key) => ({...acc, [key]: true}), {}) } );
@@ -444,7 +448,8 @@ export class AppComponent implements OnInit {
       'actors='+this.fbActors?.getSelectedIds().join(',')+
       '&reasons='+this.fbReasons?.getSelectedIds().join(',')+
       '&breakdown='+filteredBreakdowns.join(',')+
-      '&milestones='+this.fbMilestones?.getSelectedIds().join(',');
+      '&milestones='+this.fbMilestones?.getSelectedIds().join(',')+
+      '&fromUrl='+window.location.href;
 
     let anchor = document.createElement("a");
     anchor.href = url;
@@ -458,11 +463,14 @@ export class AppComponent implements OnInit {
     this.export_link.nativeElement.click(); // nefunguje
 */
 
+    this.$gaService.pageView('/dss-ga-test/export/ifc', 'Export IFC');
+    this.location.replaceState( this.router.createUrlTree([ '/export/ifc' ] ).toString()  );
   }
 
   public exportXLS() {
     this.dataLoading = true;
 
+    //console.log('dt', this.fbBreaks.selected);
     this.selectedFlatTree = this.fbBreaks.getSelectedIdsWithInfo();
   
     let groupingtype:GroupingType = 'CS';
@@ -476,11 +484,22 @@ export class AppComponent implements OnInit {
         });
         this.exportexcel.export(data, this.fbBreaks.getSelectedNodeTree() ); */
 
-        this.prepareFetchedData(r)
+        this.prepareFetchedData(r);
 
-        this.exportexcel.export(this.dataTemplates, this.fbBreaks.getSelectedNodeTree() );
+        console.log(this.dataTemplates, this.fbBreaks.getSelectedNodeTree());
+
+        this.exportexcel.export(
+            this.dataTemplates, 
+            this.fbBreaks.getSelectedNodeTree(), 
+            this.fbBreaks.selected, 
+            this.fbActors.selected, 
+            this.fbMilestones.selected, 
+            this.fbReasons.selected,
+        );
 
 
+        this.$gaService.pageView('/dss-ga-test/export/xls', 'Export XLS');
+        this.location.replaceState( this.router.createUrlTree([ '/export/xls' ] ).toString()  );
         this.dataLoading = false;
       },
       error: (e) => { this.apiError(e) },

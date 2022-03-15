@@ -22,6 +22,12 @@ BODY {
     cursor: pointer;
 }
 
+.notready {
+    opacity: 50%;
+    pointer-events: none;
+    color: #888;
+}
+
 mad-table {
     .btn-toolbar .zmdi-search {
         color: $color-secondary-cyan1;

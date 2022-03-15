@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TreeNode } from '@circlon/angular-tree-component';
 
 import { Row, Workbook, Worksheet } from 'exceljs';
 import * as fs from 'file-saver';
@@ -149,7 +150,7 @@ export class ExportExcelService {
     tree.forEach( node => this.ExportPath(wstree, dataTemplates, node) );
   }
 
-  private exportAddSheetDSS(workbook:Workbook, name:string) {
+  private async exportAddSheetDSS(workbook:Workbook, name:string, breaks: TreeNode[], actors: TreeNode[], milestones: TreeNode[], reasons: TreeNode[],) {
     const worksheet:Worksheet = workbook.addWorksheet(name);
     let row: Row;
     worksheet.columns = [
@@ -162,38 +163,68 @@ export class ExportExcelService {
     row = worksheet.addRow(['exportováno dne', dt.toLocaleString() ]);
     //console.log(row);
 
+    row = worksheet.addRow(['']);
+    row = worksheet.addRow(['Filtry']);
+    breaks.forEach( s => { row = worksheet.addRow(['Datové šablony', s.data.nameCS ]); });
+    actors.forEach( s => { row = worksheet.addRow(['Aktéři', s.data.nameCS ]); });
+    milestones.forEach( s => { row = worksheet.addRow(['Milníky', s.data.nameCS ]); });
+    reasons.forEach( s => { row = worksheet.addRow(['Účely užití', s.data.nameCS ]); });
+    
+    
+    
+    row = worksheet.addRow(['']);
+
     const content = window.location.href;
-     
+    
     row = worksheet.addRow(['URL',content]);
 
-    const bufferImage = QRCode.toString(content, {
-        type: 'gif',
-        errorCorrectionLevel: 'M',
-    });
+    // const qrimage = await QRCode.toDataURL(content, {
+    //     type: 'image/png',
+    //     errorCorrectionLevel: 'M',
+    // });
 
-    const imageId2 = workbook.addImage({
-        buffer: bufferImage,
-        extension: 'gif'
-    });
-    console.log(row.number);
-    //worksheet.addImage(imageId2, 'B2:D6');
-    worksheet.addImage(imageId2, {
-      tl: { col: 1, row: row.number },
-      ext: { width: 200, height: 200 },
-      hyperlinks: {
-        hyperlink: content,
-        //tooltip: 'TIP: http://www.somewhere.com'
-      }
-    });
+    // console.log('qrimage', qrimage);
 
+    // const imageId2 = workbook.addImage({
+    //     base64: qrimage,
+    //     extension: 'png',
+    // });
+    // console.log(row.number);
+    // //worksheet.addImage(imageId2, 'B2:D6');
+    // worksheet.addImage(imageId2, {
+    //   tl: { col: 1, row: row.number },
+    //   ext: { width: 200, height: 200 },
+    //   hyperlinks: {
+    //     hyperlink: content,
+    //     //tooltip: 'TIP: http://www.somewhere.com'
+    //   }
+    // });
+
+
+
+    // const test1 = workbook.addImage({
+    //     base64: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAABSlBMVEUAAAD28vKlEh7XGyusHSwRAALNEyT2Q0ytFSMyBAh0CBLICx/MKjafDhu9FiaaDhu5EyS6GyqnFSTfIzOiEyJ8CxVuChPNDyLHEiPXJTHpO0TTIy/WKDSuCBvHCh6jCBm8Dx/HDiH2Q0zcOEGLBxXFDiDoND/zPkjQKDSpDRy/CR2lDRtsBxG/EyPqNEDEHy69FSZJBgziJjWNDhmWFiKxEyEFAQGdFyfLFSUAAADYJjLPHyzLHivkMz7GGyjhMTzTKDPgO0TcMj3BGie3Cx24EyHYMDvTKDTWMz23FiPEEiPoNECyFSLiMDzBESLNLDjBEyPpMz/YKTXLIzDsNUHVJjPEHiy/HSzBGSf2Q0vZGSrVEyX6SVDRCyDyPkfmLTniJjPsNEDkKjbcHy3fIjDpMTzvOkPSDyPdJDHaHi3uOUPqNkDpMz3RGChOcHzdAAAAWXRSTlMAA0EdCQj+51IyDf2ZgHNvZWAzKiAeFP37+vn27ejl4+Lc2dTSz8C7t7GwopmFhIR5PDEwKSkjFhQT/Pfv6ejf393c3NrYzsnExLmzs6+moZqRjol8e3dvNh6lMQMAAAFLSURBVCjPXZDVdsJAFEUnAqG4W3F3irbU3d1pcRq8///aezMka9H9MufcPcmaGaLAczYbx5P/lAvJiCBEkq/llTH3JLSWCIUtomBLNFutZlSvP8L1hlP2J5rAZZUQaxTTnfzNcweaV0MYhli8EDtvdP651wHONxkQ9mPMBzVJvMxHo9HsgTAAn5pBmb/jXHvRBxZFSRB9H0nhfWq+hSiK3Q8qil0ROLSDYD1doGemYmOAzWcFodkeABMLFcYetnUWhacHKGKCTRLszg8wlX81xLZbAVHdHwJTIxX5KbYTBx736gvJU/EolVsVAQy/mO8ZhL/GrDYRpBL6BuL0ScKYzxxEwqCGopYe0YzRbSIUZ9o1Ho/jVoZhwxBcWS1Z4kjr2u12IJMJwOLOOomC0xAChehOTbhfQVXKxYJ+fzCWK8FJV0yjvgbUG/L8D1M7VvyP2ng5AAAAAElFTkSuQmCC",
+    //     extension: 'png',
+    // });
+    // worksheet.addImage(test1, {
+    //   tl: { col: 4, row: row.number },
+    //   ext: { width: 200, height: 200 },
+    //   hyperlinks: {
+    //     hyperlink: content,
+    //     //tooltip: 'TIP: http://www.somewhere.com'
+    //   }
+    // });
+
+    
+  
 
   }
 
-  public export(dataTemplates:any[], tree:any[] ) {
+  public export(dataTemplates:any[], tree:any[], breaks: TreeNode[], actors: TreeNode[], milestones: TreeNode[], reasons: TreeNode[] ) {
 
     let workbook:Workbook = new Workbook();
 
-    this.exportAddSheetDSS(workbook, 'DSS');
+    this.exportAddSheetDSS(workbook, 'DSS', breaks, actors, milestones, reasons);
 
     this.exportAddSheetRequirements(workbook, "Požadavky na vlastnosti", dataTemplates, tree);
 
