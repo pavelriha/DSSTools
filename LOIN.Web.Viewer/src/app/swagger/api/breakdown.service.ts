@@ -21,6 +21,7 @@ import { BreakdownItem } from '../model/breakdownItem';
 import { GroupingType } from '../model/groupingType';
 import { GrouppedRequirementSets } from '../model/grouppedRequirementSets';
 import { GrouppedRequirements } from '../model/grouppedRequirements';
+import { OrderingType } from '../model/orderingType';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -245,6 +246,7 @@ export class BreakdownService {
      * 
      * 
      * @param repositoryId 
+     * @param ordering 
      * @param select OData select expression
      * @param filter OData filter expression
      * @param orderby OData order-by expression
@@ -258,10 +260,10 @@ export class BreakdownService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiRepositoryIdBreakdownRequirementsGet(repositoryId: string, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'body', reportProgress?: boolean): Observable<Array<GrouppedRequirements>>;
-    public apiRepositoryIdBreakdownRequirementsGet(repositoryId: string, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<GrouppedRequirements>>>;
-    public apiRepositoryIdBreakdownRequirementsGet(repositoryId: string, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<GrouppedRequirements>>>;
-    public apiRepositoryIdBreakdownRequirementsGet(repositoryId: string, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public apiRepositoryIdBreakdownRequirementsGet(repositoryId: string, ordering?: OrderingType, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'body', reportProgress?: boolean): Observable<Array<GrouppedRequirements>>;
+    public apiRepositoryIdBreakdownRequirementsGet(repositoryId: string, ordering?: OrderingType, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<GrouppedRequirements>>>;
+    public apiRepositoryIdBreakdownRequirementsGet(repositoryId: string, ordering?: OrderingType, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<GrouppedRequirements>>>;
+    public apiRepositoryIdBreakdownRequirementsGet(repositoryId: string, ordering?: OrderingType, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (repositoryId === null || repositoryId === undefined) {
             throw new Error('Required parameter repositoryId was null or undefined when calling apiRepositoryIdBreakdownRequirementsGet.');
@@ -277,7 +279,11 @@ export class BreakdownService {
 
 
 
+
         let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+        if (ordering !== undefined && ordering !== null) {
+            queryParameters = queryParameters.set('ordering', <any>ordering);
+        }
         if (select !== undefined && select !== null) {
             queryParameters = queryParameters.set('$select', <any>select);
         }

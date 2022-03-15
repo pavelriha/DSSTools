@@ -9,9 +9,8 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { RequirementContext } from './requirementContext';
 
-export interface Requirement { 
+export interface LoinItem { 
     id?: number;
     uuid?: string;
     name?: string;
@@ -21,20 +20,4 @@ export interface Requirement {
     descriptionCS?: string;
     descriptionEN?: string;
     identifier?: string;
-    units?: string;
-    valueType?: string;
-    dataType?: string;
-    dataTypeCS?: string;
-    dataTypeEN?: string;
-    setName?: string;
-    setNameCS?: string;
-    setNameEN?: string;
-    setDescription?: string;
-    setDescriptionCS?: string;
-    setDescriptionEN?: string;
-    noteCS?: string;
-    noteEN?: string;
-    enumeration?: Array<string>;
-    examples?: Array<string>;
-    contexts?: Array<RequirementContext>;
 }

@@ -124,6 +124,87 @@ export class RequirementsService {
      * 
      * 
      * @param repositoryId 
+     * @param fromUrl 
+     * @param actors 
+     * @param reasons 
+     * @param breakdown 
+     * @param milestones 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public apiRepositoryIdRequirementsExportPostForm(repositoryId: string, fromUrl?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'body', reportProgress?: boolean): Observable<Blob>;
+    public apiRepositoryIdRequirementsExportPostForm(repositoryId: string, fromUrl?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Blob>>;
+    public apiRepositoryIdRequirementsExportPostForm(repositoryId: string, fromUrl?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Blob>>;
+    public apiRepositoryIdRequirementsExportPostForm(repositoryId: string, fromUrl?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (repositoryId === null || repositoryId === undefined) {
+            throw new Error('Required parameter repositoryId was null or undefined when calling apiRepositoryIdRequirementsExportPost.');
+        }
+
+
+
+
+
+
+        let headers = this.defaultHeaders;
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            'application/octet-stream'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'multipart/form-data'
+        ];
+
+        const canConsumeForm = this.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): void; };
+        let useForm = false;
+        let convertFormParamsToString = false;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+        }
+
+        if (fromUrl !== undefined) {
+            formParams = formParams.append('fromUrl', <any>fromUrl) as any || formParams;
+        }
+        if (actors !== undefined) {
+            formParams = formParams.append('actors', <any>actors) as any || formParams;
+        }
+        if (reasons !== undefined) {
+            formParams = formParams.append('reasons', <any>reasons) as any || formParams;
+        }
+        if (breakdown !== undefined) {
+            formParams = formParams.append('breakdown', <any>breakdown) as any || formParams;
+        }
+        if (milestones !== undefined) {
+            formParams = formParams.append('milestones', <any>milestones) as any || formParams;
+        }
+
+        return this.httpClient.request<Blob>('post',`${this.basePath}/api/${encodeURIComponent(String(repositoryId))}/requirements/export`,
+            {
+                body: convertFormParamsToString ? formParams.toString() : formParams,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * 
+     * 
+     * @param repositoryId 
+     * @param expandContext 
      * @param select OData select expression
      * @param filter OData filter expression
      * @param orderby OData order-by expression
@@ -137,10 +218,10 @@ export class RequirementsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiRepositoryIdRequirementsGet(repositoryId: string, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'body', reportProgress?: boolean): Observable<Array<Requirement>>;
-    public apiRepositoryIdRequirementsGet(repositoryId: string, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Requirement>>>;
-    public apiRepositoryIdRequirementsGet(repositoryId: string, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Requirement>>>;
-    public apiRepositoryIdRequirementsGet(repositoryId: string, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public apiRepositoryIdRequirementsGet(repositoryId: string, expandContext?: boolean, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'body', reportProgress?: boolean): Observable<Array<Requirement>>;
+    public apiRepositoryIdRequirementsGet(repositoryId: string, expandContext?: boolean, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Requirement>>>;
+    public apiRepositoryIdRequirementsGet(repositoryId: string, expandContext?: boolean, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Requirement>>>;
+    public apiRepositoryIdRequirementsGet(repositoryId: string, expandContext?: boolean, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, actors?: string, reasons?: string, breakdown?: string, milestones?: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (repositoryId === null || repositoryId === undefined) {
             throw new Error('Required parameter repositoryId was null or undefined when calling apiRepositoryIdRequirementsGet.');
@@ -156,7 +237,11 @@ export class RequirementsService {
 
 
 
+
         let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+        if (expandContext !== undefined && expandContext !== null) {
+            queryParameters = queryParameters.set('expandContext', <any>expandContext);
+        }
         if (select !== undefined && select !== null) {
             queryParameters = queryParameters.set('$select', <any>select);
         }
@@ -234,6 +319,7 @@ export class RequirementsService {
      * 
      * @param id 
      * @param repositoryId 
+     * @param expandContext 
      * @param select OData select expression
      * @param filter OData filter expression
      * @param orderby OData order-by expression
@@ -243,10 +329,10 @@ export class RequirementsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiRepositoryIdRequirementsIdGet(id: number, repositoryId: string, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, observe?: 'body', reportProgress?: boolean): Observable<Requirement>;
-    public apiRepositoryIdRequirementsIdGet(id: number, repositoryId: string, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Requirement>>;
-    public apiRepositoryIdRequirementsIdGet(id: number, repositoryId: string, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Requirement>>;
-    public apiRepositoryIdRequirementsIdGet(id: number, repositoryId: string, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public apiRepositoryIdRequirementsIdGet(id: number, repositoryId: string, expandContext?: boolean, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, observe?: 'body', reportProgress?: boolean): Observable<Requirement>;
+    public apiRepositoryIdRequirementsIdGet(id: number, repositoryId: string, expandContext?: boolean, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Requirement>>;
+    public apiRepositoryIdRequirementsIdGet(id: number, repositoryId: string, expandContext?: boolean, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Requirement>>;
+    public apiRepositoryIdRequirementsIdGet(id: number, repositoryId: string, expandContext?: boolean, select?: string, filter?: string, orderby?: string, skip?: number, top?: number, apply?: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiRepositoryIdRequirementsIdGet.');
@@ -262,7 +348,11 @@ export class RequirementsService {
 
 
 
+
         let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+        if (expandContext !== undefined && expandContext !== null) {
+            queryParameters = queryParameters.set('expandContext', <any>expandContext);
+        }
         if (select !== undefined && select !== null) {
             queryParameters = queryParameters.set('$select', <any>select);
         }
