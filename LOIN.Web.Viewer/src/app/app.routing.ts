@@ -18,6 +18,8 @@ const ROUTES: Routes = [
     {path: '', redirectTo: '/viewer', pathMatch: 'full'},
     {path: 'viewer',        component: AppComponent},
     {path: 'viewer/:repo',  component: AppComponent},
+    {path: 'export/:export_type',  component: AppComponent},
+    {path: 'export/:export_type/:repo',  component: AppComponent},
     //{path: '',      component: AppComponent},
     {path: 'login', component: LoginComponent},
     {path: 'access-denied', redirectTo: '/workplace/access-denied'}, 

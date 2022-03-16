@@ -17,7 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {Location} from '@angular/common'; 
 import { filter } from 'rxjs/operators';
 import { Bookmark, BookmarkService } from './shared/services/bookmark.service';
-import { GoogleAnalyticsService } from 'ngx-google-analytics';
+//import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 const DT_ID_OFFSET = 9000000; // id_offset pro nami dynamicky pridane polozky breakdown, aby nekolidovali a abychom poznali ktre to jsou
 
@@ -31,6 +31,8 @@ export class AppComponent implements OnInit {
   @ViewChild('milestones') fbMilestones: FilterBoxComponent;
   @ViewChild('reasons') fbReasons: FilterBoxComponent;
   @ViewChild('actors') fbActors: FilterBoxComponent;
+  @ViewChild('exportifcform') exportifcform: any;
+
   //@ViewChild('export_link') export_link: any;
   //@ViewChild('repo') fbRepo: FilterBoxComponent;
   //@ViewChild('repo') repo: nativeElement;
@@ -89,7 +91,7 @@ export class AppComponent implements OnInit {
     private router: Router,
     public location: Location,
     public bookmarkService: BookmarkService,
-    protected $gaService: GoogleAnalyticsService,
+    //protected $gaService: GoogleAnalyticsService,
   ) { }
 
   ngOnInit(): void {
@@ -441,9 +443,40 @@ export class AppComponent implements OnInit {
   }
 
 
+  exportIFCactors = '';
+  exportIFCreasons = '';
+  exportIFCbreakdowns = '';
+  exportIFCmilestones = '';
+  exportIFCurl = '';
   exportIFC() {
     let filteredBreakdowns = this.fbBreaks.getSelectedIds().filter((id) => { return (id < DT_ID_OFFSET); });
 
+    this.exportIFCactors = this.fbActors?.getSelectedIds().join(',');
+    this.exportIFCreasons = this.fbReasons?.getSelectedIds().join(',');
+    this.exportIFCbreakdowns = filteredBreakdowns.join(',');
+    this.exportIFCmilestones = this.fbMilestones?.getSelectedIds().join(',');
+    this.exportIFCurl = window.location.href;
+
+    console.info(this.exportifcform);
+
+    setTimeout(_ => this.exportifcform.nativeElement.submit()); // odesleme az v dalsim ticku, jinak tam nejsou hodnoty
+
+/*     this.requirementsService.apiRepositoryIdRequirementsExportGet(
+      this.controlService.selectedRepository,
+      window.location.href,
+      this.fbActors?.getSelectedIds().join(','),
+      this.fbReasons?.getSelectedIds().join(','),
+      filteredBreakdowns.join(','),
+      this.fbMilestones?.getSelectedIds().join(','),
+      'response',
+    ).subscribe({
+      next: (r) => {
+        console.log(r);
+      },
+      error: (e) => { this.apiError(e) },
+    }); */
+
+/* 
     let url:string = '/api/'+this.controlService.selectedRepository+'/requirements/export?'+
       'actors='+this.fbActors?.getSelectedIds().join(',')+
       '&reasons='+this.fbReasons?.getSelectedIds().join(',')+
@@ -456,14 +489,11 @@ export class AppComponent implements OnInit {
     anchor.target = '_blank';
     anchor.click();
     anchor.remove();
-
-
-/*     this.export_link.href = url;
-    console.log(this.export_link);
-    this.export_link.nativeElement.click(); // nefunguje
 */
 
-    this.$gaService.pageView('/dss-ga-test/export/ifc', 'Export IFC');
+
+
+    //this.$gaService.pageView('/dss-ga-test/export/ifc', 'Export IFC');
     this.location.replaceState( this.router.createUrlTree([ '/export/ifc' ] ).toString()  );
   }
 
@@ -498,7 +528,7 @@ export class AppComponent implements OnInit {
         );
 
 
-        this.$gaService.pageView('/dss-ga-test/export/xls', 'Export XLS');
+        //this.$gaService.pageView('/dss-ga-test/export/xls', 'Export XLS');
         this.location.replaceState( this.router.createUrlTree([ '/export/xls' ] ).toString()  );
         this.dataLoading = false;
       },

@@ -82,8 +82,8 @@
                 </div>
             </div>
             <div class="line">
-                <div class="button" [class.notready]="!filtersready" (click)="exportIFC()" gaEvent="b_export_ifc" gaCategory="ga_buttons" >Export IFC</div>
-                <div class="button" [class.notready]="!filtersready" (click)="exportXLS()" gaEvent="b_export_xls" gaCategory="ga_buttons">Export XLS</div>
+                <div class="button" [class.notready]="!filtersready" (click)="exportIFC()" >Export IFC</div>
+                <div class="button" [class.notready]="!filtersready" (click)="exportXLS()" >Export XLS</div>
             </div>
         </div>
         <div class="help">
@@ -97,6 +97,14 @@
 
 <br><br>
 
+<!-- hidden form pro odeslani exportu IFC -->
+<form ngNoForm #exportifcform [action]="'/api/'+controlService.selectedRepository+'/requirements/export'" method="post" target="_blank" style="display: none;">
+    <input type="hidden" name="actors" [value]="exportIFCactors">
+    <input type="hidden" name="breakdown" [value]="exportIFCbreakdowns">
+    <input type="hidden" name="reasons" [value]="exportIFCreasons">
+    <input type="hidden" name="milestones" [value]="exportIFCmilestones">
+    <input type="hidden" name="fromUrl" [value]="exportIFCurl">
+</form>
 
 <div class="output">
 

@@ -83,11 +83,11 @@ function getConfig() {
     ModalModule,
     NgWormholeModule,
     //NgxGoogleAnalyticsModule.forRoot(environment.ga),
-    NgxGoogleAnalyticsModule.forRoot(environment.ga, [
-      {command: 'consent', values: ['default', { 'ad_storage': 'denied','analytics_storage': 'denied' }]},
-      {command: 'config', values: [environment.ga]},
-    ]),
-    NgxGoogleAnalyticsRouterModule,
+    // NgxGoogleAnalyticsModule.forRoot(environment.ga, [
+    //   {command: 'consent', values: ['default', { 'ad_storage': 'denied','analytics_storage': 'denied' }]},
+    //   {command: 'config', values: [environment.ga]},
+    // ]),
+    // NgxGoogleAnalyticsRouterModule,
     MadTableModule.forRoot({
       paging: [ 10, 20, 50, 100],
       per_page: 50,
