@@ -394,7 +394,7 @@ export class AppComponent implements OnInit {
     if (update_url) this.saveFilter2Url();
   }
   
-  saveFilter2Url() {
+  saveFilter2Url(prefix: string = '/viewer') {
     let filters = {}
     let dt = this.fbBreaks?.getSelectedIds();
     if (dt?.length) filters['dt'] = dt;
@@ -407,7 +407,7 @@ export class AppComponent implements OnInit {
 
     //console.log(filters);
 
-    this.location.replaceState( this.router.createUrlTree([ '/viewer', this.controlService.selectedRepository, filters  ] ).toString()  );
+    this.location.replaceState( this.router.createUrlTree([ prefix, this.controlService.selectedRepository, filters  ] ).toString()  );
 
     /* this.location.replaceState( this.router.createUrlTree([ '/viewer', this.controlService.selectedRepository, { 
       'dt': this.fbBreaks?.getSelectedIds(),
@@ -494,7 +494,8 @@ export class AppComponent implements OnInit {
 
 
     //this.$gaService.pageView('/dss-ga-test/export/ifc', 'Export IFC');
-    this.location.replaceState( this.router.createUrlTree([ '/export/ifc' ] ).toString()  );
+    //this.location.replaceState( this.router.createUrlTree([ '/export/ifc' ] ).toString()  );
+    this.saveFilter2Url('/export/ifc');
   }
 
   public exportXLS() {
@@ -529,7 +530,8 @@ export class AppComponent implements OnInit {
 
 
         //this.$gaService.pageView('/dss-ga-test/export/xls', 'Export XLS');
-        this.location.replaceState( this.router.createUrlTree([ '/export/xls' ] ).toString()  );
+        this.saveFilter2Url('/export/xls');
+        //this.location.replaceState( this.router.createUrlTree([ '/export/xls' ] ).toString()  );
         this.dataLoading = false;
       },
       error: (e) => { this.apiError(e) },
