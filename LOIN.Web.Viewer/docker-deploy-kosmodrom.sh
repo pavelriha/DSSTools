@@ -4,7 +4,7 @@ npm run-script build-kosmodrom
 
 
 # vytvor novou image
-docker build -t trilogic/cas-bim-dss-frontend .
+DOCKER_BUILDKIT=1 docker build -t trilogic/cas-bim-dss-frontend .
 
 # natlac image do repositare
 docker push trilogic/cas-bim-dss-frontend
