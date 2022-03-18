@@ -150,7 +150,7 @@ export class ExportExcelService {
     tree.forEach( node => this.ExportPath(wstree, dataTemplates, node) );
   }
 
-  private async exportAddSheetDSS(workbook:Workbook, name:string, breaks: TreeNode[], actors: TreeNode[], milestones: TreeNode[], reasons: TreeNode[],) {
+  private async exportAddSheetDSS(workbook:Workbook, name:string, breaks: TreeNode[], actors: TreeNode[], milestones: TreeNode[], reasons: TreeNode[], viewer_url: string) {
     const worksheet:Worksheet = workbook.addWorksheet(name);
     let row: Row;
     worksheet.columns = [
@@ -174,11 +174,9 @@ export class ExportExcelService {
     
     row = worksheet.addRow(['']);
 
-    const content = window.location.href;
-    
-    row = worksheet.addRow(['URL',content]);
+    row = worksheet.addRow(['URL',viewer_url]);
 
-    // const qrimage = await QRCode.toDataURL(content, {
+    // const qrimage = await QRCode.toDataURL(viewer_url, {
     //     type: 'image/png',
     //     errorCorrectionLevel: 'M',
     // });
@@ -195,7 +193,7 @@ export class ExportExcelService {
     //   tl: { col: 1, row: row.number },
     //   ext: { width: 200, height: 200 },
     //   hyperlinks: {
-    //     hyperlink: content,
+    //     hyperlink: viewer_url,
     //     //tooltip: 'TIP: http://www.somewhere.com'
     //   }
     // });
@@ -210,7 +208,7 @@ export class ExportExcelService {
     //   tl: { col: 4, row: row.number },
     //   ext: { width: 200, height: 200 },
     //   hyperlinks: {
-    //     hyperlink: content,
+    //     hyperlink: viewer_url,
     //     //tooltip: 'TIP: http://www.somewhere.com'
     //   }
     // });
@@ -220,11 +218,11 @@ export class ExportExcelService {
 
   }
 
-  public export(dataTemplates:any[], tree:any[], breaks: TreeNode[], actors: TreeNode[], milestones: TreeNode[], reasons: TreeNode[] ) {
+  public export(dataTemplates:any[], tree:any[], breaks: TreeNode[], actors: TreeNode[], milestones: TreeNode[], reasons: TreeNode[], viewer_url: string ) {
 
     let workbook:Workbook = new Workbook();
 
-    this.exportAddSheetDSS(workbook, 'DSS', breaks, actors, milestones, reasons);
+    this.exportAddSheetDSS(workbook, 'DSS', breaks, actors, milestones, reasons, viewer_url);
 
     this.exportAddSheetRequirements(workbook, "Požadavky na vlastnosti", dataTemplates, tree);
 

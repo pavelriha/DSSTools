@@ -394,7 +394,8 @@ export class AppComponent implements OnInit {
     if (update_url) this.saveFilter2Url();
   }
   
-  saveFilter2Url(prefix: string = '/viewer') {
+  
+  prepareFilterUrl(prefix: string) {
     let filters = {}
     let dt = this.fbBreaks?.getSelectedIds();
     if (dt?.length) filters['dt'] = dt;
@@ -407,14 +408,11 @@ export class AppComponent implements OnInit {
 
     //console.log(filters);
 
-    this.location.replaceState( this.router.createUrlTree([ prefix, this.controlService.selectedRepository, filters  ] ).toString()  );
+    return this.router.createUrlTree([ prefix, this.controlService.selectedRepository, filters  ] ).toString() ;
+  }
 
-    /* this.location.replaceState( this.router.createUrlTree([ '/viewer', this.controlService.selectedRepository, { 
-      'dt': this.fbBreaks?.getSelectedIds(),
-      'actors': this.fbActors?.getSelectedIds(),
-      'milestones': this.fbMilestones?.getSelectedIds(),
-      'reasons': this.fbReasons?.getSelectedIds(),
-    }  ] ).toString()  ); */
+  saveFilter2Url(prefix: string = '/viewer') {
+    this.location.replaceState( this.prepareFilterUrl(prefix)  );
 
   }
 
@@ -429,7 +427,7 @@ export class AppComponent implements OnInit {
       this.fbReasons.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.reasons.reduce((acc, key) => ({...acc, [key]: true}), {}) } );
       this.fbMilestones.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.milestones.reduce((acc, key) => ({...acc, [key]: true}), {}) } );
       console.info('state restored');
-      setTimeout(() => { 
+      setTimeout(() => {
         console.info('prepare timeout fired');
         this.fbBreaks.prepareSelected(); 
         this.fbActors.prepareSelected();
@@ -449,13 +447,19 @@ export class AppComponent implements OnInit {
   exportIFCmilestones = '';
   exportIFCurl = '';
   exportIFC() {
+    if (this.fbBreaks.selected.length==0) {
+      alert("Prosím vyberte alespoň jednu datovou šablonu");
+      return;
+    }
+
+
     let filteredBreakdowns = this.fbBreaks.getSelectedIds().filter((id) => { return (id < DT_ID_OFFSET); });
 
     this.exportIFCactors = this.fbActors?.getSelectedIds().join(',');
     this.exportIFCreasons = this.fbReasons?.getSelectedIds().join(',');
     this.exportIFCbreakdowns = filteredBreakdowns.join(',');
     this.exportIFCmilestones = this.fbMilestones?.getSelectedIds().join(',');
-    this.exportIFCurl = window.location.href;
+    this.exportIFCurl = location.origin + this.prepareFilterUrl('/viewer');
 
     console.info(this.exportifcform);
 
@@ -499,6 +503,11 @@ export class AppComponent implements OnInit {
   }
 
   public exportXLS() {
+    if (this.fbBreaks.selected.length==0) {
+      alert("Prosím vyberte alespoň jednu datovou šablonu");
+      return;
+    }
+
     this.dataLoading = true;
 
     //console.log('dt', this.fbBreaks.selected);
@@ -526,6 +535,7 @@ export class AppComponent implements OnInit {
             this.fbActors.selected, 
             this.fbMilestones.selected, 
             this.fbReasons.selected,
+            location.origin + this.prepareFilterUrl('/viewer'),
         );
 
 
