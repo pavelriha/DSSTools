@@ -17,6 +17,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 const ROUTES: Routes = [  
     //{path: '', redirectTo: '/viewer', pathMatch: 'full'},
     {path: '',              component: AppComponent},
+    {path: 'filter',        component: AppComponent},
     {path: 'viewer',        component: AppComponent},
     {path: 'viewer/:repo',  component: AppComponent},
     {path: 'export/:export_type',  component: AppComponent},

@@ -189,11 +189,13 @@ export class AppComponent implements OnInit {
         this.nodesReasons = reasons;
         this.controlService.reasons = reasons;
 
-        this.filtersready = true;
         this.dataLoading = false;
-
+        
         //zpozdime, aby se filtr komponenta stihla iniciovat
-        setTimeout( () => { this.restoreFilters() } );
+        setTimeout( () => { 
+          this.restoreFilters(true);
+          this.filtersready = true;
+        } );
 
       },
       error: (e) => { 
@@ -225,7 +227,7 @@ export class AppComponent implements OnInit {
     // sessionStorage.setItem('treeStateMilestones', JSON.stringify(this.fbMilestones.tree.treeModel.getState()) );
 
     // ulozime stav filtru do URL
-    this.saveFilter2Url();
+    this.saveFilter2Url('/viewer');
 
     this.dataLoading = true;
     this.errors = [];
@@ -397,13 +399,13 @@ export class AppComponent implements OnInit {
   
   prepareFilterUrl(prefix: string) {
     let filters = {}
-    let dt = this.fbBreaks?.getSelectedIds();
+    let dt = this.fbBreaks?.selectedIds;
     if (dt?.length) filters['dt'] = dt;
-    let ac = this.fbActors?.getSelectedIds();
+    let ac = this.fbActors?.selectedIds;
     if (ac?.length) filters['actors'] = ac;
-    let mil = this.fbMilestones?.getSelectedIds();
+    let mil = this.fbMilestones?.selectedIds;
     if (mil?.length) filters['milestones'] = mil;
-    let rea = this.fbReasons?.getSelectedIds();
+    let rea = this.fbReasons?.selectedIds;
     if (rea?.length) filters['reasons'] = rea;
 
     //console.log(filters);
@@ -411,30 +413,24 @@ export class AppComponent implements OnInit {
     return this.router.createUrlTree([ prefix, this.controlService.selectedRepository, filters  ] ).toString() ;
   }
 
-  saveFilter2Url(prefix: string = '/viewer') {
+  saveFilter2Url(prefix: string = '/filter') {
     this.location.replaceState( this.prepareFilterUrl(prefix)  );
 
   }
 
-  restoreFilters() {
+  restoreFilters(force:boolean = false) {
     console.info('restoreFilters fired');
     console.info(this.filtersready, this.saved_filters);
     // obnovuprovadime kdyz mame co obnovovat a soucasne jsou dotazene filtry
-    if (this.filtersready && this.saved_filters.repo ) {
+    if (force || ( this.filtersready && this.saved_filters.repo ) ) {
       //console.log(this.saved_filters.dt.reduce((acc, key) => ({...acc, [key]: true}), {}));
-      this.fbBreaks.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.dt.reduce((acc, key) => ({...acc, [key]: true}), {}) });
-      this.fbActors.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.actors.reduce((acc, key) => ({...acc, [key]: true}), {}) } );
-      this.fbReasons.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.reasons.reduce((acc, key) => ({...acc, [key]: true}), {}) } );
-      this.fbMilestones.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.milestones.reduce((acc, key) => ({...acc, [key]: true}), {}) } );
+      //this.fbBreaks.tree.treeModel.setState({ selectedLeafNodeIds: this.saved_filters.dt.reduce((acc, key) => ({...acc, [key]: true}), {}) });
+      this.fbBreaks.restoreSelected(this.saved_filters.dt);
+      this.fbActors.restoreSelected(this.saved_filters.actors);
+      this.fbReasons.restoreSelected(this.saved_filters.reasons);
+      this.fbMilestones.restoreSelected(this.saved_filters.milestones);
       console.info('state restored');
-      setTimeout(() => {
-        console.info('prepare timeout fired');
-        this.fbBreaks.prepareSelected(); 
-        this.fbActors.prepareSelected();
-        this.fbReasons.prepareSelected();
-        this.fbMilestones.prepareSelected();
-        this.saveFilter2Url();
-      },1000);//zpozdeni vterinu, jinak to ne vzdy nabehne
+      this.saveFilter2Url('/restore');
     } else {
       console.warn('not ready for restore');
     }
@@ -603,10 +599,10 @@ export class AppComponent implements OnInit {
     this.bookmarkService.addBookmark({ 
       name: name,
       repo: this.controlService.selectedRepository,
-      dt: this.fbBreaks.getSelectedIds(),
-      actors: this.fbActors.getSelectedIds(),
-      milestones: this.fbMilestones.getSelectedIds(),
-      reasons: this.fbReasons.getSelectedIds(),
+      dt: this.fbBreaks.selectedIds,
+      actors: this.fbActors.selectedIds,
+      milestones: this.fbMilestones.selectedIds,
+      reasons: this.fbReasons.selectedIds,
     });
   }
   restoreBookmark(bm: Bookmark) {

@@ -38,7 +38,8 @@ export class FilterBoxComponent implements OnInit {
   public nodes_bak: any[];
   public split_name: string;
   //@Input() options: ITreeOptions;
-  public selected: TreeNode[] = [];
+  public selected: TreeNode[] = []; // vyselektovane "skupiny"
+  public selectedIds: number[] = []; // vyselektovane "skupiny" jen IDs
   public short: number = 4;
   public selectedShortToggle: boolean = true;
   //state: ITreeState;
@@ -80,21 +81,36 @@ export class FilterBoxComponent implements OnInit {
     // to udelame az pri zavreni dropdownu
   }
 
+  // do prop 'selected' uloz kompletne vybrane nody (zaklikla sekce, nikoli az leaveNodes)
   prepareSelected() {
     this.selected = [];
+    this.selectedIds = [];
     this.tree.treeModel.clearFilter(); //zrus filter, protoze jinak plati jen to co zustalo vyfiltrovano (asi diky getVisibleChildren)
     this.filterfield.nativeElement.value='';
 
     // pripravime rekurzivni funkci
     function findFullSel(node: TreeNode) {
-      if (node.isAllSelected) {
+      if (node.isAllSelected) { // je vybrana cela sekce? pokud ano kncnime,jinak jdeme hloubs
         this.selected.push(node);
+        this.selectedIds.push(node.data.id);
       } else {
         node.getVisibleChildren().forEach( findFullSel, this );
       }
     }
     this.tree.treeModel.getVisibleRoots().forEach( findFullSel, this );
   }
+
+  restoreSelected(ids: Number[]) {
+    console.log('restoreSelected', ids);
+    if (!ids) return;
+    let node: TreeNode;
+    ids.forEach( id => {
+      node = this.tree.treeModel.getNodeById(id);
+      node.setIsSelected(true);
+    });
+    this.prepareSelected();
+  }
+
 
   /* vrati podmnozinu stromu obsahujici jen vyselectovane casti */
   getSelectedNodeTree() {
