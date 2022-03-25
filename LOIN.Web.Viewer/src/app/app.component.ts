@@ -430,7 +430,7 @@ export class AppComponent implements OnInit {
       this.fbReasons.restoreSelected(this.saved_filters.reasons);
       this.fbMilestones.restoreSelected(this.saved_filters.milestones);
       console.info('state restored');
-      this.saveFilter2Url('/restore');
+      this.saveFilter2Url();
     } else {
       console.warn('not ready for restore');
     }
