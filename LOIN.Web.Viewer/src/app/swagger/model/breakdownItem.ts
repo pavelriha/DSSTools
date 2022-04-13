@@ -11,10 +11,10 @@
  */
 
 export interface BreakdownItem { 
-    id?: number;
-    uuid?: string;
     name?: string;
     nameCS?: string;
+    id?: number;
+    uuid?: string;
     nameEN?: string;
     description?: string;
     descriptionCS?: string;
