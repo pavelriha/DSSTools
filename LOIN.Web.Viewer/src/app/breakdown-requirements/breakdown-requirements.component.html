@@ -123,6 +123,9 @@
         <th *ngIf="ifc">IFC property</th>
         <th *ngIf="ifc">IFC data type</th>
         <th *ngIf="ifc">IFC type</th>
+        <th *ngFor="let n of contextColActor">{{ n.name }}</th>
+        <th *ngFor="let n of contextColMilestone">{{ n.name }}</th>
+        <th *ngFor="let n of contextColReason">{{ n.name }}</th>
     </tr>
  </ng-template>
 
@@ -149,6 +152,11 @@
         <td *ngIf="ifc">{{ req.name }}</td>
         <td *ngIf="ifc">{{ req.dataType }}</td>
         <td *ngIf="ifc">{{ req.valueType }}</td>
+        <td *ngFor="let n of contextColActor" >    <i [class]="['fas', controlService.contextCheck(n.id, req.context.actors)?'fa-check':'fa-times']"></i></td>
+        <td *ngFor="let n of contextColMilestone" ><i [class]="['fas', controlService.contextCheck(n.id, req.context.milestones)?'fa-check':'fa-times']"></i></td>
+        <td *ngFor="let n of contextColReason" >   <i [class]="['fas', controlService.contextCheck(n.id, req.context.reasons)?'fa-check':'fa-times']"></i></td>
+<!--         <td *ngIf="context"><div *ngFor="let ec of req.context.milestones" >{{ ec.nameCS }}</div></td>
+        <td *ngIf="context"><div *ngFor="let ec of req.context.reasons" >{{ ec.nameCS }}</div></td> -->
     </tr>
  </ng-template>
 

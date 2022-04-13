@@ -5,6 +5,8 @@ import { Row, Workbook, Worksheet } from 'exceljs';
 import * as fs from 'file-saver';
 //import * as QRCode from "@cordobo/qrcode"
 import * as QRCode from "qrcode"
+import { contextCol } from '../contextCol';
+import { ControlService } from './control.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +14,10 @@ import * as QRCode from "qrcode"
 export class ExportExcelService {
 
   constructor(
+    public controlService: ControlService,
   ) { }
 
-  private columns = [
+  private columns: any[] = [
     { header: 'Cesta', key: 'path', width: 10 },
     { header: 'Skupina vlastností', key: 'setNameCS', width: 50 },
     { header: 'Název vlastnosti', key: 'nameCS', width: 50 },
@@ -48,7 +51,7 @@ export class ExportExcelService {
 
   private bgcolor_path="CCCCCC";//"DDDDDD";
 
-  private exportRequirement(worksheet:Worksheet, data, level) {
+  private exportRequirement(worksheet:Worksheet, data, level, columns) {
     //console.log(dataTemplates[id]);
 
     data?.requirementSets.forEach( set => {
@@ -62,11 +65,15 @@ export class ExportExcelService {
       // Requirements
       set.requirements.forEach( req => {
         var rowData = {};
-        this.columns.forEach( c => {
+        columns.forEach( c => {
           if (req[c.key] && req[c.key].constructor === Array) {
             rowData[c.key]=req[c.key].join();
           } else {
-            rowData[c.key]=req[c.key];
+            if (c.context_type) {
+              rowData[c.key] = this.controlService.contextCheck(c.context_id, req.context[c.context_type] )?'ano':'ne';
+            } else {
+              rowData[c.key]=req[c.key];
+            }
           }
         });
         //console.log(rowData);
@@ -80,7 +87,7 @@ export class ExportExcelService {
 
 
   // funkce ktera rekurzivne projde cestu k finalnimu uzlu a nasledne vypise pozadavky
-  private ExportPathToRequirements(worksheet:Worksheet, dataTemplates, node) {
+  private ExportPathToRequirements(worksheet:Worksheet, dataTemplates, node, columns) {
     //console.info(node.id, node.name, node.level);
     var row = worksheet.addRow([ ' '.repeat(node.level) + ' ' + node.name ],'n');
     row.outlineLevel = node.level;
@@ -93,9 +100,9 @@ export class ExportExcelService {
     row.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:this.bgcolor_path} };
     //row.font = { family:3 }; //family 1 - Serif, 2 - Sans Serif, 3 - Mono, Others - unknown
     if (node.children.length>0) {
-      node.children.forEach( ch => this.ExportPathToRequirements(worksheet, dataTemplates, ch) );
+      node.children.forEach( ch => this.ExportPathToRequirements(worksheet, dataTemplates, ch, columns) );
     } else {
-      this.exportRequirement(worksheet, dataTemplates[node.id], node.level);
+      this.exportRequirement(worksheet, dataTemplates[node.id], node.level, columns);
     }
   }
 
@@ -122,7 +129,14 @@ export class ExportExcelService {
   private exportAddSheetRequirements(workbook:Workbook, name:string, dataTemplates:any[], tree:any[] ) {
     const worksheet:Worksheet = workbook.addWorksheet(name);
 
-    worksheet.columns = this.columns; //toto prirazeni zpusobi zapsani hlavicky do prvniho radku (A1,B1 atd). Pokud to nechceme mit na prvnim radku, ale neco pred to jeste predsadit, tak jedine reseni je potom provest worksheet.insertRow
+
+    let columns = [...this.columns];
+    this.controlService.getContextColActor().forEach( c =>     { columns.push({ header: c.name, key: 'context_actors_'+c.id, width: 10, context_type: 'actors', context_id: c.id }); });
+    this.controlService.getContextColMilestone().forEach( c => { columns.push({ header: c.name, key: 'context_milestones_'+c.id, width: 10, context_type: 'milestones', context_id: c.id }); });
+    this.controlService.getContextColReason().forEach( c =>    { columns.push({ header: c.name, key: 'context_reasons_'+c.id, width: 10, context_type: 'reasons', context_id: c.id }); });
+
+
+    worksheet.columns = columns; //toto prirazeni zpusobi zapsani hlavicky do prvniho radku (A1,B1 atd). Pokud to nechceme mit na prvnim radku, ale neco pred to jeste predsadit, tak jedine reseni je potom provest worksheet.insertRow
 
     const rowheader = worksheet.getRow(1);
     rowheader.fill = { type: 'pattern', pattern:'solid', fgColor:{ argb:'AAAAAA' } };
@@ -130,7 +144,7 @@ export class ExportExcelService {
     rowheader.alignment = { vertical: 'middle' }
     rowheader.height = 30;
   
-    tree.forEach( node => this.ExportPathToRequirements(worksheet, dataTemplates, node) );
+    tree.forEach( node => this.ExportPathToRequirements(worksheet, dataTemplates, node, columns) );
       
 
     worksheet.autoFilter = 'B1:Z1';

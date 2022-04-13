@@ -46,14 +46,10 @@ export class AppComponent implements OnInit {
     useCheckbox: true
   }; */
   public ifc: boolean = false;
+  public context: boolean = false;
 
   public filtersready: boolean = false;
 
-  public nodesBreakdown: any[];
-  public nodesActors: any[];
-  public nodesMilestones: any[];
-  public nodesReasons: any[];
-  //public nodesRepositories: any[];
   public repolist: string[];
   private saved_filters: any = {};
 
@@ -162,10 +158,10 @@ export class AppComponent implements OnInit {
     this.filtersready = false;
     this.dataLoading = true;
 
-    this.nodesActors = [];
-    this.nodesBreakdown = [];
-    this.nodesMilestones = [];
-    this.nodesReasons = [];
+    this.controlService.nodesActors = [];
+    this.controlService.nodesBreakdown = [];
+    this.controlService.nodesMilestones = [];
+    this.controlService.nodesReasons = [];
 
     forkJoin([
       this.actorsService.apiRepositoryIdActorsGet(this.controlService.selectedRepository),
@@ -183,11 +179,10 @@ export class AppComponent implements OnInit {
             children: newdt
           });
         }
-        this.nodesActors = actors; 
-        this.nodesBreakdown = breakdown;
-        this.nodesMilestones = milestones;
-        this.nodesReasons = reasons;
-        this.controlService.reasons = reasons;
+        this.controlService.nodesActors = actors; 
+        this.controlService.nodesBreakdown = breakdown;
+        this.controlService.nodesMilestones = milestones;
+        this.controlService.nodesReasons = reasons;
 
         this.dataLoading = false;
         
@@ -279,7 +274,7 @@ export class AppComponent implements OnInit {
         case "sets_ifc": groupingtype='IFC'; break;
       }
 
-      this.fetchSets(groupingtype).subscribe({
+      this.fetchSets(groupingtype, this.context).subscribe({
         next:  (r) => { this.prepareFetchedData(r) },
         error: (e) => { this.apiError(e) },
       }
@@ -378,8 +373,9 @@ export class AppComponent implements OnInit {
   }
 
 
-  reqtabChange(tabname:string) {
+  reqtabChange(tabname:string, context:boolean) {
     this.reqtab = tabname;
+    this.context = context;
     this.runfilter();
   }
 
@@ -510,8 +506,9 @@ export class AppComponent implements OnInit {
     this.selectedFlatTree = this.fbBreaks.getSelectedIdsWithInfo();
   
     let groupingtype:GroupingType = 'CS';
+    let context:boolean = true;
 
-    this.fetchSets(groupingtype).subscribe({
+    this.fetchSets(groupingtype, context).subscribe({
       next: (r) => {
 /*         //console.log(r); 
         var data = [];
@@ -552,7 +549,9 @@ export class AppComponent implements OnInit {
     if (filteredBreakdowns.length==0) return of([]);
 
     return this.breakdownService.apiRepositoryIdBreakdownRequirementsGet(
-      this.controlService.selectedRepository, 
+      this.controlService.selectedRepository,
+      null, //ordering
+      this.context, //expand context
       null, //select
       null, //filter
       null, //orderby
@@ -567,13 +566,14 @@ export class AppComponent implements OnInit {
     );
   }
 
-  public fetchSets(groupingtype:GroupingType): Observable<any>  {
+  public fetchSets(groupingtype:GroupingType, context: boolean): Observable<any>  {
     let filteredBreakdowns = this.fbBreaks.getSelectedIds().filter((id) => { return (id < DT_ID_OFFSET); });
     if (filteredBreakdowns.length==0) return of([]);
 
     return this.breakdownService.apiRepositoryIdBreakdownRequirementSetsGet(
       this.controlService.selectedRepository, 
       groupingtype, //grouping type
+      context, // expand context 
       null, //select
       null, //filter
       null, //orderby

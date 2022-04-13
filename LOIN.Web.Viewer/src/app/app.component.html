@@ -24,7 +24,7 @@
     <ul class="filter">
         <!-- <li><app-filter-box #repo [name]="'Verze'" [nodes]="nodesRepositories" ></app-filter-box></li> -->
         <li [class.notready]="!filtersready" style="flex-grow: 10;">
-            <app-filter-box #breaks [name]="'Datové šablony'" [nodes]="nodesBreakdown" [nodesSplit]="true" [toolbarButton]="buttonnewdt" >
+            <app-filter-box #breaks [name]="'Datové šablony'" [nodes]="controlService.nodesBreakdown" [nodesSplit]="true" [toolbarButton]="buttonnewdt" >
                 <ng-template #buttonnewdt>
                         <a class="button newdt" (click)="modal.open('modal-new-dt')"  *ngIf="userdata">
                             <i class="fas fa-plus" title="Přidat novou datovou šablonu"></i>
@@ -36,10 +36,10 @@
             </app-filter-box>
         </li>
         
-        <li [class.notready]="!filtersready"><app-filter-box #actors [name]="'Aktéři'" [nodes]="nodesActors" ></app-filter-box></li>
+        <li [class.notready]="!filtersready"><app-filter-box #actors [name]="'Aktéři'" [nodes]="controlService.nodesActors" ></app-filter-box></li>
     
-        <li [class.notready]="!filtersready"><app-filter-box #milestones [name]="'Stupeň projektové dokumentace'" [nodes]="nodesMilestones" ></app-filter-box></li>
-        <li [class.notready]="!filtersready"><app-filter-box #reasons [name]="'Účely užití'" [nodes]="nodesReasons" ></app-filter-box></li>
+        <li [class.notready]="!filtersready"><app-filter-box #milestones [name]="'Stupeň projektové dokumentace'" [nodes]="controlService.nodesMilestones" ></app-filter-box></li>
+        <li [class.notready]="!filtersready"><app-filter-box #reasons [name]="'Účely užití'" [nodes]="controlService.nodesReasons" ></app-filter-box></li>
 
         <li class="cancel" *ngIf="breaks.selected.length || actors.selected.length || milestones.selected.length || reasons.selected.length">
             <div class="">
@@ -128,13 +128,14 @@
         <ng-container *ngIf="selectedTree"  >
 
             <ul class="bar2">
-                <li class="style" [class.active]="reqtab=='req'" (click)="reqtabChange('req')"><i class="fas  fa-list" title="Vlastnosti"></i><b>&nbsp;</b></li>
-                <li class="style" [class.active]="reqtab=='sets_cz'" (click)="reqtabChange('sets_cz')"><i class="fas fa-stream" title="Skupiny vlastností CZ"></i><b>DSS</b></li>
+                <li class="style" [class.active]="reqtab=='req'" (click)="reqtabChange('req', context)"><i class="fas  fa-list" title="Vlastnosti"></i><b>&nbsp;</b></li>
+                <li class="style" [class.active]="reqtab=='sets_cz'" (click)="reqtabChange('sets_cz', context)"><i class="fas fa-stream" title="Skupiny vlastností CZ"></i><b>DSS</b></li>
                 <!--
                     <li class="style" [class.active]="reqtab=='sets_en'" (click)="reqtabChange('sets_en')"><i class="fas fa-stream" title="Skupiny vlastností EN"></i></li>
                 -->
-                <li class="style" [class.active]="reqtab=='sets_ifc'" (click)="reqtabChange('sets_ifc')"><i class="fas fa-stream" title="Skupiny vlastností IFC"></i><b>IFC</b></li>
+                <li class="style" [class.active]="reqtab=='sets_ifc'" (click)="reqtabChange('sets_ifc', context)"><i class="fas fa-stream" title="Skupiny vlastností IFC"></i><b>IFC</b></li>
                 <li class="style" [class.active]="ifc" (click)="ifc=!ifc" title="zobrazit IFC sloupce"> IFC <b>&nbsp;</b></li>
+                <li class="style" [class.active]="context" (click)="reqtabChange(reqtab, !context)"><i class="fab fa-buffer" title="Ukázat kontext užití/fáze.."></i><b>&nbsp;</b></li>
             </ul>
 
             <breakdown-requirements 
@@ -143,6 +144,7 @@
                 [data]="dataTemplates" 
                 [style]="reqtab" 
                 [ifc]="ifc" 
+                [context]="context"
                 [notesreq]="notesReqData"
                 [milestones]="selectedMilestones"
                 ></breakdown-requirements>

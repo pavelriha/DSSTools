@@ -18,7 +18,7 @@ export class WorkplaceComponent implements OnInit {
 
     this.reasonsService.apiRepositoryIdReasonsGet(this.controlService.selectedRepository??'latest').subscribe({
       next: (reasons) => {
-        this.controlService.reasons = reasons;
+        this.controlService.nodesReasons = reasons;
       }
     });
 

@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { contextCol } from '../shared/contextCol';
 import { AuthService } from '../shared/services/auth.service';
+import { ControlService } from '../shared/services/control.service';
 //import { Requirement } from '../swagger/model/requirement';
 import { Requirement, RequirementSet, GrouppedRequirements, GrouppedRequirementSets, BreakdownItem } from '../swagger/model/models';
 import { ModalService } from '../_modal';
@@ -16,6 +18,7 @@ export class BreakdownRequirementsComponent implements OnInit {
   @Input() tree: any[];
   @Input() flat: any[];
   @Input() ifc: boolean;
+  @Input() context: boolean;
   @Input() style: string;
   @Input() notesreq: any;
   @Input() milestones: any; // pro pripominkovani
@@ -31,10 +34,14 @@ export class BreakdownRequirementsComponent implements OnInit {
   //vars for dt-new-req modal
   public modal_DtNewReq_data;
   
+  public contextColActor: contextCol[];
+  public contextColMilestone: contextCol[];
+  public contextColReason: contextCol[];
 
   constructor(
     public authService: AuthService,
     public modal: ModalService,
+    public controlService: ControlService,
   ) { }
 
   ngOnInit(): void {
@@ -45,7 +52,17 @@ export class BreakdownRequirementsComponent implements OnInit {
   ngOnChanges() {
     //console.log(this.flat);
     //console.log(this.tree);
-    this.cols = (this.style=='req'?8:7)+(this.ifc?4:0);
+    this.contextColActor = [];
+    this.contextColMilestone = [];
+    this.contextColReason = [];
+    if (this.context) { 
+      this.contextColActor = this.controlService.getContextColActor();
+      this.contextColMilestone = this.controlService.getContextColMilestone();
+      this.contextColReason = this.controlService.getContextColReason();
+    }
+    let contextColLen = this.contextColActor.length + this.contextColMilestone.length + this.contextColReason.length;
+
+    this.cols = (this.style=='req'?8:7)+(this.ifc?4:0)+contextColLen;
     this.maxlevel = 0;
     this.flat.forEach( f => { if (f.level > this.maxlevel) this.maxlevel=f.level });
   }
@@ -125,4 +142,7 @@ export class BreakdownRequirementsComponent implements OnInit {
     console.log(data);
     this.modal.open('modal_DtNewReq');
   }
+
+
+
 }

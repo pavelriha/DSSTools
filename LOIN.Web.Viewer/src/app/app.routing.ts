@@ -18,6 +18,7 @@ const ROUTES: Routes = [
     //{path: '', redirectTo: '/viewer', pathMatch: 'full'},
     {path: '',              component: AppComponent},
     {path: 'filter',        component: AppComponent},
+    {path: 'filter/:repo',  component: AppComponent},
     {path: 'viewer',        component: AppComponent},
     {path: 'viewer/:repo',  component: AppComponent},
     {path: 'export/:export_type',  component: AppComponent},

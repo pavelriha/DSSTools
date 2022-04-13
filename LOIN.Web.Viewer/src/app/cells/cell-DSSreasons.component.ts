@@ -33,8 +33,8 @@ export class CellDssReasonsComponent extends MadTableCell implements OnInit {
 
   getName(uuid) {
 
-    if (this.controlService.reasons) for (let i=0; i< this.controlService.reasons.length; i++) {
-      if (this.controlService.reasons[i].uuid==uuid) return this.controlService.reasons[i].nameCS;
+    if (this.controlService.nodesReasons) for (let i=0; i< this.controlService.nodesReasons.length; i++) {
+      if (this.controlService.nodesReasons[i].uuid==uuid) return this.controlService.nodesReasons[i].nameCS;
     }
     return uuid;
   }

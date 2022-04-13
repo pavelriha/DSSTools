@@ -43,7 +43,7 @@ export class ReqNotesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.controlService.reasons.forEach( r => {
+    this.controlService.nodesReasons.forEach( r => {
       this.reasonList.push({
         uuid: r.uuid,
         name: r.nameCS,
