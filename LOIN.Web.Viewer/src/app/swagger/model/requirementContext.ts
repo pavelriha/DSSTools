@@ -14,6 +14,5 @@ import { LoinItem } from './loinItem';
 export interface RequirementContext { 
     actors?: Array<LoinItem>;
     milestones?: Array<LoinItem>;
-    breakdownItems?: Array<LoinItem>;
     reasons?: Array<LoinItem>;
 }

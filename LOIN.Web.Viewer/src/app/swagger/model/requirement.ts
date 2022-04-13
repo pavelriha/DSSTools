@@ -39,5 +39,5 @@ export interface Requirement {
     noteEN?: string;
     enumeration?: Array<string>;
     examples?: Array<string>;
-    contexts?: Array<RequirementContext>;
+    context?: RequirementContext;
 }
