@@ -11,6 +11,8 @@ export class MadMeta {
 export class MadMasterConfig {
   baseurl?: string; // zaklad adresy v ktere se nahradi {id} za ID z nadrazeneho routeru
   url?: string|(()=>string); // url string nebo "geturl" funkce
+
+  includeBootstrap?: boolean; // zda u tabulek vlozit odkaz na externi bootstrap (vhotne pokud projekt BS jinak nepouziva)
     
   cell_type_default_component?: Type<any>;
   cell_type_map?: object;

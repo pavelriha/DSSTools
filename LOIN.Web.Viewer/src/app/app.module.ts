@@ -24,8 +24,6 @@ import { ReqNotesComponent } from './notes/req-notes/req-notes.component';
 import { ReqBtnComponent } from './notes/req-btn/req-btn.component';
 import { ReqPopupComponent } from './notes/req-popup/req-popup.component';
 import { MadTableModule } from './madtable/madtable.module';
-import { CellDefaultComponent } from './cells/cell-default.component';
-import { cell_type_map } from './cells/cells.module';
 import { WorkplaceComponent } from './workplace/workplace.component';
 import { NotesWorkplaceComponent } from './workplace/notes-workplace/notes-workplace.component';
 import { NgWormholeModule } from 'ng-wormhole';
@@ -36,10 +34,9 @@ import { NewReqComponent } from './notes/new-req/new-req.component';
 import { ModalModule } from './_modal';
 import { AccessDeniedComponent } from './access-denied/access-denied.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
-import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule } from 'ngx-google-analytics';
-import { environment } from 'src/environments/environment';
+import { madMasterConfig } from './mad.config';
 
-
+// config pro swagger api
 function getConfig() {
   return new Configuration({
       //basePath: "https://localhost:5001", 
@@ -88,21 +85,7 @@ function getConfig() {
     //   {command: 'config', values: [environment.ga]},
     // ]),
     // NgxGoogleAnalyticsRouterModule,
-    MadTableModule.forRoot({
-      paging: [ 10, 20, 50, 100],
-      per_page: 50,
-      cell_type_default_component: CellDefaultComponent,
-      cell_type_map: cell_type_map,
-      mtWrapperClass: '', //'table-responsive',
-      showFilterRow: true,
-      mdWrapperClass: 'd-flex', //'table-responsive',
-      mdTableClass: 'table table-sm mb-0',
-      mdLabelSubmit: 'Odeslat',
-      mdLabelCancel: 'Zrušit',
-      //getDetail: jbz.test,
-      //getData: loadContext,
-      //getDetail: loadContext(),
-  }),
+    MadTableModule.forRoot(madMasterConfig),
   ],
   providers: [
 
@@ -111,7 +94,7 @@ function getConfig() {
       useFactory: getConfig,
       //deps: MyAuthService,
       multi: false
-  }
+    },
   ],
   bootstrap: [AppRootComponent] //predelano na AppRootComponent aby se na AppComponent nemuselo radsi sahat
 })
