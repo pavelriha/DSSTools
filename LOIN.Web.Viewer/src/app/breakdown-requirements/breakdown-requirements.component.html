@@ -44,21 +44,21 @@
                     >
                         <i class="fas fa-fw folder" [class.fa-angle-right]="collapsed[n.id]" [class.fa-angle-down]="!collapsed[n.id]" ></i>
                         {{ n.name }}
-                        <span ngDropdown [renderInPlace]="false" *ngIf="data[n.id]">
+                        <span ngDropdown [renderInPlace]="false" *ngIf="data[n.uuid]">
                             <i class="fas fa-info-circle" ngDropdownControl></i>
                             <div ngDropdownContent dropdownClass="slide-fade" >
-                                <bd-popup [node]="data[n.id]"></bd-popup>
+                                <bd-popup [node]="data[n.uuid]"></bd-popup>
                             </div>
                         </span>
                         &nbsp;
-                        <i *ngIf="userdata" class="fas fa-folder-plus" (click)="modal_DtNewReq(data[n.id]);$event.stopPropagation();"></i>
+                        <i *ngIf="userdata" class="fas fa-folder-plus" (click)="modal_DtNewReq(data[n.uuid]);$event.stopPropagation();"></i>
 <!--                         <span ngDropdown [renderInPlace]="false" *ngIf="userdata">
                             <i class="fas fa-folder-plus" ngDropdownControl></i>
                             <div ngDropdownContent dropdownClass="slide-fade notes-popup" >
                                 <dt-new-req 
                                     [milestones]="milestones"
                                     [dt_uuid]="n.uuid"
-                                    [dt_data]="data[n.id]"
+                                    [dt_data]="data[n.uuid]"
                                 ></dt-new-req>
                             </div>
                         </span> -->
@@ -75,7 +75,7 @@
                 <!-- Display Requirements table -->     
                 <ng-template
                 [ngTemplateOutlet]="style=='req'?ReqTableTemplateRef:SetTableTemplateRef"
-                [ngTemplateOutletContext]="{ data: data[n.id] }">
+                [ngTemplateOutletContext]="{ data: data[n.uuid] }">
             </ng-template>
             
             

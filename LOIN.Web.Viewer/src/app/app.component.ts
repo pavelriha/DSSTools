@@ -328,7 +328,7 @@ export class AppComponent implements OnInit {
           add.push( this.allRequiremets[uuid]?this.allRequiremets[uuid]:{uuid: uuid, nameCS: '!!! error - neznama vlastnost !!! Asi z novějšího IFC?' } );
         });
       }
-      this.dataTemplates[req.id] = req;
+      this.dataTemplates[req.uuid] = req;
     });
 
     /*
@@ -519,7 +519,7 @@ export class AppComponent implements OnInit {
 
         this.prepareFetchedData(r);
 
-        console.log(this.dataTemplates, this.fbBreaks.getSelectedNodeTree());
+        //console.log(this.dataTemplates, this.fbBreaks.getSelectedNodeTree());
 
         this.exportexcel.export(
             this.dataTemplates, 
